@@ -227,12 +227,11 @@ def test_zip_comparison_detects_a_differing_byte(tmp_path: Path) -> None:
         archive.writestr("a.txt", "content-A\n")
     # 造一份与 tag 树"名字相同、字节不同"的清单，直接喂给比较函数的下半段
     original = module._tag_tree_files
+    original_run = module.run_cmd
     try:
         module._tag_tree_files = lambda tag: {"a.txt"}
         # `git cat-file blob v0.1.0:a.txt` 在真仓里读不到 —— 那一支会报"读不出来"，
         # 同样是红。为精确测"字节不同"这一支，这里让 cat-file 返回别的内容。
-        real_run = module.run_cmd
-
         def fake_run(cmd, *, text=True):
             class _R:
                 returncode = 0
@@ -246,4 +245,64 @@ def test_zip_comparison_detects_a_differing_byte(tmp_path: Path) -> None:
         assert any("字节" in p for p in problems), problems
     finally:
         module._tag_tree_files = original
-        module.run_cmd = real_run
+        module.run_cmd = original_run
+
+
+def test_gate_refuses_cleanly_when_git_is_absent() -> None:
+    """没有 git 二进制时要报**可操作的**结论，不是 ``FileNotFoundError`` 的 traceback。
+
+    首次 CI 实测：离线镜像（``python:3.12-slim``，无 git）里跑本门，两个判据都报
+    "判据执行异常: FileNotFoundError: 'git'" —— 读起来像门自己坏了。真因是**作业边界**：
+    发布门要读 tag 树，它不属于那类运行期沙箱。
+    """
+    module = _load()
+    original = module.shutil.which
+    try:
+        module.shutil.which = lambda name: None
+        with pytest.raises(module.GateEnvError) as excinfo:
+            module.git_text(["rev-parse", "HEAD"])
+        assert "git" in str(excinfo.value)
+    finally:
+        module.shutil.which = original
+
+
+def test_offline_ci_job_does_not_run_git_dependent_or_dev_side_commands() -> None:
+    """**作业边界守门**：offline job 里只许放"只走运行期路径"的命令。
+
+    入选判据两条，缺一不可（首次 CI 两推各撞一次同一族）：
+
+    * 不要第三方包 —— 镜像按纪律不 ``pip install``（``.github/offline.Dockerfile`` 第 1 条）；
+    * 不读 git 元数据 —— ``python:3.12-slim`` 里没有 git 二进制。
+
+    所以这个 job 里**不许**出现生成器（dev 侧、要 PyYAML）与发布门（要 ``git ls-tree``）。
+    这条测试是那两个 bug 的回归判据：把它们再塞回去，这里当场红 —— 不必等第三推。
+    """
+    import re
+
+    text = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    offline = text.split("\n  offline:", 1)
+    assert len(offline) == 2, "ci.yml 里找不到 `offline:` job（结构变了？）"
+    body = offline[1].split("\n  # ──", 1)[0]
+    run_lines = [
+        line.strip()
+        for line in body.split("\n")
+        if line.strip().startswith("docker run")
+    ]
+    assert run_lines, "offline job 里一条 docker run 都没抽到 —— 抽取口径对不上"
+
+    forbidden = {
+        "build_catalog.py": "dev 侧生成器要 PyYAML，镜像按纪律不 pip install",
+        "check_release.py": "发布门要 git ls-tree / git cat-file，slim 镜像没有 git",
+    }
+    offenders = [
+        f"{line}  # {why}"
+        for line in run_lines
+        for needle, why in forbidden.items()
+        if needle in line
+    ]
+    assert not offenders, (
+        "offline job 出现了不属于该作业边界的命令：\n" + "\n".join(offenders)
+    )
+    assert re.search(r"errcode_atlas\s+(\w+)", "\n".join(run_lines)), (
+        "offline job 里没有任何运行期 CLI 调用 —— 那它就没在验'运行期零依赖'"
+    )

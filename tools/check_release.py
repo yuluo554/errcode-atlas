@@ -79,6 +79,11 @@ NAME_NEEDLES = ("PyPI", "404", "GitHub")
 #: 三个状态码：与另两道门同一套语义（0 绿 / 1 红 / 2 用法）。
 RC_OK, RC_BAD, RC_USAGE = 0, 1, 2
 
+
+class GateEnvError(RuntimeError):
+    """环境缺件（如没有 git 二进制）。**不是**"发布不对"，是"这一档在这里跑不了"。"""
+
+
 CHECKS: list[tuple[str, bool, str]] = []
 COUNTED = {"checked": 0, "skipped": 0}
 
@@ -115,7 +120,17 @@ def run_cmd(cmd: list[str], *, text: bool = True) -> subprocess.CompletedProcess
 
 
 def git_text(args: list[str]) -> subprocess.CompletedProcess:
-    """git 的文本通道。``core.quotepath=false`` 让中文路径原样输出（本仓文件名贯穿判据链）。"""
+    """git 的文本通道。``core.quotepath=false`` 让中文路径原样输出（本仓文件名贯穿判据链）。
+
+    **本门要 git 二进制**（读 tag 树）。``python:3.12-slim`` 这类镜像里没有它 ——
+    那时 ``subprocess`` 抛 ``FileNotFoundError``，``_run`` 会兜成"判据执行异常"，
+    读起来像门自己坏了。所以这里先判在位、给出可操作的结论（首次 CI 实测踩过）。
+    """
+    if shutil.which("git") is None:
+        raise GateEnvError(
+            "本机没有 `git` 二进制 —— 发布门要读 tag 树（`git ls-tree` / `git cat-file`）；"
+            "它**不属于**离线镜像那类沙箱（那里只该跑运行期路径，见 `.github/workflows/ci.yml`）"
+        )
     return run_cmd(["git", "-c", "core.quotepath=false", *args])
 
 
@@ -571,6 +586,8 @@ def check_ci(tag: str) -> None:
 def _run(fn: Callable[[], None], check_id: str) -> None:
     try:
         fn()
+    except GateEnvError as exc:
+        add(check_id, False, f"环境缺件: {exc}")
     except Exception:  # noqa: BLE001 - 门永不崩
         add(check_id, False, "判据执行异常: " + traceback.format_exc(limit=1).strip().replace("\n", " "))
 

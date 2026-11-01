@@ -104,16 +104,19 @@ jobs:
       - name: 构建离线镜像（构建期可联网，运行期完全无网络）
         run: docker build -f .github/offline.Dockerfile -t errcode-atlas-offline .
       - name: 无网络跑门与 CLI
-        # **首推实测的一处作业设计缺陷**：这里原先还跑 `tools/build_catalog.py --check`，
-        # 但那个脚本是 **dev 侧**工具、要 PyYAML，而本镜像按纪律**故意不 pip install**
-        # （见 `.github/offline.Dockerfile` 第 1 条）—— 于是"证明运行期零依赖"的镜像
-        # 被要求跑一个 dev 依赖。两者不是矛盾的事实，是**两条不同的纪律被塞进了同一个 job**。
-        # 处置：生成器冻结态交回 layout job（那里刚装了 PyYAML）；本 job 只跑**运行期路径**，
-        # 且比原先多跑两条（`build --check` 验冻结面、`selftest` 验判定面）—— 净覆盖不减。
+        # **本 job 的入选判据 = "这条命令只走运行期路径吗？"** 两条都得满足：
+        #   (a) 不需要第三方包（镜像按纪律不 pip install，见 `.github/offline.Dockerfile` 第 1 条）；
+        #   (b) 不读 **git 元数据**（`python:3.12-slim` 里没有 git 二进制）。
+        #
+        # 首推 + 二推各撞了一次同一族缺陷，逐条记下来免得第三次：
+        #   · 一推：这里跑了生成器冻结态校验 —— 那是 dev 侧工具、要 PyYAML，(a) 不满足。
+        #   · 二推：改为跑发布门 —— 它要 `git ls-tree` / `git cat-file` 读 tag 树，(b) 不满足
+        #     （报 `FileNotFoundError: 'git'`）。**发布门属 layout job，不属本 job。**
+        # 现在这两条都留在 layout job；本 job 只放"两条都满足"的命令：
+        # 两道门（`LAYOUT.*` 明写"判据只落仓库内文件，不读 git 元数据"）+ 运行期 CLI。
         run: |
           docker run --rm --network none errcode-atlas-offline python tools/check_sprint_layout.py
           docker run --rm --network none errcode-atlas-offline python tools/check_desensitized.py
-          docker run --rm --network none errcode-atlas-offline python tools/check_release.py --pre-tag
           docker run --rm --network none errcode-atlas-offline python -m errcode_atlas build --check
           docker run --rm --network none errcode-atlas-offline python -m errcode_atlas selftest
           docker run --rm --network none errcode-atlas-offline python -m errcode_atlas --version
