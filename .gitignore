@@ -1,0 +1,80 @@
+# ============================================================
+# 11-1-errcode-atlas · .gitignore
+# Python 标准模板 + 本项目特有排除项
+#   · data/catalog/   —— 编目源必须入库（这是本项目的底座）
+#   · _private/       —— 本地核对材料
+#   · .errcode-atlas/ —— 工具自身缓存
+# ============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虚拟环境
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# 测试与覆盖率
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# ---------- 本项目 ----------
+_private/
+.errcode-atlas/
+tmp/
+*.tmp
+# 头文件原文的本地暂存（入库的是抽取后的 YAML，不是 .h 原文件）
+_headers/
+
+# ---------- 编辑器 / 系统 ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---------- 例外：以下必须入库 ----------
+!data/catalog/*.yaml
+!data/README.md
+!data/gaps.md
+!plan/*.md
+!fixtures/**/INPUT.md
+!fixtures/**/expected.json
+!docs/**/*.md
+!docs/demo/*.gif
