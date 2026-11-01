@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -194,6 +195,16 @@ def build_mutations() -> list[Mutation]:
                  replace_once("plan/HANDOFF-M0.md",
                               "## 二、当前事实·状态不变量（下一棒动手前必须知道）",
                               "## 二、背景")),
+        # L6c：**当前里程碑的入口缺失**分支。这是首版门漏掉的那一半 ——
+        # 首版只遍历 `done`，于是"上一棒做完却没给下一棒留入口"门照旧全绿
+        # （本项目实测：M1 收尾后 HANDOFF-M2.md 不存在，门报"2 份交接单齐 全绿"）。
+        # 靶子 = 删掉**当前在做的里程碑**的入口（= 最小 ⬜ 那个的 HANDOFF），
+        # 不锚具体编号：随进度推进自动指向新的当前棒，不会像 L4b 那样漂。
+        Mutation("L6c-handoffs-current-missing", "layout", "LAYOUT.HANDOFFS",
+                 _delete_current_handoff()),
+        # L6d：**超前入口**分支（给还没到的里程碑预写入口 = 给没跑的棒编记录）。
+        Mutation("L6d-handoffs-lookahead", "layout", "LAYOUT.HANDOFFS",
+                 _create_lookahead_handoff()),
         # 靶子必须落在**缺口列本身**（首格）。首版把 `M0` 写进"内容"列 → 判据读的是缺口列，
 # 门正确地没报，看起来像假门 —— 实际是靶子瞄错了列（这一类只有变异验证能抓出来）。
         Mutation("L7-gaps", "layout", "LAYOUT.GAPS",
@@ -262,6 +273,66 @@ def _register_stale_tool() -> Callable[[], None]:
         (ROOT / "plan/02-架构与技术选型.md").write_text(
             (ROOT / "plan/02-架构与技术选型.md").read_text(encoding="utf-8")
             + "\n\n见 `tools/not_yet.py`。\n",
+            encoding="utf-8",
+        )
+
+    return apply
+
+
+def _milestone_states() -> dict[int, str]:
+    """从 ``plan/00`` 的里程碑表读 ``{编号: 状态格}`` —— 变异靶子从**事实**取，不写死编号。"""
+    lines = (ROOT / "plan/00-README总览.md").read_text(encoding="utf-8").split("\n")
+    states: dict[int, str] = {}
+    for line in lines:
+        match = re.match(r"^\|\s*M(\d+)\s*\|", line)
+        if not match:
+            continue
+        cells = line.split("|")
+        states[int(match.group(1))] = cells[-2].strip()
+    return states
+
+
+def _is_done(cell: str) -> bool:
+    return "✅" in cell
+
+
+def _current_milestone() -> int | None:
+    states = _milestone_states()
+    pending = sorted(k for k, cell in states.items() if not _is_done(cell))
+    return pending[0] if pending else None
+
+
+def _delete_current_handoff() -> Callable[[], None]:
+    """删掉**当前在做的里程碑**的入口文件 —— 门必须报"上一棒没留入口"。"""
+
+    def apply() -> None:
+        current = _current_milestone()
+        if current is None:
+            raise RuntimeError("没有未完成的里程碑，L6c 不适用（全部已完成时本组无靶子）")
+        rel = f"plan/HANDOFF-M{current}.md"
+        path = ROOT / rel
+        if not path.is_file():
+            raise RuntimeError(f"{rel}: 不存在 —— 当前里程碑 {current} 根本没有入口（先补上再验）")
+        path.unlink()
+
+    return apply
+
+
+def _create_lookahead_handoff() -> Callable[[], None]:
+    """给**还早的**里程碑预写入口 —— 门必须报"超前入口"。"""
+
+    def apply() -> None:
+        current = _current_milestone()
+        states = _milestone_states()
+        far = [k for k, cell in sorted(states.items()) if not _is_done(cell) and k != current]
+        if not far:
+            raise RuntimeError("没有「未来的」里程碑，L6d 不适用")
+        rel = f"plan/HANDOFF-M{far[-1]}.md"
+        if (ROOT / rel).is_file():
+            raise RuntimeError(f"{rel} 本来就存在 —— 靶子已漂（先确认它确实不该有）")
+        (ROOT / rel).write_text(
+            "# 超前入口（变异注入）\n\n"
+            "当前进度 当前事实 待办 既定口径 环境坑 DoD 命令速查\n",
             encoding="utf-8",
         )
 

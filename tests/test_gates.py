@@ -71,6 +71,86 @@ def test_layout_gate_rejects_unknown_argument() -> None:
     assert _run("check_sprint_layout.py", "--nope").returncode == 2
 
 
+# ── 交接单 = 里程碑入口文件（本项目实测过的真缺陷）──────────────────────────
+def test_handoff_required_for_current_milestone_not_only_done_ones() -> None:
+    """**当前在做的里程碑**必须有入口文件，不只是"已完成"的那些。
+
+    本项目实测：M1 收尾时没写 `HANDOFF-M2.md`，而首版 `check_handoffs` 只遍历 ``done``，
+    于是门报"2 份交接单齐 全绿" —— 它看起来在管交接单，实际**只管完成过的**，
+    漏掉的正是最该管的那个（下一棒打开仓库找不到入口）。
+
+    这条测试直接对 `check_handoffs` 断言：把当前里程碑的入口"藏起来"（只读时返回 None），
+    门必须变红并且在结论里点出"当前在做的里程碑"。
+    """
+    module = _load(REPO_ROOT / "tools" / "check_sprint_layout.py")
+    states = _milestone_states()
+    done = sorted(k for k, ok in states.items() if ok)
+    pending = sorted(k for k, ok in states.items() if not ok)
+    assert pending, "全部里程碑已 ✅，本测试的前提（存在当前里程碑）不成立"
+
+    current = pending[0]
+    hide = f"plan/HANDOFF-M{current}.md"
+    original_read = module.read
+    try:
+        module.CHECKS.clear()
+        module.SCANNED["handoffs"] = 0
+        module.read = lambda rel: None if rel == hide else original_read(rel)
+        module.check_handoffs(done, sorted(states))
+    finally:
+        module.read = original_read
+        module.SCANNED["handoffs"] = 0
+    verdicts = [item for item in module.CHECKS if item[0] == "LAYOUT.HANDOFFS"]
+    assert verdicts, "check_handoffs 没产出结论"
+    ok, detail = verdicts[-1][1], verdicts[-1][2]
+    assert not ok, f"当前里程碑入口 {hide} 被藏起来了，门却仍绿：{detail}"
+    assert "当前在做的里程碑" in detail, f"红了但没说清是哪一类缺失：{detail}"
+
+
+def test_handoff_lookahead_is_rejected() -> None:
+    """给**还没到的**里程碑预写入口也必须变红 —— 那是给没跑的棒编记录。
+
+    首版门完全不管这一半：`HANDOFF-M6.md` 现在写出来，门照样全绿。
+    """
+    module = _load(REPO_ROOT / "tools" / "check_sprint_layout.py")
+    states = _milestone_states()
+    done = sorted(k for k, ok in states.items() if ok)
+    pending = sorted(k for k, ok in states.items() if not ok)
+    assert len(pending) >= 2, "至少要有两个未完成里程碑才能造「超前」靶子"
+
+    far = f"plan/HANDOFF-M{pending[-1]}.md"
+    original_read = module.read
+    original_is_file = Path.is_file
+    try:
+        module.CHECKS.clear()
+        module.read = lambda rel: None if rel == far else original_read(rel)
+        # 让门"看见"超前文件存在（但不真的写进仓库）
+        Path.is_file = lambda self: True if self.as_posix().endswith(far) else original_is_file(self)
+        module.check_handoffs(done, sorted(states))
+    finally:
+        module.read = original_read
+        Path.is_file = original_is_file
+    verdicts = [item for item in module.CHECKS if item[0] == "LAYOUT.HANDOFFS"]
+    assert verdicts, "check_handoffs 没产出结论"
+    ok, detail = verdicts[-1][1], verdicts[-1][2]
+    assert not ok, f"超前入口 {far} 存在，门却仍绿：{detail}"
+    assert "超前入口" in detail, f"红了但没说清是超前入口：{detail}"
+
+
+def _milestone_states() -> dict[int, bool]:
+    """从 ``plan/00`` 里程碑表读 ``{编号: 是否 ✅}`` —— 靶子从事实取，不写死编号。"""
+    import re
+
+    text = (REPO_ROOT / "plan" / "00-README总览.md").read_text(encoding="utf-8")
+    states: dict[int, bool] = {}
+    for line in text.split("\n"):
+        match = re.match(r"^\|\s*M(\d+)\s*\|", line)
+        if not match:
+            continue
+        cells = line.split("|")
+        states[int(match.group(1))] = "✅" in cells[-2]
+    return states
+
+
 def _load(path: Path):
     """动态加载工具模块。
 

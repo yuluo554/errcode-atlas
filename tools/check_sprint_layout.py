@@ -81,7 +81,16 @@ HANDOFF_SECTIONS = ("当前进度", "当前事实", "待办", "既定口径", "�
 #: 项目**已声明**的豁免：本项目一个都不豁免（M0 也写交接单）。
 EXEMPT_MILESTONES: frozenset[int] = frozenset()
 HANDOFF_FORMAT_FROM = 0
-#: 末棒要不要交接单：False = 要（写"收官交接单"）。
+#: 末棒要不要交接单：False = 要。
+#:
+#: **交接单的语义（项目规则，2026-11-01 用户订正）**：
+#: ``plan/HANDOFF-M<k>.md`` 按**它开哪个里程碑**命名，不按"哪一棒写完它"命名 ——
+#: 它不是"第 k 棒的收尾单"，而是 **M<k> 的入口文件**（进这个里程碑就读它）。
+#:
+#: 由此推出两条判据（首版只做了第一条，于是"上一棒没给下一棒留入口"这种情况门完全看不见）：
+#: 1. **每个已开的里程碑都要有入口**：已 ✅ 的那些 + **当前在做的那个**（= 最小的 ⬜）。
+#: 2. **不得超前**：状态仍是 ⬜ 且不是当前里程碑的编号，不许有入口文件 ——
+#:    否则等于给一支还没跑的棒编好了"当前进度 + 证据"，而那整张表只能是编的。
 HANDOFF_EXEMPT_LAST = False
 
 #: 状态副本 = **2 张表**。``README.md`` **刻意不承载状态**（随包读者没有 plan/），
@@ -202,10 +211,25 @@ def check_status_agreement(states: dict[int, set[str]], rows_by_copy: dict[str, 
 
 
 def check_handoffs(done: Iterable[int], all_milestones: Iterable[int]) -> None:
+    """交接单 = **里程碑入口文件**（不是"某棒的收尾单"）。
+
+    两条判据（缺一条就是假门）：
+
+    * ① **每个已开的里程碑都要有入口** = 已 ✅ 的 + **当前在做的那个**（最小的 ⬜）。
+      首版只遍历 ``done``，于是"M1 做完了却没给 M2 留入口"这种情况门照旧全绿 ——
+      门看起来在管交接单，实际只管"完成过的"，漏掉的正是最该管的那个。
+    * ② **不得超前**：状态仍是 ⬜ 且不是当前里程碑的编号，不许有入口文件。
+      否则就是给一支还没跑的棒编好了"当前进度 + 证据"，那整张表只能是编的。
+    """
     done = sorted(done)
-    last = max(list(all_milestones) + [0])
+    milestones = sorted(all_milestones)
+    last = max(milestones + [0])
+    pending = [k for k in milestones if k not in done]
+    #: 当前在做的里程碑 = 最小的未完成号（全部完成时没有"当前"）
+    current = pending[0] if pending else None
+    required = [k for k in milestones if k in done or k == current]
     missing: list[str] = []
-    for k in done:
+    for k in required:
         if k in EXEMPT_MILESTONES:
             continue
         if HANDOFF_EXEMPT_LAST and k == last:
@@ -213,8 +237,8 @@ def check_handoffs(done: Iterable[int], all_milestones: Iterable[int]) -> None:
         rel = f"plan/HANDOFF-M{k}.md"
         text = read(rel)
         if text is None:
-            hint = "：末棒要么写收官交接单，要么置 HANDOFF_EXEMPT_LAST 并在 AGENTS.md 说明" if k == last else ""
-            missing.append(f"{rel}(缺{hint})")
+            role = "已完成里程碑" if k in done else "**当前在做的里程碑**（上一棒没留入口）"
+            missing.append(f"{rel}(缺：{role})")
             continue
         SCANNED["handoffs"] += 1
         if k < HANDOFF_FORMAT_FROM:
@@ -222,12 +246,27 @@ def check_handoffs(done: Iterable[int], all_milestones: Iterable[int]) -> None:
         lack = [name for name in HANDOFF_SECTIONS if name not in text]
         if lack:
             missing.append(f"{rel}(缺节: {'/'.join(lack)})")
+
+    # ② 不得超前：给还没到的里程碑预写入口
+    ahead: list[str] = []
+    if current is not None:
+        for k in pending:
+            if k == current:
+                continue
+            rel = f"plan/HANDOFF-M{k}.md"
+            if (ROOT / rel).is_file():
+                ahead.append(rel)
+    if ahead:
+        missing.append(f"超前入口（状态仍 ⬜ 且不是当前里程碑，等于给没跑的棒编记录）: {', '.join(ahead)}")
+
+    expected = [k for k in required if k not in EXEMPT_MILESTONES]
+    detail_tail = f"应备 {len(expected)} 份（已 ✅ {len(done)} + 当前 M{current}）" if current is not None else f"应备 {len(expected)} 份（全部已完成，无当前里程碑）"
     add(
         "LAYOUT.HANDOFFS",
         not missing,
         "；".join(missing)
         if missing
-        else f"{SCANNED['handoffs']} 份交接单齐（M0 不豁免；末棒不豁免）",
+        else f"{SCANNED['handoffs']} 份交接单齐（{detail_tail}；无超前入口）",
     )
 
 
