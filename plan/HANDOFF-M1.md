@@ -142,6 +142,12 @@ M0 §五 全部仍有效，另加：
 - [x] `pytest` 双通道：`py -3.12` 203 passed；`py -3.8` 202 passed + 1 skip
 - [x] 两道门全绿；`verify_gates.py` 全组 CAUGHT，还原后复绿
 - [x] `data/catalog/*.yaml` 可由 `extract_catalog.py --out` 逐字节复现（**两条通道都是**）
+- [x] **无 `.git` 导出树验证**（`git archive HEAD` → 解包树）：两道门绿、`build_catalog.py --check`
+      报「599 条」一致、`pytest` 全绿且 **28 条 M1 数据测试显式 skip**（无 `_headers/`，skip 原因写明）
+- [x] **装好的包实跑**（导出树里建 venv → `pip install .`）：`__file__` 落在 `site-packages`；
+      `--version` / `build --check`（errno 515 / signal 84）/ `explain 6 --domain signal` → 1 /
+      `explain SIGSTKFLT --platform macos` → 1 且报 `PLATFORM-ABSENT` / `exitcode 137` → 0
+- [x] 装好的包**抓到了一条工作树抓不到的真缺陷**（见 §一 缺陷 ⑦ 与 §三 第 0 条）
 - [ ] ~~CI 绿~~ → **本棒仍不适用**：无远端、未推送。见 `plan/05` §4 U1
 
 **偏差说明**：
