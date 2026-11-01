@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -328,6 +329,111 @@ def test_digest_check_rejects_crlf_sums_file(tmp_path: Path) -> None:
         module.LOCAL_DIR = original_local
         module.attachment_name = original_attachment
         module.sha256_file = original_sha
+        module.CHECKS.clear()
+
+
+def test_recorded_run_ids_reads_every_id_on_run_id_lines() -> None:
+    """``recorded_run_ids`` 必须读出**每一行**提到 run id 的那一格里的数字。
+
+    真形态是 Markdown 表格：``| **tag 上的 run id** | **`41320856857`** |``。
+    首版正则要求"run id"后面紧跟数字，被 ``**`` 与 ``|`` 隔开 → 明明记了却判"没记"
+    （M6 实测：留档已经写了 run id，门报 §二 还没记）。
+    """
+    module = _load()
+    text = (
+        "| **tag 上的 run id** | **`41320856857`**（success） |\n"
+        "| **收尾后的 run id** | **`41323483032`**（success） |\n"
+        "| 其它 | 与判据无关的 123456 |\n"
+    )
+    ids = module.recorded_run_ids(text)
+    assert ids == ["41320856857", "41323483032"], ids
+
+
+def test_ci_check_accepts_a_trailing_post_tag_run(monkeypatch) -> None:
+    """§二 同时记了 tag 上的 run 与 tag **之后**的收尾 run 时，必须绿。
+
+    这是 M6 收尾实测的形态：收尾提交的 head_sha 必然 ≠ tag 提交，拿它去比会是**恒假**的 FAIL。
+    判据的对象是"**tag 上**那个 run 绿了没有"，不是"最后一个 run id 绿了没有"。
+    """
+    module = _load()
+    doc = (
+        "## 一、tag 前事实\n\n无\n\n## 二、tag 后追加\n\n"
+        "| **tag 上的 run id** | **`41320856857`**（success） |\n"
+        "| **收尾后的 run id** | **`41323483032`**（success） |\n"
+    )
+    tag_sha = "aaaa1111"
+    runs = {
+        "41320856857": {"conclusion": "success", "head_sha": tag_sha},
+        "41323483032": {"conclusion": "success", "head_sha": "bbbb2222"},
+    }
+
+    class _Proc:
+        returncode = 0
+
+        def __init__(self, payload):
+            self.stdout = json.dumps(payload)
+
+    module.CHECKS.clear()
+    original_read = module.read
+    original_slug = module.remote_slug
+    original_gh = module.gh_available
+    original_tag_commit = module.tag_commit
+    original_run_cmd = module.run_cmd
+    try:
+        module.read = lambda rel: doc
+        module.remote_slug = lambda: "owner/repo"
+        module.gh_available = lambda: True
+        module.tag_commit = lambda tag: tag_sha
+        module.run_cmd = lambda cmd, **kw: _Proc(
+            runs[next(k for k in runs if k in cmd[-1])]
+        )
+        module.check_ci("v0.1.0")
+        verdicts = [c for c in module.CHECKS if c[0] == "RELEASE.CI"]
+        assert verdicts and verdicts[-1][1], verdicts[-1][2]
+        assert "41320856857" in verdicts[-1][2], verdicts[-1][2]
+    finally:
+        module.read = original_read
+        module.remote_slug = original_slug
+        module.gh_available = original_gh
+        module.tag_commit = original_tag_commit
+        module.run_cmd = original_run_cmd
+        module.CHECKS.clear()
+
+
+def test_ci_check_fails_when_no_run_matches_the_tag_commit() -> None:
+    """负数对照：§二 记的 run 全都不是 tag 上那个提交 → 必须红（U1 不算关闭）。"""
+    module = _load()
+    doc = (
+        "## 一、tag 前事实\n\n无\n\n## 二、tag 后追加\n\n"
+        "| **收尾后的 run id** | **`41323483032`**（success） |\n"
+    )
+
+    class _Proc:
+        returncode = 0
+        stdout = json.dumps({"conclusion": "success", "head_sha": "bbbb2222"})
+
+    module.CHECKS.clear()
+    original_read = module.read
+    original_slug = module.remote_slug
+    original_gh = module.gh_available
+    original_tag_commit = module.tag_commit
+    original_run_cmd = module.run_cmd
+    try:
+        module.read = lambda rel: doc
+        module.remote_slug = lambda: "owner/repo"
+        module.gh_available = lambda: True
+        module.tag_commit = lambda tag: "aaaa1111"
+        module.run_cmd = lambda cmd, **kw: _Proc()
+        module.check_ci("v0.1.0")
+        verdicts = [c for c in module.CHECKS if c[0] == "RELEASE.CI"]
+        assert verdicts and not verdicts[-1][1], verdicts
+        assert "没有一个" in verdicts[-1][2], verdicts[-1][2]
+    finally:
+        module.read = original_read
+        module.remote_slug = original_slug
+        module.gh_available = original_gh
+        module.tag_commit = original_tag_commit
+        module.run_cmd = original_run_cmd
         module.CHECKS.clear()
 
 

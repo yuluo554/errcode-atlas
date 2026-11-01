@@ -629,13 +629,12 @@ def check_online(tag: str, version: str) -> None:
 
 
 def recorded_run_ids(text: str) -> list[str]:
-    """从 §二 里抽出"被记为 CI run id"的数字。
+    """从 §二 里抽出"被记为 CI run id"的数字，**按出现顺序**。
 
     **判据落在"同一行"上，而不是"某个固定间距的正则"**：留档是 Markdown 表格，
     真实写法是 ``| **成功的 run id** | **`41320856857`** |`` —— 一种死死咬"run id 后面
     紧跟数字"的正则会漏掉它（中间隔着 ``**`` 与 ``|``），于是留档明明记了却判成"没记"。
     改法 = 先按下标定位"哪几行在说 run id"，再在该行取 ≥6 位的数字。
-    副作用可控：一张表里 run id 只会写在该表的 run id 那一格。
     """
     ids: list[str] = []
     for line in text.split("\n"):
@@ -646,43 +645,64 @@ def recorded_run_ids(text: str) -> list[str]:
 
 
 def check_ci(tag: str) -> None:
-    """留档 §二 记的 run id 必须真跑过且绿（``plan/05`` §4 U1 的关闭条件）。"""
+    """留档 §二 记的 run id 必须真跑过且绿（``plan/05`` §4 U1 的关闭条件）。
+
+    **只核 ``head_sha == tag 提交`` 的那些 run。** 这一点是 M6 收尾实测改出来的：
+
+    留档里会出现不止一个 run id —— tag 上的那个，以及 tag **之后**收尾提交的那个。
+    收尾提交的 head_sha 必然 ≠ tag 提交，拿它去比会得到一条**恒假**的 FAIL
+    （判据没错，是核错了对象）。所以：
+
+    * 选出 head_sha 等于 tag 提交的 run —— 它是"tag 内容被 CI 验过"的那一个；
+    * 一个都没有 → FAIL（tag 上的提交从没被 CI 跑过，U1 没关闭）；
+    * 选中多个 → 取最后一个（同一提交的多次重跑，取最新）；
+    * 全部都 success 才算绿。
+    """
     text = read(DOC_REL) or ""
     after = text.split("## 二、", 1)[1] if "## 二、" in text else ""
     ids = recorded_run_ids(after)
     if not ids:
         add("RELEASE.CI", False, "§二 还没记首推 CI 的 run id（U1 的关闭条件是真实 run id）")
         return
-    run_id = ids[-1]
     slug = remote_slug()
     if not gh_available() or slug is None:
-        add("RELEASE.CI", False, f"记了 run id={run_id}，但本机无法核（缺 gh 或 origin）")
+        add("RELEASE.CI", False, f"记了 run id={ids}，但本机无法核（缺 gh 或 origin）")
         return
-    if not re.fullmatch(r"\d{6,}", run_id):
-        add("RELEASE.CI", False, f"run id {run_id!r} 形态不合法")
-        return
-    proc = run_cmd(["gh", "api", f"repos/{slug}/actions/runs/{run_id}"])
-    if proc.returncode != 0:
-        add("RELEASE.CI", False, f"run {run_id} 在 {slug} 上查不到: {proc.stdout.strip()[:160]}")
-        return
-    try:
-        run = json.loads(proc.stdout)
-    except json.JSONDecodeError:
-        add("RELEASE.CI", False, f"run {run_id} 的返回不是 JSON")
-        return
-    conclusion = str(run.get("conclusion") or "")
-    head_sha = str(run.get("head_sha") or "")
     tag_sha = tag_commit(tag)
-    problems: list[str] = []
-    if conclusion != "success":
-        problems.append(f"conclusion={conclusion!r}（必须 success）")
-    if tag_sha and head_sha and head_sha != tag_sha:
-        problems.append(f"head_sha={head_sha[:12]} ≠ tag 提交 {tag_sha[:12]}")
+    matched: list[tuple[str, str, str]] = []  # (run_id, conclusion, head_sha)
+    for run_id in dict.fromkeys(ids):  # 去重保序
+        if not re.fullmatch(r"\d{6,}", run_id):
+            add("RELEASE.CI", False, f"run id {run_id!r} 形态不合法")
+            return
+        proc = run_cmd(["gh", "api", f"repos/{slug}/actions/runs/{run_id}"])
+        if proc.returncode != 0:
+            add("RELEASE.CI", False, f"run {run_id} 在 {slug} 上查不到: {proc.stdout.strip()[:160]}")
+            return
+        try:
+            run = json.loads(proc.stdout)
+        except json.JSONDecodeError:
+            add("RELEASE.CI", False, f"run {run_id} 的返回不是 JSON")
+            return
+        head_sha = str(run.get("head_sha") or "")
+        if tag_sha and head_sha == tag_sha:
+            matched.append((run_id, str(run.get("conclusion") or ""), head_sha))
+    if not matched:
+        add(
+            "RELEASE.CI",
+            False,
+            f"§二 记的 run（{ids}）没有一个的 head_sha 等于 tag 提交 {tag_sha[:12]} —— "
+            "tag 上的内容从没被 CI 跑过",
+        )
+        return
+    run_id, conclusion, _ = matched[-1]
+    ok = conclusion == "success"
     add(
         "RELEASE.CI",
-        not problems,
-        "；".join(problems) if problems
-        else f"run {run_id} = success，head_sha 与 tag {tag} 一致（{tag_sha[:12]}）",
+        ok,
+        f"run {run_id} conclusion={conclusion!r}（必须 success）"
+        if not ok
+        else f"tag 上的 run {run_id} = success（head_sha 与 tag {tag} 一致 {tag_sha[:12]}）；"
+        f"§二 另记 {len(ids) - 1} 个 tag 之后的收尾 run，不在本判据的核对范围",
     )
 
 

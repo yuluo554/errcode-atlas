@@ -100,7 +100,8 @@
 |---|---|
 | GitHub Release | <https://github.com/yuluo554/errcode-atlas/releases/tag/v0.1.0>（public） |
 | 手工上传附件 | **2 个**：`errcode-atlas-0.1.0.zip` + `SHA256SUMS`（口径 A 满足，K34） |
-| **成功的 run id** | **`41320856857`**（success，8/8 job：layout ×2、test ×4、offline ×1） |
+| **tag 上的 run id** | **`41320856857`**（success，8/8 job：layout ×2、test ×4、offline ×1；head_sha = tag 提交 `a380f11`） |
+| **收尾后的 run id** | **`41323483032`**（success，8/8 job；head_sha = `b986ef6`，即 tag 之后的收尾提交） |
 | 首推结果 | **红了三轮**，三轮红的都是**作业边界**，不是判定逻辑：见下表 |
 
 | 轮次 | run id | 结论 | 真因 | 修法 |
@@ -127,8 +128,8 @@
 | 脱敏门 | 扫 1565 个文本文件，0 命中（豁免 1 份） |
 | 发布门 `--pre-tag` / `--offline` / `--online` | 三档全绿（online 11 项、offline 9 项） |
 | `verify_gates.py` | **27 组**全 CAUGHT（布局门 14 + 脱敏门 5 + 发布门 8），还原后三道门复绿 |
-| 全量测试 `py -3.12` | **4085 passed** |
-| 全量测试 `py -3.8` | **4084 passed + 1 skip**（3.10+ 属性，见 `plan/06` §5） |
+| 全量测试 `py -3.12` | **4088 passed** |
+| 全量测试 `py -3.8` | **4087 passed + 1 skip**（3.10+ 属性，见 `plan/06` §5） |
 | `bench` / `selftest` | 扫 **746** 个 case，0 项不符 / 全绿 |
 
 > **一次发布面真缺陷（由回下载对账当场抓到）**：我第一次写出的 `SHA256SUMS` 是 **CRLF**
