@@ -128,8 +128,9 @@
 - [x] `pytest -q` 双通道：`py -3.12` 全绿；`py -3.8` 全绿 + 1 个显式 skip（3.10+ 属性）
 - [x] README 命令反射 + `.gitignore` ↔ 脱敏门对齐，都已落测试
 - [x] `.github/workflows/ci.yml` 落盘 + **本地按 CI 原样 shell 标志逐步模拟过一次**
+- [x] **无 `.git` 导出树验证**：`git archive` 导出后，两道门 + 变异验证 + 生成器 `--check` + 全量 pytest 全绿
+- [x] **装上后的包验证**（不是工作树）：导出树里建 venv → `pip install .` → `__file__` 断言含 `site-packages`；`--version` / `build --check` / `selftest` / `explain` / `exitcode` 逐条跑过
 - [ ] ~~CI 绿~~ → **本棒不适用**：无远端、未推送。见 `plan/05` §4 U1
-- [ ] 裸 clone（无 `.git` 树）验证 → **本棒末提交后跑**，结果见 `plan/05` §4 U1 的替代证据栏
 
 **偏差说明**：
 
