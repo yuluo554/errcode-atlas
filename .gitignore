@@ -63,6 +63,14 @@ _headers/
 # 注意：`.gitignore` 声明了它，脱敏门的 SKIP_DIRS 就必须有对应项 ——
 # 否则本地不红、干净检出/CI 里目录一旦被建出来就红（"扫描面 = 仓库内容"那条纪律）。
 .mimosa/
+# 发布产物的本地副本（M6）。**必须忽略**：`errcode-atlas-*.zip` 是 2.6 MB 的二进制，
+# 它是 tag 树的派生件、已在 GitHub Release 上；入库等于把同一份内容存三遍
+# （源树 + tag 树 + 附件），且 `git add -A` 会把 `gh release download` 的回下载件一起吞进来。
+# 脱敏门的 SKIP_DIRS 里早有这一项 —— 那条对齐纪律是单向的（gitignore -> 门），
+# 所以本目录先前只在门里、不在 gitignore 里，**这个缺口正是 M6 实测踩到的**。
+dist-release/
+# 打包产物的通用形态（`python -m build` 等）
+*.whl
 
 # ---------- 编辑器 / 系统 ----------
 .vscode/

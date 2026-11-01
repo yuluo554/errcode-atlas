@@ -127,8 +127,8 @@
 | 脱敏门 | 扫 1565 个文本文件，0 命中（豁免 1 份） |
 | 发布门 `--pre-tag` / `--offline` / `--online` | 三档全绿（online 11 项、offline 9 项） |
 | `verify_gates.py` | **27 组**全 CAUGHT（布局门 14 + 脱敏门 5 + 发布门 8），还原后三道门复绿 |
-| 全量测试 `py -3.12` | **4083 passed** |
-| 全量测试 `py -3.8` | **4082 passed + 1 skip**（3.10+ 属性，见 `plan/06` §5） |
+| 全量测试 `py -3.12` | **4085 passed** |
+| 全量测试 `py -3.8` | **4084 passed + 1 skip**（3.10+ 属性，见 `plan/06` §5） |
 | `bench` / `selftest` | 扫 **746** 个 case，0 项不符 / 全绿 |
 
 > **一次发布面真缺陷（由回下载对账当场抓到）**：我第一次写出的 `SHA256SUMS` 是 **CRLF**
@@ -136,4 +136,12 @@
 > → `No such file or directory`，**下载者的第一条校验命令就失败**（附件本身没问题，坏的是
 > 那个校验清单）。修法 = 归一成 LF 重传，并给 `RELEASE.DIGEST` 加"字节里不许有 CR"的判据
 > + 一条测试（判据落在**字节**上而不是行内容上 —— 后者会把 `\r` 当空白吃掉，静默通过）。
+
+> **另一次（同属发布面，由收尾提交当场抓到）**：`dist-release/` 在脱敏门的 `SKIP_DIRS` 里
+> 却**不在 `.gitignore`** 里 —— 对齐测试只查了「gitignore → 门」一个方向，于是这个缺口
+> 两个方向都看不见，收尾时 `git add -A` 把 **2.6 MB 的附件与回下载件一起提交了进去**。
+> 附件是 tag 树的派生件、已在 Release 上；入库等于同一份内容存三遍。
+> 修法 = `.gitignore` 补 `dist-release/`（与 `dist/` / `build/` 同列）、把已入库的那批 `git rm --cached`，
+> 并补两条判据：`test_publish_artifact_dirs_are_ignored_and_skipped`（双向对齐，已做阴性验证）
+> 与 `test_release_attachments_are_not_tracked_in_git`（问的是 **git 索引**，不是磁盘）。
 `
