@@ -53,8 +53,8 @@
 | Windows errno 数值（Node 视角） | 本机 `os.constants.errno`（134 项） | ✅ 编目入包 | 同上 | ✅ M1（`kind: runtime`） |
 | Windows errno 数值（Python 视角） | 本机 `errno`（136 项） | ✅ 编目入包 | 同上 | ✅ M1（`kind: runtime`） |
 | Linux / macOS 信号编号 | 两份 `signal.h` 原文 | ✅ 编目入包 | `bench` 分叉点断言 | ✅ M1（34 + 32 条，五叉点已钉） |
-| Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 编目入包 | `bench` 抽样 | ⬜ 待 M2 |
-| `sysexits` 64–78 | `man.openbsd.org/sysexits` | ✅ 编目入包 | `bench` | ⬜ 待 M2 |
+| Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 编目入包 | `bench` 抽样 | ✅ M2（`node` 域 435 条 = 现行 383 + 弃用 52，`kind: doc`） |
+| `sysexits` 64–78 | `man.openbsd.org/sysexits` | ✅ 编目入包 | `bench` | ✅ M2（`exit` 域 15 条，`kind: doc`，四轴共享） |
 | `128+n` 归因 | POSIX 惯例（**非标准**，须标注） | ✅ 内置规则 | `selftest` 断言含 `n` 有效性检查 | ⬜ 待 M3 |
 | 五判定态 | `data/README.md` §5 | ✅ | `bench` 全态覆盖 | ⬜ 待 M3 |
 | Skill 契约块双向一致 | `SKILL.md` ↔ `src` | ✅ | `tests/test_contract.py` | ⬜ 待 M5 |
@@ -71,7 +71,7 @@
 |---|---|---|---|
 | M0 | 计划套件 + 方法论装订（`AGENTS.md` + 两道门）+ 骨架（契约表 / 空壳 CLI / 冻结面校验） | 两道门可跑且逐组变异变红；`--version`/`--help` 可用；未知子命令 exit 4 | ✅ |
 | M1 | 数据先行 | 三平台头文件逐条抽取入编目、出处行号登记、`data/gaps.md` 建表 | 编目每条**带出处**；`build --check` 可复现；`data/README.md` §5 口径定稿 | ✅ |
-| M2 | 解析 | Node 错误码抽取、sysexits 入编目、编目→查询索引 | 抽样对账一致；`UNKNOWN` 路径可复现 | ⬜ |
+| M2 | 解析 | Node 错误码抽取、sysexits 入编目、编目→查询索引 | 抽样对账一致；`UNKNOWN` 路径可复现 | ✅ |
 | M3 | 判定 | 五判定态 + 退出码归因 | `bench` 全绿，含 `exit 1`→`UNATTRIBUTABLE` 断言 | ⬜ |
 | M4 | 基准 | 植入真值语料（含跨平台分叉点全覆盖）+ 不可归因集 | `selftest`/`bench` 可跑，退出码语义断言通过 | ⬜ |
 | M5 | 交付 | CLI + `SKILL.md` + 技术报告 + demo GIF | 四格表全绿；`docs/技术报告.md`、`docs/demo/demo.gif` 存在 | ⬜ |
@@ -92,7 +92,7 @@
 |---|---|---|
 | `UNAMBIGUOUS` | `explain` 的 `verdict` | `bench` 唯一值集 |
 | `AMBIGUOUS-SAME-PLATFORM` | 同上 | `bench`（Linux `SIGABRT`/`SIGIOT`=6） |
-| `AMBIGUOUS-CROSS-PLATFORM` | 同上 | `bench`（`EAGAIN` 11/35/11） |
+| `AMBIGUOUS-CROSS-PLATFORM` | 同上 | `bench`（**数字** `11` 跨平台 → Linux `EAGAIN`/`EWOULDBLOCK`、macOS `EDEADLK`） |
 | `PLATFORM-ABSENT` | 同上 | `bench`（macOS 无 `SIGSTKFLT`） |
 | `UNKNOWN` | 同上 | `bench` 越界值集 |
 | `SIGNAL-KILLED(n)` | `exitcode` 的 `attribution` | `bench`（137→SIGKILL） |

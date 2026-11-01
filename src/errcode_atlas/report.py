@@ -25,9 +25,14 @@ def escape_link_colons(value: str) -> str:
     return value.replace("://", f"{_COLON}\\/\\/")
 
 
+#: 无值域（`node`）在表格里的占位符。**不写 `None`**：`None` 会被读成"查不到值"，
+#: 而那些条目本来就没有值 —— 数据缺失与"没有这个字段"必须看起来不一样。
+NO_VALUE_PLACEHOLDER = "（无数字码值）"
+
+
 def _cell(value: Any) -> str:
-    text = escape_link_colons(str(value))
-    return text.replace("|", "\\|").replace("\n", " ")
+    text = NO_VALUE_PLACEHOLDER if value is None else str(value)
+    return escape_link_colons(text).replace("|", "\\|").replace("\n", " ")
 
 
 def render_table(headers: Iterable[str], rows: Iterable[Iterable[Any]]) -> str:
@@ -71,7 +76,10 @@ def render_explanation(result: Mapping[str, Any]) -> str:
         lines += ["", "## 逐平台"]
         rows = []
         for platform, value in sorted(per_platform.items()):
-            shown = ", ".join(value) if isinstance(value, list) else str(value)
+            if isinstance(value, list):
+                shown: Any = ", ".join(value)
+            else:
+                shown = value  # 可能是 None（无值域）——交给 _cell 渲染占位符
             rows.append((platform, shown))
         lines.append(render_table(("平台", "归因"), rows))
 

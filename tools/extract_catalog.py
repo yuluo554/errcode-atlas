@@ -1,4 +1,5 @@
-"""抽取脚本：``_headers/*.h`` 原文 + 本机两条运行时 → ``data/catalog/*.yaml``。
+"""抽取脚本：``_headers/*.h`` 原文 + 本机两条运行时 + 两份官方文档页
+→ ``data/catalog/*.yaml``。
 
 为什么要有这个脚本（而不是手抄一遍 YAML）：
 
@@ -9,8 +10,13 @@
 * 被**排除**的 ``#define`` 也要自动列出来（``--report``），否则 ``data/gaps.md`` 里那句
   "为什么没入编目"就要靠人回忆。三态纪律（全录/部分录/未录）因此是数出来的，不是写出来的。
 
-与 ``tools/build_catalog.py`` 的分工：本脚本产 **YAML 源**（dev 侧），那个脚本产 **冻结 JSON**（随包）。
-**本脚本不参与构建** —— 构建只读 YAML（``plan/02`` D2）。
+M2 增加了**两条非头文件通路**（同一份脚本、同一份纪律）：
+
+* ``sysexits.html`` → ``sysexits.yaml``：``kind: doc``，``anchor`` = 页内 ``#EX_*`` 段锚；
+* ``node-errors.html`` → ``node-errors.yaml``：``kind: doc``，``anchor`` = 页内 ``#err_*`` 锚。
+
+这两份不是任何仓库里的文件，但**取数命令仍然存在**（``fetch_sources.py --out`` 的网页通路），
+且抽出来的每条都能重跑复现 —— 所以它们与头文件条目享受同一条纪律，不因为"是网页"就降级成手抄。
 
 预处理器口径（这是"逐条"二字的技术含义）
 -------------------------------------------
@@ -41,6 +47,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import subprocess
@@ -663,14 +670,16 @@ def python_constants() -> tuple[str, dict[str, int], dict[str, int]]:
 class Entry:
     name: str
     domain: str
-    value: int
+    value: int | None
     source: dict[str, object]
     description_zh: str
     posix_ref: str = "<none>"
 
     @property
     def sort_key(self) -> tuple[str, int, str]:
-        return (self.domain, self.value, self.name)
+        # 无值域（`node`）的 `value` 是 `None`：排序退化成按名字，**不能**与整数混排
+        # （3.x 上 `None < 0` 直接 TypeError，正是"只在有值数据上跑过"那一类坑）。
+        return (self.domain, -1 if self.value is None else self.value, self.name)
 
 
 def _file_source(header_id: str, line: int, refs: dict[str, str]) -> dict[str, object]:
@@ -688,6 +697,25 @@ def _runtime_source(runtime: str, version: str) -> dict[str, object]:
         "kind": "runtime",
         "runtime": runtime,
         "program_version": version,
+        "verified_at": VERIFIED_AT,
+    }
+
+
+def _doc_source(url: str, anchor: str) -> dict[str, object]:
+    """``kind: doc`` 的出处块。**M2 是它的首次实战**（``catalog._validate_source`` 的 doc 分支
+    到今天为止零调用）—— 所以这里只写契约要求的三个字段，不夹带任何别的东西：
+
+    * ``url``：https，指向**官方文档页**（不是 raw 主机，也不是镜像）；
+    * ``anchor``：页内锚（``#EX_USAGE`` / ``#err_access_denied``）—— 这条是"能指到段落"的凭据；
+    * ``verified_at``：核验日期。
+
+    **不给行号**：网页没有稳定的行号（排版一变行号全错），硬编一个会造出假 `hard` 强度。
+    ``contract.SOURCE_MAX_STRENGTH["doc"] == diff`` 已经把这条钉死。
+    """
+    return {
+        "kind": "doc",
+        "url": url,
+        "anchor": anchor,
         "verified_at": VERIFIED_AT,
     }
 
@@ -716,6 +744,134 @@ def _header_comment(path: Path, line: int) -> str:
     return match.group(1).strip() if match else ""
 
 
+# ── 共享域（官方文档页）─────────────────────────────────────────────────────
+#: `sysexits` 页的官方地址。锚在每一项的 `#EX_*`（页面 `<dt id="EX_*">`）。
+SYSEXITS_URL = "https://man.openbsd.org/sysexits"
+#: Node 错误码页的官方地址。锚在每一项的 `#err_*`（页面 `<a class=mark id=err_*>`)。
+NODE_ERRORS_URL = "https://nodejs.org/api/errors.html"
+
+#: 页面里 `<dt id="EX_*">…(NN)</dt><dd>释义</dd>` —— 名字、码值、释义三样一处取齐。
+_SYSEXITS_ITEM = re.compile(
+    r'<dt id="(EX_[A-Z_0-9]+)"><a[^>]*><code class="Dv">[A-Z_0-9]+</code></a>\s*\((\d+)\)</dt>\s*'
+    r"<dd>(.*?)</dd>",
+    re.S,
+)
+
+#: Node 页的每个条目是 `<section><h4><code>NAME</code><span><a id=errors_x></a></span>`
+#: 后面跟 `<span><a class=mark id=<页内锚> href=#<页内锚>>`。**两处 id 都要取**：
+#: 前者是文档站内部的规范化名，后者才是 URL 里的 `#fragment`（引用必须用后者）。
+#: 注意 `id=xxx href=...` 中间有空格 —— 把锚写成 `id=([a-z0-9_]+)>` 会一条都匹配不到
+#: （本机实测：整份 435 节解析出 0 条，被"读到 0 条即错误"那条挡住了，没有静默写出空表）。
+_NODE_ERROR_SECTION = re.compile(
+    r"<section><h4><code>([A-Za-z][A-Za-z0-9_]*)</code>"
+    r"<span><a id=([a-z0-9_]+)></a></span>"
+    r"<span><a class=mark id=([a-z0-9_]+)\s"
+)
+
+#: 条目正文的**第一段**。页面的 `<p>` 闭合不严格（大量 `<p>` 直接接下一个 `<p>`），
+#: 所以用前瞻而不是 `</p>` 定位 —— 按 `</p>` 找会得到"段落全空"（本机实测过这种形态）。
+_NODE_PARAGRAPH = re.compile(r"<p>(.*?)(?=<p>|</section>)", re.S)
+
+#: 释义里要剥掉的噪声块：变更历史表、API 版本元信息、稳定性横幅。
+#: 它们与"这条错误是什么意思"无关，留着会把释义变成发布日志。
+_NODE_NOISE = re.compile(
+    r"<details>.*?</details>|<div class=api_metadata>.*?</div>"
+    r'|<div class="api_stability[^"]*">.*?</div>',
+    re.S,
+)
+
+#: Node 页的正文分段：`Node.js error codes`（现行）与 `Legacy Node.js error codes`（已弃用）。
+#: **两段都收** —— 弃用不等于"用户看不到"，收到一个已弃用码时报告里要说清它是 legacy。
+_NODE_LEGACY_HEADING = "<h3>Legacy Node.js error codes"
+
+
+def _strip_html(segment: str) -> str:
+    """HTML 片段 → 单行纯文本（释义的唯一来源是页面原文，不做任何改写）。"""
+    text = re.sub(r"<[^>]+>", " ", segment)
+    return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
+def parse_sysexits(path: Path) -> list[Entry]:
+    """``sysexits`` 手册页 → 条目。**15 条，64–78 连续**。
+
+    这条路只认 ``<dt id="EX_*">…(NN)</dt>`` 这一种形态：原文若改版（换成表格 / 改成
+    `<div>`），这里会**返回空表而不是半截表** —— 空表会在 `collect_shared` 里被显式挡住
+    （"读到 0 条"是错误，不是合法终态）。
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError as exc:
+        raise ExtractError(
+            f"原料缺失: {path.name}（先跑 tools/fetch_sources.py --out _headers）"
+        ) from exc
+
+    entries: list[Entry] = []
+    for name, raw_value, raw_desc in _SYSEXITS_ITEM.findall(text):
+        entries.append(
+            Entry(
+                name=name,
+                domain="exit",
+                value=int(raw_value),
+                source=_doc_source(SYSEXITS_URL, f"#{name}"),
+                description_zh=_strip_html(raw_desc),
+            )
+        )
+    return entries
+
+
+def parse_node_errors(path: Path) -> tuple[list[Entry], int]:
+    """``nodejs.org/api/errors.html`` → (条目, legacy 条数)。
+
+    **为什么进 `node` 域而不是 `errno`**（K23）：``ERR_*`` 是 Node 自己抛的异常码名，
+    没有数字码值，与 OS errno 无映射关系。混进 `errno` 会让 `explain 100` 之类开始编造
+    —— 所以它们的 `value` 缺省，索引只按名字建。
+
+    条目名**保留页面原文**（含 ``ABORT_ERR`` / ``HPE_*`` / ``MODULE_NOT_FOUND`` 这些
+    不以 ``ERR_`` 开头的）：那是 Node 真实的码名，按前缀过滤等于替上游决定"哪些算错误码"。
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError as exc:
+        raise ExtractError(
+            f"原料缺失: {path.name}（先跑 tools/fetch_sources.py --out _headers）"
+        ) from exc
+
+    legacy_at = text.find(_NODE_LEGACY_HEADING)
+    if legacy_at < 0:
+        # 上游把这个小节删了/改名了 —— 那会静默把 52 条 legacy 码并进"现行"，
+        # 报告里的 legacy 标记就全错。宁可报错。
+        raise ExtractError(
+            f"{path.name}: 找不到 `Legacy Node.js error codes` 小节 —— "
+            "上游改版了，先确认现行/弃用的分界再跑"
+        )
+
+    entries: list[Entry] = []
+    legacy_count = 0
+    for match in _NODE_ERROR_SECTION.finditer(text):
+        name, _inner_id, fragment = match.group(1), match.group(2), match.group(3)
+        end = text.find("</section>", match.end())
+        body = text[match.end() : end if end > 0 else match.end()]
+        # 补回终止符再匹配：切到 `end` 时那 10 个字符**已被切掉**，而 `_NODE_PARAGRAPH`
+        # 的右边界正是 `</section>` —— 少了它，每组的**最后一条**会解析出空释义。
+        # 本机实测：`MODULE_NOT_FOUND`（现行组末条）的释义成了空串，被
+        # `test_every_yaml_entry_has_complete_source_block` 抓住。
+        paragraph = _NODE_PARAGRAPH.search(_NODE_NOISE.sub(" ", body) + "</section>")
+        description = _strip_html(paragraph.group(1)) if paragraph else ""
+        if match.start() >= legacy_at:
+            legacy_count += 1
+            description = f"（已弃用小节 Legacy Node.js error codes）{description}"
+        entries.append(
+            Entry(
+                name=name,
+                domain="node",
+                value=None,
+                source=_doc_source(NODE_ERRORS_URL, f"#{fragment}"),
+                description_zh=description,
+            )
+        )
+    return entries, legacy_count
+
+
 # ── 汇总 ────────────────────────────────────────────────────────────────────
 #: 被排除项的记录形态 (name, domain, reason, line)。
 #: **不用 ``Drop = tuple[str, ...]``**：模块级赋值在运行时求值，``tuple[str, ...]``
@@ -725,8 +881,37 @@ def _header_comment(path: Path, line: int) -> str:
 Drop = Tuple[str, str, str, int]
 
 
-def collect_all() -> tuple[dict[str, list[Entry]], dict[str, list[Drop]], dict[str, str]]:
-    """返回 (平台 -> 条目, 平台 -> 被排除清单, 取数事实)。"""
+def collect_shared() -> tuple[dict[str, list[Entry]], dict[str, int]]:
+    """共享域（``exit`` / ``node``）→ (文件名 -> 条目, 统计)。
+
+    「读到 0 条」是**错误**不是合法终态 —— 与 ``build_catalog._self_check`` 同一条纪律：
+    解析器与上游版式对不上时，最坏的结果是"安静地写出一份空编目"。
+    """
+    sysexits = parse_sysexits(HEADERS_DIR / "sysexits.html")
+    node_errors, legacy = parse_node_errors(HEADERS_DIR / "node-errors.html")
+
+    if not sysexits:
+        raise ExtractError(
+            "sysexits.html 里一条都没解析到 —— 页面版式变了？" "（判据空跑，不许写出空表）"
+        )
+    if not node_errors:
+        raise ExtractError(
+            "node-errors.html 里一条都没解析到 —— 页面版式变了？（判据空跑，不许写出空表）"
+        )
+
+    files = {"sysexits.yaml": sysexits, "node-errors.yaml": node_errors}
+    stats = {
+        "sysexits": len(sysexits),
+        "node_errors": len(node_errors),
+        "node_errors_legacy": legacy,
+    }
+    return files, stats
+
+
+def collect_all() -> tuple[
+    dict[str, list[Entry]], dict[str, list[Drop]], dict[str, list[Entry]], dict[str, int], dict[str, str]
+]:
+    """返回 (平台 -> 条目, 平台 -> 被排除清单, 共享文件名 -> 条目, 共享统计, 取数事实)。"""
     refs = load_refs()
     platforms: dict[str, list[Entry]] = {}
     excluded: dict[str, list[Drop]] = {}
@@ -792,12 +977,13 @@ def collect_all() -> tuple[dict[str, list[Entry]], dict[str, list[Drop]], dict[s
         excluded.setdefault(platform, [])
 
     facts = {"node": node_version, "python": py_version, **refs}
-    return platforms, excluded, facts
+    shared, shared_stats = collect_shared()
+    return platforms, excluded, shared, shared_stats, facts
 
 
 # ── 渲染 ────────────────────────────────────────────────────────────────────
 FILE_HEADERS = {
-    "linux": """# 编目源 · 平台 `linux` · 由 tools/extract_catalog.py 生成，**不要手改**
+    "linux.yaml": """# 编目源 · 平台 `linux` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # 纪律（plan/04 §2.1，装载期 fail-closed）：
 #   · 每条必须有 `source`；`kind: file` 需要 file/line/repo/ref 四项齐备
@@ -812,7 +998,7 @@ FILE_HEADERS = {
 # 预处理器口径：__KERNEL__ / __ASSEMBLY__ 未定义（用户态默认），只收该环境下可见的 #define。
 # 被排除项（内核内部伪错误、非信号的 SIG_*、实时信号界）逐条记 data/gaps.md。
 """,
-    "macos": """# 编目源 · 平台 `macos` · 由 tools/extract_catalog.py 生成，**不要手改**
+    "macos.yaml": """# 编目源 · 平台 `macos` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # 纪律同 data/catalog/linux.yaml 头注释（plan/04 §2.1）。
 #
@@ -828,7 +1014,7 @@ FILE_HEADERS = {
 # **`SIGSTKFLT` 不在本文件里**，这不是遗漏：macOS 没有这个信号。
 # 查它时由 `PLATFORM-ABSENT` 承载（data/README.md §5.2），`data/gaps.md` 有专门一行。
 """,
-    "win32-node": """# 编目源 · 平台 `win32-node` · 由 tools/extract_catalog.py 生成，**不要手改**
+    "win32-node.yaml": """# 编目源 · 平台 `win32-node` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # **Windows 有两个视角**（data/README.md §1.1，实测同机 EADDRINUSE: Node 100 / Python 10048）。
 # 本文件只收 **Node 运行时** 的取值；Python 视角见 win32-python.yaml。
@@ -842,7 +1028,7 @@ FILE_HEADERS = {
 #
 # 信号只有 11 项（Windows 平台不完整），缺口记 data/gaps.md。
 """,
-    "win32-python": """# 编目源 · 平台 `win32-python` · 由 tools/extract_catalog.py 生成，**不要手改**
+    "win32-python.yaml": """# 编目源 · 平台 `win32-python` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # **Windows 有两个视角**（data/README.md §1.1）：本文件收 **Python 运行时** 的取值。
 # 与 win32-node.yaml 的数值**不同**，这是本题最硬的事实之一。
@@ -854,6 +1040,35 @@ FILE_HEADERS = {
 # 于是该值在这里是 AMBIGUOUS-SAME-PLATFORM；而 Node 视角下 100 只有 `EADDRINUSE` 一个名字
 # —— 同一台机器、同一个端口错误，两个运行时的数值与名字结构都不同。
 """,
+    "sysexits.yaml": """# 编目源 · 共享域 `exit` · 由 tools/extract_catalog.py 生成，**不要手改**
+#
+# 出处形态：kind: doc（url + anchor + verified_at）—— **M2 是它的首次实战**。
+#   · url    = https://man.openbsd.org/sysexits
+#   · anchor = #EX_*（页面每一项的段锚）
+#   · 不给行号：网页没有稳定行号，硬编一个会造出假 hard 强度
+#     （contract.SOURCE_MAX_STRENGTH["doc"] == diff）。
+#
+# **本段是约定非标准**：原文第一句就是 "A few programs exit with the following
+# non-portable error codes. Do not use them."（不可移植、不推荐使用）。
+# 报告里必须写「约定非标准」，由 selftest._check_gray_markers 断言字样存在。
+#
+# 平台归属（M2 的设计决定，见 data/README.md §2.3）：本文件是**共享文件**，
+# 在四个平台轴上都登记 —— sysexits 对四个平台的进程都成立，只挂一个轴会让
+# explain 的跨平台判定伪造出三个假 PLATFORM-ABSENT（K20）。
+""",
+    "node-errors.yaml": """# 编目源 · 共享域 `node` · 由 tools/extract_catalog.py 生成，**不要手改**
+#
+# 出处形态：kind: doc（url + anchor + verified_at）
+#   · url    = https://nodejs.org/api/errors.html
+#   · anchor = #err_* / #abort_err 等（页面每一项的段锚）
+#
+# **域 = `node`，不是 `errno`**（K23）：ERR_* 是 Node 自己抛的异常码名，
+# 没有数字码值，与 OS errno 无映射关系。塞进 errno 域会让 `explain 100` 开始编造。
+# 因此本文件的条目**没有 `value`** —— 判定层只按名字查（contract.VALUELESS_DOMAINS）。
+#
+# 收两类：`Node.js error codes`（现行）与 `Legacy Node.js error codes`（已弃用）。
+# 弃用不等于用户看不到 —— 收到 legacy 码时 reports 里点明它是 legacy，而不是丢掉。
+""",
 }
 
 
@@ -864,15 +1079,21 @@ def _yaml_scalar(value: object) -> str:
     return str(value)
 
 
-def render_yaml(platform: str, entries: list[Entry]) -> str:
-    lines = [FILE_HEADERS[platform].rstrip("\n") + "\n"]
+def render_yaml(name: str, entries: list[Entry]) -> str:
+    """渲染一份编目源。``name`` 是**文件名**（``linux.yaml`` / ``sysexits.yaml``）。
+
+    **无值域（`node`）不写 `value:` 行** —— 写 `value: None` 会被 YAML 解析成字符串
+    `"None"`，而装载期要求"要么是整数、要么完全没有这个字段"。
+    """
+    lines = [FILE_HEADERS[name].rstrip("\n") + "\n"]
     if not entries:
         lines.append("[]\n")
         return "".join(lines)
     for entry in sorted(entries, key=lambda item: item.sort_key):
         lines.append(f"- name: {_yaml_scalar(entry.name)}\n")
         lines.append(f"  domain: {_yaml_scalar(entry.domain)}\n")
-        lines.append(f"  value: {entry.value}\n")
+        if entry.value is not None:
+            lines.append(f"  value: {entry.value}\n")
         lines.append("  source:\n")
         for key, value in entry.source.items():
             lines.append(f"    {key}: {_yaml_scalar(value)}\n")
@@ -884,6 +1105,8 @@ def render_yaml(platform: str, entries: list[Entry]) -> str:
 def _report(
     platforms: dict[str, list[Entry]],
     excluded: dict[str, list[Drop]],
+    shared: dict[str, list[Entry]],
+    shared_stats: dict[str, int],
     facts: dict[str, str],
 ) -> str:
     out: list[str] = ["取数事实", "=" * 68]
@@ -897,6 +1120,18 @@ def _report(
         for entry in platforms[platform]:
             counts[entry.domain] = counts.get(entry.domain, 0) + 1
         out.append(f"  {platform:<14} {counts}  合计 {len(platforms[platform])}")
+    out.append("")
+    out.append("共享域条目数（官方文档页，kind: doc）")
+    out.append("-" * 68)
+    for name in sorted(shared):
+        counts = {}
+        for entry in shared[name]:
+            counts[entry.domain] = counts.get(entry.domain, 0) + 1
+        out.append(f"  {name:<18} {counts}  合计 {len(shared[name])}")
+    out.append(
+        f"  node 页小节数 {shared_stats['node_errors']}"
+        f"（其中 Legacy 小节 {shared_stats['node_errors_legacy']}）"
+    )
     out.append("")
     out.append("被排除的定义（逐条写进 data/gaps.md）")
     out.append("-" * 68)
@@ -922,20 +1157,23 @@ def main(argv: Iterable[str] | None = None) -> int:
         return 2
 
     try:
-        platforms, excluded, facts = collect_all()
+        platforms, excluded, shared, shared_stats, facts = collect_all()
     except ExtractError as exc:
         sys.stderr.write(f"extract_catalog: {exc}\n")
         return 3
 
-    rendered = {platform: render_yaml(platform, entries) for platform, entries in platforms.items()}
+    # 平台文件与共享文件走**同一套**渲染/校验，不另开一条弱判据
+    rendered = {f"{platform}.yaml": entries for platform, entries in platforms.items()}
+    rendered.update({name: entries for name, entries in shared.items()})
+    bodies = {name: render_yaml(name, entries) for name, entries in rendered.items()}
 
     if args.report:
-        sys.stdout.write(_report(platforms, excluded, facts))
+        sys.stdout.write(_report(platforms, excluded, shared, shared_stats, facts))
 
     if args.check:
         problems: list[str] = []
-        for platform, body in sorted(rendered.items()):
-            target = DEFAULT_OUT / f"{platform}.yaml"
+        for name, body in sorted(bodies.items()):
+            target = DEFAULT_OUT / name
             if not target.is_file():
                 problems.append(f"{target.name}: 文件缺失")
                 continue
@@ -946,16 +1184,16 @@ def main(argv: Iterable[str] | None = None) -> int:
             for line in problems:
                 sys.stderr.write(f"extract_catalog: {line}\n")
             return 1
-        total = sum(len(items) for items in platforms.values())
-        sys.stderr.write(f"extract_catalog: 一致（{len(rendered)} 个平台文件 / {total} 条）\n")
+        total = sum(len(items) for items in rendered.values())
+        sys.stderr.write(f"extract_catalog: 一致（{len(bodies)} 个编目源文件 / {total} 条）\n")
 
     if args.out:
         out_dir = Path(args.out)
         out_dir.mkdir(parents=True, exist_ok=True)
-        for platform, body in sorted(rendered.items()):
-            (out_dir / f"{platform}.yaml").write_bytes(body.encode("utf-8"))
-        total = sum(len(items) for items in platforms.values())
-        sys.stderr.write(f"extract_catalog: 写出 {out_dir.name}/ 的 {len(rendered)} 个文件（{total} 条）\n")
+        for name, body in sorted(bodies.items()):
+            (out_dir / name).write_bytes(body.encode("utf-8"))
+        total = sum(len(items) for items in rendered.values())
+        sys.stderr.write(f"extract_catalog: 写出 {out_dir.name}/ 的 {len(bodies)} 个文件（{total} 条）\n")
 
     return 0
 

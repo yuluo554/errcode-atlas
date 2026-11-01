@@ -28,8 +28,11 @@
 | `SIGSTKFLT` | macos | signal | 未录（**结构性缺失**） | 该平台**没有**这个信号；不是"查不到" | 不是缺口：入编目后由 `PLATFORM-ABSENT` 承载（`data/README.md` §5.2），`tests/test_catalog_data_m1.py` 有专条断言 linux=16 / macos 无 |
 | Windows 信号（Node 11 项 / Python 7 项） | win32-node / win32-python | signal | 部分录 | Windows **没有 POSIX 信号集合**，两个运行时各自只导出能处理的那几个（Node 含 `SIGWINCH`，Python 不含；两者 `SIGABRT` 都是 22）。这是平台事实，不是抽取遗漏 | 不是缺口：`128+n` 在 Windows 上本来就不成立，判定层以编目信号表为准（`plan/03` §3.3） |
 | `128+n` 原典 | 全平台 | exit | 部分录（**核过：POSIX 确实没有这条**） | 已核对 POSIX `wait()` 页原文：标准只规定 `WIFSIGNALED` / `WTERMSIG` 取信号号，**没有任何 `128+n` 公式**。`WEXITSTATUS` 只取 `_exit()` 参数的**低 8 位**。所以 `128+n` 确系 shell 实现惯例 | 处置 = `gray` 强度 + 报告强制标"惯例非标准"（`plan/04` §2.3；`selftest._check_gray_markers` 断言字样存在）。原典页码见 `data/README.md` §1.3 X3 |
-| `sysexits` 64–78 | 全平台 | exit | 部分录（`diff` 强度） | 官方文档页可锚段落，**不是标准正文** | M2 入 `data/catalog/sysexits.yaml`，报告强制标"约定非标准" |
-| Node 错误码清单（`ERR_*` 157 类） | win32-node | errno | 未录 | M2 才落位（本棒只做 Z 三平台 errno/信号 + 两个 Windows 运行时视角） | M2 逐条抽 `nodejs.org/api/errors.html` |
+| `sysexits` 64–78 | 全平台 | exit | **全录**（15 条，`diff` 强度） | — 官方文档页可锚段落，**不是标准正文** | M2 已落 `exit` 域，逐条带 `#EX_*` 段锚；报告强制标"约定非标准"（`selftest._check_gray_markers` 断言字样存在）。复现：`tools/extract_catalog.py --report` 应报 `sysexits.yaml {'exit': 15}` |
+| Node 错误码清单 | linux / macos / win32-node | node | **全录**（435 条 = 现行 383 + 弃用 52） | — 页面版式未变（`Legacy Node.js error codes` 小节仍在，抽取器把它当分界锚） | M2 已落 `node` 域，逐条带页内段锚。**不是 `errno` 域**（`ERR_*` 无数字码值，见 `data/README.md` §2.4）。复现：`--report` 应报 `node-errors.yaml {'node': 435}` + `node 页小节数 435（其中 Legacy 小节 52）` |
+| `ERR_*` 在 `win32-python` 上不存在 | win32-python | node | 未录（**结构性**） | 该运行时是 Python，不抛 Node 的异常码。给它在编目里编一条会让 `PLATFORM-ABSENT` 这个一等公民结论消失 | 不是缺口：`node` 域**刻意不挂 `win32-python` 轴**（`data/README.md` §2.3）。要的是 `PLATFORM-ABSENT`，不是一条编造的条目 |
+| `EX_USAGE` 等 15 条的"是否标准" | 全平台 | exit | 部分录（`gray` 口径） | 官网原文第一句即 "non-portable error codes. Do not use them."（不可移植、不推荐使用）。**它是约定，不是 POSIX 标准正文** | 处置 = 码值与名字按 `diff`（有段锚），"是否标准"按 `gray`（报告标"约定非标准"）。`plan/04` §2.3 已定 |
+| `128+n` 原典 | 全平台 | exit | 部分录（**核过：POSIX 确实没有这条**） | 已核对 POSIX `wait()` 页原文：标准只规定 `WIFSIGNALED` / `WTERMSIG` 取信号号，**没有任何 `128+n` 公式**。`WEXITSTATUS` 只取 `_exit()` 参数的**低 8 位**。所以 `128+n` 确系 shell 实现惯例 | 处置 = `gray` 强度 + 报告强制标"惯例非标准"（`plan/04` §2.3；`selftest._check_gray_markers` 断言字样存在）。原典页码见 `data/README.md` §1.3 X3 |
 
 ## 2. 计数口径（本表自己也要可数）
 

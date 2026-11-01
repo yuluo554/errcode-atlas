@@ -89,17 +89,44 @@ def _candidate(entry: Entry) -> dict[str, Any]:
     }
 
 
+def _valueless(domains: tuple[str, ...]) -> bool:
+    """探测范围内**只有**无值域吗（`node`）。
+
+    判据是"探测范围里有没有任何有值域"，不是"当前这个域是不是无值域的" ——
+    名字形态会给出一串域，其中任一有值，`None` 的含义就要按"值"解释。
+    """
+    return bool(domains) and all(d in contract.VALUELESS_DOMAINS for d in domains)
+
+
 def _domains_for(query: Query) -> tuple[str, ...]:
-    """域缺省时的探测序：数字形态先 errno 再 signal（plan/03 §2.1）。"""
+    """域缺省时的探测序（plan/03 §2.1）。
+
+    * 数字形态：先 ``errno`` 再 ``signal`` —— **数字永远不探测 ``exit`` / ``node``**：
+      `exit` 是进程退出码，与 errno 号没有同一性；`node` 根本没有数字。把某条 errno
+      数值顺手拿去解释成退出码，正是本题要取代的"看起来答得很像"。
+    * 名字形态：``errno`` / ``signal`` / ``node`` / ``exit``。``node`` 排在 ``exit`` 前
+      （`ERR_*` 有 `ERR_` 前缀，而 `EX_*` 也带下划线，靠前缀区分不如靠域序可靠），
+      ``exit`` 排最后 —— 它的名字（`EX_USAGE` 等）与系统常量名不冲突，放最后不影响。
+    """
     if query.domain:
         return (query.domain,)
     if query.kind == "number":
-        return ("errno", "signal")
-    return ("errno", "signal", "exit")
+        return (contract.DOMAIN_ERRNO, contract.DOMAIN_SIGNAL)
+    return (
+        contract.DOMAIN_ERRNO,
+        contract.DOMAIN_SIGNAL,
+        contract.DOMAIN_NODE,
+        contract.DOMAIN_EXIT,
+    )
 
 
 def explain(query: Query, catalog: Catalog) -> Explanation:
-    """判定顺序见 plan/03 §2.2 —— 与那里的七行表逐行对应，**不许重排**。"""
+    """判定顺序见 plan/03 §2.2 —— 与那里的九行表逐行对应，**不许重排**。
+
+    序 7（名字 + 无平台 + 值发散 → `UNAMBIGUOUS`）与序 8（名字 + 无平台 + 某平台没有
+    → `PLATFORM-ABSENT`）是 M2 补上的分界：前者答"这个名字有没有定义"，后者答
+    "哪个平台根本没有"。两者都不是失败态。
+    """
     if query.kind == "number":
         return _explain_number(query, catalog)
     return _explain_name(query, catalog)
@@ -220,10 +247,11 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
                     sources=(entry.source_label,),
                 )
         # 序 5：该平台没有，但别的平台有 —— PLATFORM-ABSENT（与 UNKNOWN 是两个语义）
-        elsewhere: dict[str, int] = {}
+        elsewhere: dict[str, int | None] = {}
         for domain in domains:
             elsewhere.update(catalog.platforms_with_name(domain, query.name))
         if elsewhere:
+            has_value = any(value is not None for value in elsewhere.values())
             return Explanation(
                 verdict=contract.PLATFORM_ABSENT,
                 query=_query_dict(query),
@@ -231,14 +259,15 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
                 per_platform=dict(sorted(elsewhere.items())),
                 distinguish=(
                     f"{query.name} 在 {query.platform} 上不存在；"
-                    f"在 {', '.join(sorted(elsewhere))} 上存在且取值不同 —— "
-                    "这是平台缺失，不是编目查不到"
+                    f"在 {', '.join(sorted(elsewhere))} 上存在"
+                    + ("且取值不同 —— " if has_value else "（该域只有名字、没有数字码值）—— ")
+                    + "这是平台缺失，不是编目查不到"
                 ),
             )
         return _unknown(query)
 
     # 未给平台：逐平台列值；任何一个平台缺失即 PLATFORM-ABSENT
-    present = {}
+    present: dict[str, int | None] = {}
     for domain in domains:
         present.update(catalog.platforms_with_name(domain, query.name))
     if not present:
@@ -259,8 +288,23 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
         verdict=contract.UNAMBIGUOUS,
         query=_query_dict(query),
         per_platform=dict(sorted(present.items())),
-        notes=("各平台均有定义；取值可能不同，跨平台取值差异不构成歧义",),
+        notes=_agree_notes(domains),
     )
+
+
+def _agree_notes(domains: tuple[str, ...]) -> tuple[str, ...]:
+    """"各平台一致"那句说明**按域形态分叉**。
+
+    无值域（`node`）没有数字可言，"取值可能不同"在它上面是**假话** ——
+    `ERR_*` 只有名字，四个平台查到的都是同一个名字。叙述与数据不符时，
+    读者会以为工具在报一个它没有的信息。
+    """
+    if _valueless(domains):
+        return (
+            "各平台均有定义；该域只有错误码名、没有数字码值，"
+            "因此不存在跨平台取值差异（跨平台可达性仍逐平台列出）",
+        )
+    return ("各平台均有定义；取值可能不同，跨平台取值差异不构成歧义",)
 
 
 def _unknown(query: Query) -> Explanation:

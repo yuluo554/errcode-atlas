@@ -35,11 +35,16 @@ class CatalogError(RuntimeError):
 
 @dataclass(frozen=True)
 class Entry:
-    """一条编目记录。字段契约见 plan/03 §1.2。"""
+    """一条编目记录。字段契约见 plan/03 §1.2。
+
+    ``value`` 可为 ``None``：**无值域**（``node``）的条目只有名字，没有数字码值
+    （``contract.VALUELESS_DOMAINS``）。有值域的条目仍然是整数 —— 这一点在装载期
+    fail-closed 校验（``_validate_entry``），不靠调用方小心。
+    """
 
     name: str
     domain: str
-    value: int
+    value: int | None
     platform: str
     source: Mapping[str, Any]
     description_zh: str = ""
@@ -86,10 +91,20 @@ class Catalog:
     generator_version: str = "0.1.0"
     #: platform -> domain -> value -> 名字集合（同值多名 = AMBIGUOUS 的素材，合法）
     by_value: dict[str, dict[str, dict[int, tuple[str, ...]]]] = field(default_factory=dict)
-    #: platform -> domain -> 名字 -> 值
-    by_name: dict[str, dict[str, dict[str, int]]] = field(default_factory=dict)
+    #: platform -> domain -> 名字 -> 值（无值域的值恒为 ``None``）
+    by_name: dict[str, dict[str, dict[str, int | None]]] = field(default_factory=dict)
     #: platform -> 该平台在编目里出现过的信号编号集合（``128+n`` 的 ``n`` 有效性判据）
     signals: dict[str, frozenset[int]] = field(default_factory=dict)
+    #: platform -> domain -> 该平台该域**有没有条目**（域名 -> 是否覆盖）。
+    #: **装载期一次建好**：``covered_platforms`` 因此不需要每次扫描 ``entries``。
+    covers: dict[str, dict[str, bool]] = field(default_factory=dict)
+    #: domain -> 该域**已覆盖**的平台元组（`covered_platforms` 的直接查表结果）。
+    #: 这两个字段是同一事实的两种索引形态：前者供"某平台是否覆盖某域"，
+    #: 后者供"某域覆盖了哪些平台"——判定层只查表，不做二次扫描（plan/03 §1.5）。
+    covered: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    #: （platform, domain, name）-> Entry。**`entry_for` 不许再扫 entries**：
+    #: 判定层每条查询都要拿 Entry，线性扫描会让"索引在装载期一次建好"变成空话。
+    by_key: dict[tuple[str, str, str], Entry] = field(default_factory=dict)
 
     # ── 查询面（判定层只用这几个，不许直接摸 entries）─────────────────────
     def names_at(self, platform: str, domain: str, value: int) -> tuple[str, ...]:
@@ -98,22 +113,28 @@ class Catalog:
     def value_of(self, platform: str, domain: str, name: str) -> int | None:
         return self.by_name.get(platform, {}).get(domain, {}).get(name)
 
-    def platforms_with_name(self, domain: str, name: str) -> dict[str, int]:
-        found: dict[str, int] = {}
+    def has_name(self, platform: str, domain: str, name: str) -> bool:
+        """名字存在性 —— 与 ``value_of(...) is None`` **不是**同一件事：
+
+        无值域（``node``）的条目**存在但值为 None**，用 ``value_of() is None`` 判存在
+        会把它们全部判成"不存在"（K23 的查询面）。判据 = "这个名字在不在"，
+        而不是"它的值是不是 None"。
+        """
+        return name in self.by_name.get(platform, {}).get(domain, {})
+
+    def platforms_with_name(self, domain: str, name: str) -> dict[str, int | None]:
+        found: dict[str, int | None] = {}
         for platform in contract.PLATFORMS:
-            value = self.value_of(platform, domain, name)
-            if value is not None:
-                found[platform] = value
+            if self.has_name(platform, domain, name):
+                found[platform] = self.value_of(platform, domain, name)
         return found
 
     def signal_numbers(self, platform: str) -> frozenset[int]:
         return self.signals.get(platform, frozenset())
 
     def entry_for(self, platform: str, domain: str, name: str) -> Entry | None:
-        for item in self.entries:
-            if item.platform == platform and item.domain == domain and item.name == name:
-                return item
-        return None
+        """查表，**不扫 entries**（plan/03 §1.5「索引在装载期一次建好」）。"""
+        return self.by_key.get((platform, domain, name))
 
     def entry_count(self) -> dict[str, int]:
         """**由构造算出**的分母，不是手写常量（plan/04 §3 的纪律）。"""
@@ -122,12 +143,19 @@ class Catalog:
             counts[item.domain] = counts.get(item.domain, 0) + 1
         return counts
 
+    def distinct_count(self) -> dict[str, int]:
+        """按 ``(domain, name)`` 去重的分母 —— 共享文件按平台展开后，它不会跟着变大。"""
+        names: dict[str, set[str]] = {domain: set() for domain in contract.DOMAINS}
+        for item in self.entries:
+            names[item.domain].add(item.name)
+        return {domain: len(value) for domain, value in sorted(names.items())}
+
     def platforms(self) -> tuple[str, ...]:
         present = {item.platform for item in self.entries}
         return tuple(p for p in contract.PLATFORMS if p in present)
 
     def covered_platforms(self, domain: str) -> tuple[str, ...]:
-        """该域**已编目覆盖**的平台。
+        """该域**已编目覆盖**的平台（查表，不扫 entries —— 见 ``covered`` 字段）。
 
         为什么需要它（plan/03 §2.2 序 3 的分母）：跨平台判歧义时，**没有该域任何条目的平台
         不进分母** —— 那是"第三态：未覆盖"，不是"该平台没有这个值"。
@@ -135,10 +163,7 @@ class Catalog:
         反之若把未覆盖平台从分歧里完全忽略，`11`（只有 linux 有）就会被判成"各平台一致"（假唯一）。
         判据 = **"这个平台的缺席，是'我查过没有'，还是'我还没查'？"**——只有前者算分歧。
         """
-        present = {
-            item.platform for item in self.entries if item.domain == domain
-        }
-        return tuple(p for p in contract.PLATFORMS if p in present)
+        return self.covered.get(domain, ())
 
 
 def normalize_newlines(text: str) -> str:
@@ -188,16 +213,30 @@ def _validate_entry(raw: Any, index: int, platform: str) -> Entry:
     where = f"catalog.json[{index}]"
     if not isinstance(raw, dict):
         raise CatalogError(f"{where}: 条目必须是对象")
-    _require(raw, ("name", "domain", "value", "source"), where)
+    _require(raw, ("name", "domain", "source"), where)
     if raw["domain"] not in contract.DOMAINS:
         raise CatalogError(f"{where}: domain={raw['domain']!r} 不在 {list(contract.DOMAINS)} 内")
-    if not isinstance(raw["value"], int):
-        raise CatalogError(f"{where}: value 必须是整数，实得 {raw['value']!r}")
+
+    # `value` 的合法形态**由域决定**（与 tools/build_catalog.py 同一份判据）：
+    # 无值域要求"没有 value"，有值域要求"非布尔整数"。两边各写一遍是有意的 ——
+    # 生成侧与装载侧**独立**校验，一侧收紧不会因为另一侧漏判而被绕过。
+    domain = str(raw["domain"])
+    if domain in contract.VALUELESS_DOMAINS:
+        if raw.get("value") is not None:
+            raise CatalogError(
+                f"{where}: domain={domain!r} 是无值域（只有名字），不许有 value"
+            )
+        value: int | None = None
+    else:
+        if not isinstance(raw["value"], int) or isinstance(raw["value"], bool):
+            raise CatalogError(f"{where}: value 必须是整数，实得 {raw['value']!r}")
+        value = int(raw["value"])
+
     source = _validate_source(raw["source"], where)
     return Entry(
         name=str(raw["name"]),
-        domain=str(raw["domain"]),
-        value=int(raw["value"]),
+        domain=domain,
+        value=value,
         platform=platform,
         source=source,
         description_zh=str(raw.get("description_zh", "")),
@@ -205,11 +244,25 @@ def _validate_entry(raw: Any, index: int, platform: str) -> Entry:
     )
 
 
-def build_indexes(entries: Iterable[Entry]) -> tuple[dict, dict, dict]:
-    """三索引的唯一构造实现。**生成侧刻意不共享它**（plan/02 §1.2）。"""
+def build_indexes(entries: Iterable[Entry]) -> tuple[
+    dict, dict, dict, dict, dict, dict
+]:
+    """**全部索引的唯一构造实现**，装载期跑一次（plan/02 §1.2）。
+
+    返回 ``(by_value, by_name, signals, covers, covered, by_key)``。
+
+    这里一次遍历同时建好六个结构，**判定层只查表**：
+
+    * ``by_value`` 只收**有值**的条目 —— 无值域（``node``）没有 ``value`` 可作键，
+      塞个 ``None`` 键进去会让 ``names_at(p, d, None)`` 与"查不到"混成同一个返回值；
+    * ``covers`` 记"该平台该域有没有条目"（来自 ``by_name``），
+    * ``covered`` 是它的转置（"该域覆盖哪些平台"），**装载期定死** ——
+      ``covered_platforms`` 因此不必每次重扫（原先每调一次扫一遍 entries）。
+    """
     by_value: dict[str, dict[str, dict[int, list[str]]]] = {}
-    by_name: dict[str, dict[str, dict[str, int]]] = {}
+    by_name: dict[str, dict[str, dict[str, int | None]]] = {}
     signals: dict[str, set[int]] = {}
+    by_key: dict[tuple[str, str, str], Entry] = {}
 
     for entry in entries:
         # (platform, domain, name) 出现两个不同的 value 是硬错；
@@ -221,11 +274,13 @@ def build_indexes(entries: Iterable[Entry]) -> tuple[dict, dict, dict]:
                 f"重复定义且数值不同（{seen[entry.name]} vs {entry.value}）"
             )
         seen[entry.name] = entry.value
-        by_value.setdefault(entry.platform, {}).setdefault(entry.domain, {}).setdefault(
-            entry.value, []
-        ).append(entry.name)
-        if entry.domain == "signal":
-            signals.setdefault(entry.platform, set()).add(entry.value)
+        by_key[(entry.platform, entry.domain, entry.name)] = entry
+        if entry.value is not None:
+            by_value.setdefault(entry.platform, {}).setdefault(entry.domain, {}).setdefault(
+                entry.value, []
+            ).append(entry.name)
+            if entry.domain == contract.DOMAIN_SIGNAL:
+                signals.setdefault(entry.platform, set()).add(entry.value)
 
     frozen_value = {
         platform: {
@@ -235,7 +290,20 @@ def build_indexes(entries: Iterable[Entry]) -> tuple[dict, dict, dict]:
         for platform, domains in by_value.items()
     }
     frozen_signals = {platform: frozenset(values) for platform, values in signals.items()}
-    return frozen_value, by_name, frozen_signals
+
+    covers: dict[str, dict[str, bool]] = {
+        platform: {domain: True for domain in domains}
+        for platform, domains in by_name.items()
+    }
+    covered: dict[str, tuple[str, ...]] = {
+        domain: tuple(
+            platform
+            for platform in contract.PLATFORMS
+            if covers.get(platform, {}).get(domain)
+        )
+        for domain in contract.DOMAINS
+    }
+    return frozen_value, by_name, frozen_signals, covers, covered, by_key
 
 
 def load(catalog_path: Path | None = None, manifest_path: Path | None = None) -> Catalog:
@@ -279,7 +347,7 @@ def load(catalog_path: Path | None = None, manifest_path: Path | None = None) ->
         for index, raw in enumerate(raw_entries):
             entries.append(_validate_entry(raw, index, platform))
 
-    by_value, by_name, signals = build_indexes(entries)
+    by_value, by_name, signals, covers, covered, by_key = build_indexes(entries)
 
     return Catalog(
         entries=tuple(entries),
@@ -288,6 +356,9 @@ def load(catalog_path: Path | None = None, manifest_path: Path | None = None) ->
         by_value=by_value,
         by_name=by_name,
         signals=signals,
+        covers=covers,
+        covered=covered,
+        by_key=by_key,
     )
 
 

@@ -1,0 +1,165 @@
+# 编目源 · 共享域 `exit` · 由 tools/extract_catalog.py 生成，**不要手改**
+#
+# 出处形态：kind: doc（url + anchor + verified_at）—— **M2 是它的首次实战**。
+#   · url    = https://man.openbsd.org/sysexits
+#   · anchor = #EX_*（页面每一项的段锚）
+#   · 不给行号：网页没有稳定行号，硬编一个会造出假 hard 强度
+#     （contract.SOURCE_MAX_STRENGTH["doc"] == diff）。
+#
+# **本段是约定非标准**：原文第一句就是 "A few programs exit with the following
+# non-portable error codes. Do not use them."（不可移植、不推荐使用）。
+# 报告里必须写「约定非标准」，由 selftest._check_gray_markers 断言字样存在。
+#
+# 平台归属（M2 的设计决定，见 data/README.md §2.3）：本文件是**共享文件**，
+# 在四个平台轴上都登记 —— sysexits 对四个平台的进程都成立，只挂一个轴会让
+# explain 的跨平台判定伪造出三个假 PLATFORM-ABSENT（K20）。
+- name: "EX_USAGE"
+  domain: "exit"
+  value: 64
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_USAGE"
+    verified_at: "2026-11-01"
+  description_zh: "The command was used incorrectly, e.g., with the wrong number of arguments, a bad flag, bad syntax in a parameter, or whatever."
+  posix_ref: "<none>"
+- name: "EX_DATAERR"
+  domain: "exit"
+  value: 65
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_DATAERR"
+    verified_at: "2026-11-01"
+  description_zh: "The input data was incorrect in some way. This should only be used for user's data and not system files."
+  posix_ref: "<none>"
+- name: "EX_NOINPUT"
+  domain: "exit"
+  value: 66
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_NOINPUT"
+    verified_at: "2026-11-01"
+  description_zh: "An input file (not a system file) did not exist or was not readable. This could also include errors like “No message” to a mailer (if it cared to catch it)."
+  posix_ref: "<none>"
+- name: "EX_NOUSER"
+  domain: "exit"
+  value: 67
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_NOUSER"
+    verified_at: "2026-11-01"
+  description_zh: "The user specified did not exist. This might be used for mail addresses or remote logins."
+  posix_ref: "<none>"
+- name: "EX_NOHOST"
+  domain: "exit"
+  value: 68
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_NOHOST"
+    verified_at: "2026-11-01"
+  description_zh: "The host specified did not exist. This is used in mail addresses or network requests."
+  posix_ref: "<none>"
+- name: "EX_UNAVAILABLE"
+  domain: "exit"
+  value: 69
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_UNAVAILABLE"
+    verified_at: "2026-11-01"
+  description_zh: "A service is unavailable. This can occur if a support program or file does not exist. This can also be used as a catch-all message when something you wanted to do doesn't work, but you don't know why."
+  posix_ref: "<none>"
+- name: "EX_SOFTWARE"
+  domain: "exit"
+  value: 70
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_SOFTWARE"
+    verified_at: "2026-11-01"
+  description_zh: "An internal software error has been detected. This should be limited to non-operating system related errors if possible."
+  posix_ref: "<none>"
+- name: "EX_OSERR"
+  domain: "exit"
+  value: 71
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_OSERR"
+    verified_at: "2026-11-01"
+  description_zh: "An operating system error has been detected. This is intended to be used for such things as “cannot fork”, or “cannot create pipe”. It includes things like getuid(2) returning a user that does not exist in the passwd file."
+  posix_ref: "<none>"
+- name: "EX_OSFILE"
+  domain: "exit"
+  value: 72
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_OSFILE"
+    verified_at: "2026-11-01"
+  description_zh: "Some system file (e.g., /etc/passwd , /var/run/utmp ) does not exist, cannot be opened, or has some sort of error (e.g., syntax error)."
+  posix_ref: "<none>"
+- name: "EX_CANTCREAT"
+  domain: "exit"
+  value: 73
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_CANTCREAT"
+    verified_at: "2026-11-01"
+  description_zh: "A (user specified) output file cannot be created."
+  posix_ref: "<none>"
+- name: "EX_IOERR"
+  domain: "exit"
+  value: 74
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_IOERR"
+    verified_at: "2026-11-01"
+  description_zh: "An error occurred while doing I/O on some file."
+  posix_ref: "<none>"
+- name: "EX_TEMPFAIL"
+  domain: "exit"
+  value: 75
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_TEMPFAIL"
+    verified_at: "2026-11-01"
+  description_zh: "Temporary failure, indicating something that is not really an error. For example that a mailer could not create a connection, and the request should be reattempted later."
+  posix_ref: "<none>"
+- name: "EX_PROTOCOL"
+  domain: "exit"
+  value: 76
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_PROTOCOL"
+    verified_at: "2026-11-01"
+  description_zh: "The remote system returned something that was “not possible” during a protocol exchange."
+  posix_ref: "<none>"
+- name: "EX_NOPERM"
+  domain: "exit"
+  value: 77
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_NOPERM"
+    verified_at: "2026-11-01"
+  description_zh: "You did not have sufficient permission to perform the operation. This is not intended for file system problems, which should use EX_NOINPUT or EX_CANTCREAT , but rather for higher level permissions."
+  posix_ref: "<none>"
+- name: "EX_CONFIG"
+  domain: "exit"
+  value: 78
+  source:
+    kind: "doc"
+    url: "https://man.openbsd.org/sysexits"
+    anchor: "#EX_CONFIG"
+    verified_at: "2026-11-01"
+  description_zh: "Something was found in an unconfigured or misconfigured state."
+  posix_ref: "<none>"

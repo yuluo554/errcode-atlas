@@ -18,6 +18,11 @@ from .catalog import Catalog
 
 #: sysexits 的 64–78 段是**约定而非标准**（plan/04 §2.3）。名字只用于报告，
 #: 它的码值判定不依赖这张表（判定只看到区间），所以这张表不属于"编目数值"。
+#:
+#: **K22**：这张表不许变成判定依据。即使编目里的 `exit` 域一条都没有
+#: （`catalog` 为空、或 `sysexits.yaml` 丢失），`exitcode 64` 也必须仍然判 `SYSEXITS`。
+#: 它与编目 `sysexits.yaml` 的 15 条是**两份副本**，一致性由
+#: `tests/test_catalog_m2.py::test_code_table_agrees_with_catalog` 双向断言。
 SYSEXITS_NAMES: dict[int, str] = {
     64: "EX_USAGE",
     65: "EX_DATAERR",
@@ -112,16 +117,21 @@ def attribute(code: int, platform: str, catalog: Catalog) -> Attribution:
 
     # 序 2：遗憾地排在 NORMAL-EXIT 之前 —— 约定段优先于惯例段（plan/03 §3.2）。
     if SYSEXITS_MIN <= code <= SYSEXITS_MAX:
+        sysexits_name = SYSEXITS_NAMES[code]
+        # 出处：编目里有 `exit` 域条目就带上（M2 起有）。**判定不看它**（K22），
+        # 所以这里取不到也不影响判定 —— 空编目上 `exitcode 64` 仍是 SYSEXITS。
+        entry = _exit_entry(catalog, platform, sysexits_name, code)
         return Attribution(
             attribution=contract.SYSEXITS,
             code=code,
             platform=platform,
-            sysexits_name=SYSEXITS_NAMES[code],
+            sysexits_name=sysexits_name,
             truncated=truncated,
             notes=(
                 "sysexits 64–78 段是约定非标准（即约定而非标准），各实现可自行约定",
                 "本判定只说明该码落在约定段内，不说明程序真的用了这套约定",
             ),
+            sources=(entry.source_label,) if entry else (),
         )
 
     # 序 3：0 = 成功
@@ -202,4 +212,21 @@ def _signal_entry(catalog: Catalog, platform: str, number: int):
         entry = catalog.entry_for(platform, "signal", name)
         if entry is not None:
             return entry
+    return None
+
+
+def _exit_entry(catalog: Catalog, platform: str, name: str, code: int):
+    """`exit` 域的出处条目 —— **只用于报告，不参与判定**（K22）。
+
+    两件事分开：
+    * 名字从 ``SYSEXITS_NAMES`` 取（代码内表，判定用）；
+    * 出处从编目取（``kind: doc`` 的 `#EX_*` 锚）。
+
+    若编目里的名字与该码值对不上（例如上游改号），**不以编目为准改判定** ——
+    判定规则是"落在 64–78 段即约定段"，那是区间事实；名字对不上是数据问题，
+    由测试抓（`test_code_table_agrees_with_catalog`），不在这里悄悄改口。
+    """
+    entry = catalog.entry_for(platform, contract.DOMAIN_EXIT, name)
+    if entry is not None and entry.value == code:
+        return entry
     return None

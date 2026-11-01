@@ -1,10 +1,30 @@
 {
+  "distinct_count": {
+    "errno": 215,
+    "exit": 15,
+    "node": 435,
+    "signal": 37
+  },
   "entry_count": {
     "errno": 515,
-    "exit": 0,
+    "exit": 60,
+    "node": 1305,
     "signal": 84
   },
   "generator_version": "0.1.0",
   "schema_version": 1,
-  "sha256": "1fc61dd794d6dd81f6234e12fc922f18d4a9274d49feeac46d24c6303a3ba760"
+  "sha256": "1bfd8fc94b1944319501303211eccbcc086825319ec62ce7fbedc7aa5d146b82",
+  "shared_files": {
+    "node-errors.yaml": [
+      "linux",
+      "macos",
+      "win32-node"
+    ],
+    "sysexits.yaml": [
+      "linux",
+      "macos",
+      "win32-node",
+      "win32-python"
+    ]
+  }
 }

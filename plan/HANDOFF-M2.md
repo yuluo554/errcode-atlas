@@ -1,25 +1,45 @@
 # HANDOFF-M2 · 解析（Node 错误码 + `sysexits` + 编目→索引）
 
 > **本文件是 M2 的入口文件**（按里程碑编号命名，不按"哪一棒写完它"命名 —— 见 `AGENTS.md` §一）。
-> 状态：**M2 未开工**。下面是"进场须知 + 待办 + 口径"，不是"已完成"。
+> 状态：**M2 已完成（✅）**。§一 已按实测填满，§三 的待办逐条有处置，§六 的 checklist 已逐项打勾。
+> 下一棒入口见 `plan/HANDOFF-M3.md`。
 > 库里一律相对路径；本机绝对路径只出现在用户侧启动命令里。
 
 ---
 
 ## 一、当前进度 + 证据
 
-**M2 尚未执行。** 本表如实为空，不预填 —— 预填就是给还没跑的棒编记录
-（`AGENTS.md` §二 的判据② 正是为了挡住这件事）。
-
 | 项 | 证据（命令 / 文件） |
 |---|---|
 | 入口文件本身 | 本文件（由 M1 收尾时落盘，满足"M1 收尾必须给 M2 留入口"） |
-| M2 的三项产出 | **均未开始**：`sysexits.yaml` / `node-errors.yaml` / 编目→索引接线 |
-| 起点基线（M1 交付，可直接用） | 编目 **599 条**（errno 515 / signal 84 / **exit 0**）；`build_catalog.py --check` → 0 |
-| 起点门态 | 布局门 / 脱敏门 / `build_catalog.py --check` / `extract_catalog.py --check` / `verify_gates.py` 全绿 |
+| `fetch_sources.py` 网页通路 | 新增 `Source.url` → `fetch_url()`：`py -3.12 tools/fetch_sources.py --out _headers` 报 **7 份**（5 头文件 + `sysexits.html` 12,127 B + `node-errors.html` 415,009 B）；`--check` → 7 份 sha256 一致 |
+| `data/catalog/sysexits.yaml` | **15 条**（64–78 连续），`kind: doc` + `#EX_*` 段锚；`extract_catalog.py --report` 报 `sysexits.yaml {'exit': 15}` |
+| `data/catalog/node-errors.yaml` | **435 条** = 现行 383 + 弃用 52；`kind: doc` + 页内锚；`--report` 报 `node-errors.yaml {'node': 435}` / `node 页小节数 435（其中 Legacy 小节 52）` |
+| `SHARED_FILES` 接线 | `build_catalog.collect()` 现在真读共享文件并按键 `SHARED_SPREAD` 展开到多平台轴；冻结件 `entry_count` 里 `exit` 60 / `node` 1305 不再是 0 |
+| 两个分母分开记 | 冻结编目：逐平台 **1964** 条 / 去重 **702** 条（errno 215 / signal 37 / exit 15 / node 435）；manifest 同时记 `entry_count` + `distinct_count` + `shared_files` |
+| 索引装载期一次建好 | `Catalog.by_key` / `covers` / `covered` 都在 `build_indexes()` 建好；`entry_for` / `covered_platforms` 改成查表。判据两条：清空 `entries` 后查询面仍答得出来 + AST 断言判定层不遍历 `.entries` |
+| `UNKNOWN` 两形态 | `explain 99999 --domain exit` → UNKNOWN/3；**`explain 1 --domain exit`**（域内有条目、无此值）→ UNKNOWN/3；`explain ERR_<不存在> --domain node` → UNKNOWN/3 |
+| G6 已关闭 | `plan/03` §2.2 补序 7（名字+无平台+值发散 → UNAMBIGUOUS）与序 8（某平台没有 → PLATFORM-ABSENT）；`data/README.md` §5.2 举例改成**数字** `11`；`plan/00` §6 招牌动词表同笔改正 |
+| 起点基线（M1 → M2） | M1 交付 599 条（errno 515 / signal 84 / exit 0）→ M2 交付 6 个源文件 / 1049 条 |
+| 复现性 | `extract_catalog.py --check` **双通道（3.12 / 3.8）** 都报「6 个文件 / 1049 条」一致；`build_catalog.py --check` 一致 |
+| 新增测试 | `tests/test_catalog_m2.py`（25 条）：原文逐条对账 / K20 / K21 / K22 / K23 / UNKNOWN 两形态 / 索引无二次扫描 |
+| 全量测试双通道 | `py -3.12` **231 passed**；`py -3.8` **230 passed + 1 skip**（3.10+ 属性） |
+| 两道门 + 变异验证 | 布局门 / 脱敏门全绿；`verify_gates.py` **19 组全 CAUGHT**，还原后复绿 |
+
+**本轮抓到并修掉的真缺陷（不是"写完就绿"）**：
+
+| # | 形态 | 是谁抓出来的 |
+|---|---|---|
+| ① | Node 页正则 `class=mark id=([a-z0-9_]+)>` 漏了 `id=xxx href=...` 中间的空格 → **435 节解析出 0 条** | `collect_shared()` 的"读到 0 条即错误"兜住了 —— 没有静默写出空表 |
+| ② | 切到 `</section>` 时那 10 个字符已被切掉 → 每组的**最后一条**（`MODULE_NOT_FOUND`）释义为空串 | `test_every_yaml_entry_has_complete_source_block` 报"缺 description_zh" |
+| ③ | `build()` 收到的是 `SHARED_FILES`（文件名→域）而不是 `SHARED_SPREAD`（文件名→平台轴）→ manifest 把 `"exit"` 当成列表展开成 `["e","x","i","t"]` | `test_build_catalog_collects_shared_files` |
+| ④ | `entry_for` 一直是线性扫描 —— "索引在装载期一次建好"在它身上是空话 | 写 M2 索引测试时发现，改成 `by_key` 查表 |
+| ⑤ | 无值域（`node`）逐平台渲染成 `None`，与"查不到值"同形 | CLI 实跑时看到 `PLATFORM-ABSENT` 的逐平台表全是 `None`，改成"（无数字码值）" |
+| ⑥ | 测试自己写的 sysexits 正则 `<a[^>]*>[^<]*</a>` 匹配 0 条（`<a>` 里还套着 `<code>`） | 同上 —— 正好证明"两条通路各自在验" |
 
 > **判据入口**：这一节在 M2 收尾时必须被真实证据填满，且每条都写"命令 / 文件"。
 > 空着不行，写"已完成"却不给命令也不行 —— 那是本轮 M1 反复躲开的同一种坑。
+> **本节已填**（2026-11-01，M2 收尾）。
 
 ---
 
@@ -51,7 +71,7 @@
 
 ---
 
-## 三、待办（M2 执行序）
+## 三、待办（M2 执行序）——**逐条处置**（收尾时回填）
 
 0. **先读并处置 `plan/06` G6**（优先于下面全部）：`plan/03` §2.2 缺一行判定顺序。
    M2 进去之后跨平台同名只会更多，这道口子会放大。要么给 §2.2 补第 8 行，
@@ -88,6 +108,21 @@
 9. **收尾**：DoD 验证 → `plan/00`/`plan/05`/`plan/06` 状态回写 → **写 `plan/HANDOFF-M3.md`**
    （M3 的入口，不是 M2 的收官单）→ commit。
 
+**处置结果（收尾回填）**：
+
+| # | 待办 | 结果 |
+|---:|---|---|
+| 0 | `plan/06` G6 | **已关闭**：`plan/03` §2.2 补序 7/序 8，`data/README.md` §5.2 举例改口为数字 `11`，`plan/00` §6 同笔改正 |
+| 1 | `fetch_sources.py` 非 `contents/` 通路 | **走 `--url` 通路**（不吃 raw、显式禁本地代理、记 sha256）：7 份原文，`--check` 一致 |
+| 2 | `sysexits.yaml` | **15 条**，`kind: doc`（`SOURCE_DOC` 首次实战），`anchor: #EX_*` |
+| 3 | `sysexits` 平台归属 | **选 A 的扩展版**：`exit` 四轴全挂；`node` 三轴（不挂 `win32-python`）。理由见 `data/README.md` §2.3 |
+| 4 | `node-errors.yaml` | **新增独立 `node` 域**（不是 `errno` 子类）：435 条，无 `value` |
+| 5 | 接线 `SHARED_FILES` | **已接线**；`entry_count`（逐平台）与 `distinct_count`（去重）**分开记**，manifest 另记 `shared_files` |
+| 6 | 编目→查询索引 | 三索引扩成六个结构（`by_value`/`by_name`/`signals`/`covers`/`covered`/`by_key`），全部装载期建好 |
+| 7 | `UNKNOWN` 路径补齐 | **两形态都通**：`99999`（越界）与 `1 --domain exit`（域内有条目、无此值）；另加 `node` 域无此名 |
+| 8 | `data/gaps.md` | `sysexits` → **全录**、Node 错误码 → **全录**；另加三行（`win32-python` 结构性不录 / 约定非标准 / `128+n` 原典） |
+| — | **本轮新增**（原 §三 未列） | ① 无值域（`VALUELESS_DOMAINS`）与两侧 fail-closed 校验；② 报告层无值占位符；③ `explain` 探测序按域分叉（数字不探测 `exit`/`node`）；④ `SYSEXITS_NAMES` 与编目双向一致断言 |
+
 ---
 
 ## 四、既定口径清单（K 编号 —— 动了会打挂测试的约定）
@@ -119,19 +154,19 @@ M0 §五、M1 §五 全部仍有效，另加：
 
 ## 六、DoD 逐项 checklist
 
-> **全部未打勾** —— M2 未开工。这一节是**验收清单**，不是成绩单。
-> 收尾时才允许逐项打勾，且每项要能指到命令或文件。
+> **已逐项打勾**（2026-11-01，M2 收尾）。每项都能指到命令或文件 —— 见 §一。
+> ~~CI 绿~~ 仍不适用：无远端、未推送。
 
-- [ ] `sysexits.yaml` 入编目（64–78 共 15 条），`kind: doc`，抽样对账一致
-- [ ] `node-errors.yaml` 入编目，`ERR_*` 与 OS errno **不混域**
-- [ ] `build_catalog.py` 的 `SHARED_FILES` 接线完成（`collect()` 真读共享文件）
-- [ ] `sysexits` 的平台归属已定并写进 `data/README.md`（`covered_platforms("exit")` 不再是空集）
-- [ ] 索引在装载期一次建好，判定层无二次扫描
-- [ ] `UNKNOWN` 路径两种形态都可用（越界值 / 域内有但无此值），且都 exit 3
-- [ ] `plan/06` G6 已关闭（§2.2 补行 **或** §5.2 改口，二选一）
-- [ ] `pytest` 双通道全绿；`verify_gates.py` 全组 CAUGHT（含新增 L6c/L6d）
-- [ ] `build_catalog.py --check` 与 `extract_catalog.py --check` 双跑逐字节一致
-- [ ] **`plan/HANDOFF-M3.md` 已落盘**（M3 入口；不是 M2 收官单）
+- [x] `sysexits.yaml` 入编目（**15 条**，64–78 连续），`kind: doc` + `#EX_*` 段锚，逐条对账一致
+- [x] `node-errors.yaml` 入编目（**435 条**），`ERR_*` 与 OS errno **不混域**（独立 `node` 域，无数字值）
+- [x] `build_catalog.py` 的 `SHARED_FILES` 接线完成（`collect()` 真读共享文件，按 `SHARED_SPREAD` 展开）
+- [x] `sysexits` 的平台归属已定并写进 `data/README.md` §2.3（`exit` 挂四轴 / `node` 挂三轴；`covered_platforms("exit")` 是四个平台）
+- [x] 索引在装载期一次建好，判定层无二次扫描（`by_key` / `covers` / `covered` 查表；AST 守门）
+- [x] `UNKNOWN` 路径两种形态都可用（越界值 / 域内有但无此值），且都 exit 3
+- [x] `plan/06` G6 已关闭（**两边都做了且方向一致**：§2.2 补序 7/8 + §5.2 举例改口为数字查询）
+- [x] `pytest` 双通道全绿（231 / 230+1skip）；`verify_gates.py` **19 组全 CAUGHT**（含 L6c/L6d）
+- [x] `build_catalog.py --check` 与 `extract_catalog.py --check` 双跑逐字节一致（后者双通道）
+- [x] **`plan/HANDOFF-M3.md` 已落盘**（M3 入口；不是 M2 收官单）
 - [ ] ~~CI 绿~~ → 仍不适用：无远端、未推送（`plan/05` §4 U1）
 
 ---
@@ -147,7 +182,7 @@ py -3.12 tools/check_desensitized.py
 py -3.12 tools/verify_gates.py
 
 # 数据链（三步，顺序不能颠倒）
-py -3.12 tools/fetch_sources.py --out _headers        # 1) 取原文（联网，gh api）
+py -3.12 tools/fetch_sources.py --out _headers        # 1) 取原文（联网：gh api + https 网页通路，7 份）
 py -3.12 tools/fetch_sources.py --check               #    已取件 sha256 对账
 py -3.12 tools/extract_catalog.py --out data/catalog   # 2) 抽取 YAML（零网络）
 py -3.12 tools/extract_catalog.py --check              #    与仓库 YAML 逐字节比对

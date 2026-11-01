@@ -27,7 +27,19 @@ AMBIGUOUS_PLATFORM_ALIASES: Final[dict[str, str]] = {
 }
 
 # ── 域 ──────────────────────────────────────────────────────────────────────
-DOMAINS: Final[tuple[str, ...]] = ("errno", "signal", "exit")
+#: 四个域。`node` 是 M2 新增：Node.js 自己抛的 `ERR_*` 异常码**没有数字码值**，
+#: 与 OS errno 也没有映射关系 —— 硬塞进 `errno` 域会让 `explain 100` 开始编造
+#: （K23：`ERR_*` 不许混进 OS errno 域）。
+DOMAIN_ERRNO: Final = "errno"
+DOMAIN_SIGNAL: Final = "signal"
+DOMAIN_EXIT: Final = "exit"
+DOMAIN_NODE: Final = "node"
+
+DOMAINS: Final[tuple[str, ...]] = (DOMAIN_ERRNO, DOMAIN_SIGNAL, DOMAIN_EXIT, DOMAIN_NODE)
+
+#: **没有数字码值**的域：条目的 `value` 必须缺省（`None`），索引只按名字建。
+#: 这一条是结构性的，不是"暂时没填" —— `ERR_*` 本来就只有字符串码名。
+VALUELESS_DOMAINS: Final[frozenset[str]] = frozenset({DOMAIN_NODE})
 
 # ── 五判定态（data/README.md §5.2）─────────────────────────────────────────
 UNAMBIGUOUS: Final = "UNAMBIGUOUS"

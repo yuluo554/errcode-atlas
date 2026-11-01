@@ -66,7 +66,8 @@ def _catalog():
 def test_headers_present() -> None:
     """skipif 会让整份文件静默跳过；这里显式确认原料真在，且清单里 5 份都对得上。"""
     manifest = json.loads((HEADERS / "SOURCES.json").read_text(encoding="utf-8"))
-    assert len(manifest["sources"]) == 5
+    # M2 起是 7 份：5 份头文件 + `sysexits` 页 + Node 错误码页（后两份走网页通路，无 commit sha）
+    assert len(manifest["sources"]) == 7
     for item in manifest["sources"]:
         assert (HEADERS / item["dest"]).is_file(), f"原料缺失: {item['dest']}"
 
@@ -280,18 +281,33 @@ def test_runtime_entries_never_claim_hard_strength() -> None:
     """`kind: runtime` 永远拿不到 `hard`（`plan/04` §2.2 的强度不可升级）。
 
     这条不只是"字段对"：它保证报告里 Windows 条目的措辞不会冒充头文件原文。
+
+    **K21 的推广**：`doc` 出处（M2 的 `sysexits` / Node 错误码）同样拿不到 `hard` ——
+    它能指到段落锚，指不到行号。两件事一起断言，是因为它们防的是同一种虚报。
     """
     for entry in _catalog().entries:
-        if entry.platform.startswith("win32-"):
+        if entry.source.get("kind") == contract.SOURCE_RUNTIME:
             assert entry.strength == contract.STRENGTH_DIFF, f"{entry.name} 强度跑到了 {entry.strength}"
             assert "runtime:" in entry.source_label
+        if entry.source.get("kind") == contract.SOURCE_DOC:
+            assert entry.strength == contract.STRENGTH_DIFF, f"{entry.name} 强度跑到了 {entry.strength}"
+            assert entry.source_label.startswith("doc:#")
 
 
 def test_file_entries_all_reach_hard_strength() -> None:
-    """反过来：能指到行号的必须都是 `hard`，否则说明 kind 被写错。"""
+    """反过来：能指到行号的必须都是 `hard`，否则说明 kind 被写错。
+
+    判据按**出处形态**取，不按平台名取：`linux` / `macos` 上现在也有 `kind: doc` 的
+    共享条目（`sysexits` 挂四个轴），按平台名一刀切会把它们误判成"kind 被写错"。
+    """
     for entry in _catalog().entries:
-        if entry.platform in ("linux", "macos"):
+        if entry.source.get("kind") == contract.SOURCE_FILE:
             assert entry.strength == contract.STRENGTH_HARD, f"{entry.name} 强度是 {entry.strength}"
+        elif entry.platform in ("linux", "macos") and entry.domain in ("errno", "signal"):
+            assert entry.strength == contract.STRENGTH_HARD, (
+                f"{entry.name}（{entry.platform}/{entry.domain}）强度是 {entry.strength}"
+                " —— 这两个平台这两个域的每一条都该有头文件行号"
+            )
 
 
 # ── 编目冻结面：YAML 源是唯一真相源，JSON 是派生物 ─────────────────────────
