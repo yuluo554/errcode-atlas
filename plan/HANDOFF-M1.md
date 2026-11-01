@@ -34,6 +34,7 @@
 | ④ | 变异靶子 `L4b` 锚在 `PENDING_TOOLS["tools/fetch_sources.py"]` 那一行 —— 而 M1 落位时该行按纪律必须删除 → 靶子随进度漂移 | 改 `PENDING_TOOLS` 后立刻想到 K11「靶子锚既有事实、不锚某里程碑还没完成」，改锚 `check_release.py`(M6) |
 | ⑤ | `data/README.md` X1 写"M1 逐条抽取"Node 错误码，而计划里它属 M2 | 与本棒 DoD 对账时发现口径不一致，已改 M2 |
 | ⑥ | 首版抽取器把 macOS `EOPNOTSUPP` 当普通条目处理，没意识到它定义两次（45 / 102） | `--report` 显示 raw 120 / catalog 109 的差额要能解释 → 回原文确认默认环境走 102 分支 |
+| ⑦ | **装载真实编目后暴露口径冲突**：`explain EAGAIN`（未给平台）返回 `UNAMBIGUOUS`/exit 0 并列 11/35/11/11，而 `data/README.md` §5.2 把 `EAGAIN → 11/35/11` 举作 `AMBIGUOUS-CROSS-PLATFORM` 的样本 | **装好的包实跑**时发现（工作树 pytest 全绿抓不到：那是文档与设计的冲突，不是代码错） |
 
 ---
 
@@ -70,6 +71,12 @@
 
 ## 三、下一棒待办（M2 解析）
 
+0. **先处理 `plan/06` G6（口径冲突，优先于下面所有条目）**：`plan/03` §2.2 的七行判定顺序表
+   **没有覆盖"名字 + 无平台 + 各平台取值不一致"这种形态**。M1 装载真实编目后实测：
+   `errcode-atlas explain EAGAIN`（未给平台）→ `UNAMBIGUOUS` / exit 0，列四平台 11/35/11/11；
+   而 `data/README.md` §5.2 把 `EAGAIN → 11/35/11` 举作 `AMBIGUOUS-CROSS-PLATFORM` 的样本。
+   两处必须择一改口，**不许两边都留着**。当前代码行为有明确设计依据（名字查询确有唯一答案），
+   所以更可能是"§5.2 那句举例挑错了样本"，但**这是判定态棒该拍的板**，不是数据棒该顺手改的。
 1. `tools/fetch_sources.py` 的清单加两份：`sysexits` 页与 `nodejs.org/api/errors.html`。
    **它们不是 `contents/` 接口能取的**（不是某个仓库的文件）—— 要么加一个 `--url` 通路
    （同样不吃 raw），要么明确登记为"手工取 + 记 sha256"。别默默降级成"凭记忆抄"。
