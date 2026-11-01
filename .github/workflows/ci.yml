@@ -10,7 +10,12 @@ on:
 # 三条配置面坑（plan/02 §4.3、plan/05 §4 U2/U4）：
 #   PYTHONPATH  —— src 布局，不装包时只有它能撑住 import
 #   PYTHONUTF8 / PYTHONIOENCODING —— 门的输出是中文，windows runner 默认代码页编不了
-# 本工作流**从未在远端跑过**（M0 无远端）：本地已按同样步骤逐条模拟，见 plan/HANDOFF-M0.md。
+#
+# **首推实跑记录**（M6）：见 `plan/RELEASE-M6.md` §二。首推当场抓到两处**只在 CI 才红**
+# 的作业设计缺陷（本机系统 Python 恰好装着 PyYAML，把两处都掩盖了）：
+#   1. layout job 从未装 dev 依赖，却要跑 `build_catalog.py --check` → 已补"安装生成侧依赖"步；
+#   2. offline job 让"故意不装包"的镜像去跑那个 dev 侧脚本 → 已改为只跑运行期路径。
+# 这两处不是代码缺陷，是**作业边界**错位；修法留在本文件的注释里，免得下次又塞回去。
 
 env:
   PYTHONPATH: src
@@ -31,6 +36,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # 生成器冻结态那一步要 PyYAML（`tools/build_catalog.py` 是 dev 侧工具，`plan/02` D2）。
+      # **首推实测**：不装它，bootstrap 过的 CI 镜像里没有这个包，那一步直接 `缺少 PyYAML` 红
+      # （rc=3）—— 而本机系统 Python 恰好装着，所以本地永远看不到。只装 dev extra 的
+      # **生成侧**依赖，不装项目本身（这一步验的是"树里冻结件与源一致"，不是"包能装"）。
+      - name: 安装生成侧依赖
+        run: python -m pip install --disable-pip-version-check "PyYAML>=6.0"
       - name: 布局门
         run: python tools/check_sprint_layout.py
       - name: 脱敏门
@@ -93,7 +104,16 @@ jobs:
       - name: 构建离线镜像（构建期可联网，运行期完全无网络）
         run: docker build -f .github/offline.Dockerfile -t errcode-atlas-offline .
       - name: 无网络跑门与 CLI
+        # **首推实测的一处作业设计缺陷**：这里原先还跑 `tools/build_catalog.py --check`，
+        # 但那个脚本是 **dev 侧**工具、要 PyYAML，而本镜像按纪律**故意不 pip install**
+        # （见 `.github/offline.Dockerfile` 第 1 条）—— 于是"证明运行期零依赖"的镜像
+        # 被要求跑一个 dev 依赖。两者不是矛盾的事实，是**两条不同的纪律被塞进了同一个 job**。
+        # 处置：生成器冻结态交回 layout job（那里刚装了 PyYAML）；本 job 只跑**运行期路径**，
+        # 且比原先多跑两条（`build --check` 验冻结面、`selftest` 验判定面）—— 净覆盖不减。
         run: |
           docker run --rm --network none errcode-atlas-offline python tools/check_sprint_layout.py
-          docker run --rm --network none errcode-atlas-offline python tools/build_catalog.py --check
+          docker run --rm --network none errcode-atlas-offline python tools/check_desensitized.py
+          docker run --rm --network none errcode-atlas-offline python tools/check_release.py --pre-tag
+          docker run --rm --network none errcode-atlas-offline python -m errcode_atlas build --check
+          docker run --rm --network none errcode-atlas-offline python -m errcode_atlas selftest
           docker run --rm --network none errcode-atlas-offline python -m errcode_atlas --version
