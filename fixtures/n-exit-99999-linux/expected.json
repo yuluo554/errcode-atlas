@@ -1,0 +1,12 @@
+{
+  "case": "n-exit-99999-linux",
+  "exit_code": 3,
+  "input": {
+    "domain": "exit",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "99999"
+  },
+  "source": "exit 域取值域仅 64-78，99999 越界",
+  "verdict": "UNKNOWN"
+}

@@ -1,0 +1,18 @@
+{
+  "case": "p-sigstkflt-macos",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGSTKFLT"
+  },
+  "per_platform": {
+    "linux": 16
+  },
+  "platform_absent_in": [
+    "macos"
+  ],
+  "source": "信号分叉点 §1.2：SIGSTKFLT 只在 linux（signal.h:27 = 16）；xnu signal.h 全文无此名",
+  "verdict": "PLATFORM-ABSENT"
+}

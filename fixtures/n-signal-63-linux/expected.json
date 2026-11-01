@@ -1,0 +1,12 @@
+{
+  "case": "n-signal-63-linux",
+  "exit_code": 3,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "63"
+  },
+  "source": "linux 信号表上界 31（NSIG 内），63 不在表内 —— 越界形态的 UNKNOWN",
+  "verdict": "UNKNOWN"
+}

@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-76",
+  "exit_code": 0,
+  "input": {
+    "code": 76,
+    "kind": "exitcode",
+    "platform": "win32-node"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_PROTOCOL = 76",
+  "sources": [
+    "doc:#EX_PROTOCOL"
+  ],
+  "sysexits_name": "EX_PROTOCOL"
+}

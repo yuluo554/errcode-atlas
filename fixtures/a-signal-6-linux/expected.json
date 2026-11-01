@@ -1,0 +1,16 @@
+{
+  "candidate_names": [
+    "SIGABRT",
+    "SIGIOT"
+  ],
+  "case": "a-signal-6-linux",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "6"
+  },
+  "source": "linux include/uapi/asm-generic/signal.h:16-17 `#define SIGABRT 6` / `#define SIGIOT 6`（历史别名）",
+  "verdict": "AMBIGUOUS-SAME-PLATFORM"
+}

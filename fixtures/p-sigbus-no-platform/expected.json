@@ -1,0 +1,20 @@
+{
+  "case": "p-sigbus-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "SIGBUS"
+  },
+  "per_platform": {
+    "linux": 7,
+    "macos": 10
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "SIGBUS：linux 7 / macos 10；两个 win32 视角无此名 → PLATFORM-ABSENT",
+  "verdict": "PLATFORM-ABSENT"
+}

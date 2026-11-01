@@ -1,0 +1,24 @@
+{
+  "case": "x-signal-10-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "10"
+  },
+  "per_platform": {
+    "linux": [
+      "SIGUSR1"
+    ],
+    "macos": [
+      "SIGBUS"
+    ]
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "信号分叉点 §1.2：linux 10=SIGUSR1 / macos 10=SIGBUS",
+  "verdict": "AMBIGUOUS-CROSS-PLATFORM"
+}

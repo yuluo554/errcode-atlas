@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-72",
+  "exit_code": 0,
+  "input": {
+    "code": 72,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_OSFILE = 72",
+  "sources": [
+    "doc:#EX_OSFILE"
+  ],
+  "sysexits_name": "EX_OSFILE"
+}

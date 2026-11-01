@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-69",
+  "exit_code": 0,
+  "input": {
+    "code": 69,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_UNAVAILABLE = 69",
+  "sources": [
+    "doc:#EX_UNAVAILABLE"
+  ],
+  "sysexits_name": "EX_UNAVAILABLE"
+}

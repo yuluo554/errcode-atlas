@@ -1,0 +1,14 @@
+{
+  "case": "p-sigstkflt-linux-ok",
+  "domain": "signal",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGSTKFLT"
+  },
+  "source": "linux include/uapi/asm-generic/signal.h:27 `#define SIGSTKFLT 16`",
+  "value": 16,
+  "verdict": "UNAMBIGUOUS"
+}

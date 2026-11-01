@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-68",
+  "exit_code": 0,
+  "input": {
+    "code": 68,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_NOHOST = 68",
+  "sources": [
+    "doc:#EX_NOHOST"
+  ],
+  "sysexits_name": "EX_NOHOST"
+}

@@ -1,0 +1,28 @@
+{
+  "case": "x-errno-11-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "11"
+  },
+  "per_platform": {
+    "linux": [
+      "EAGAIN",
+      "EWOULDBLOCK"
+    ],
+    "macos": [
+      "EDEADLK"
+    ],
+    "win32-node": [
+      "EAGAIN"
+    ],
+    "win32-python": [
+      "EAGAIN"
+    ]
+  },
+  "platform_absent_in": [],
+  "source": "数字查询：linux 11=EAGAIN/EWOULDBLOCK、macos 11=EDEADLK、两个 win32 视角 11=EAGAIN —— 各平台命中集合不一致",
+  "verdict": "AMBIGUOUS-CROSS-PLATFORM"
+}

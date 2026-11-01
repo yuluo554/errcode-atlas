@@ -1,0 +1,11 @@
+{
+  "attribution": "NORMAL-EXIT",
+  "case": "e-exit-63-normal",
+  "exit_code": 0,
+  "input": {
+    "code": 63,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "source": "data/README §5.3 序 5：1-127 且不属于 64-78 → NORMAL-EXIT"
+}

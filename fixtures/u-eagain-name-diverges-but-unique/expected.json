@@ -1,0 +1,18 @@
+{
+  "case": "u-eagain-name-diverges-but-unique",
+  "exit_code": 0,
+  "input": {
+    "domain": null,
+    "kind": "explain",
+    "platform": null,
+    "query": "EAGAIN"
+  },
+  "per_platform": {
+    "linux": 11,
+    "macos": 35,
+    "win32-node": 11,
+    "win32-python": 11
+  },
+  "source": "名字查询：四平台都有 EAGAIN（linux 11 / macos 35 / win32-node 11 / win32-python 11）；取值不同是事实不是歧义（data/README §5.2 改口）",
+  "verdict": "UNAMBIGUOUS"
+}

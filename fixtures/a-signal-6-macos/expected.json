@@ -1,0 +1,16 @@
+{
+  "candidate_names": [
+    "SIGABRT",
+    "SIGIOT"
+  ],
+  "case": "a-signal-6-macos",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "6"
+  },
+  "source": "xnu bsd/sys/signal.h:89,93 `#define SIGABRT 6` / `#define SIGIOT SIGABRT`",
+  "verdict": "AMBIGUOUS-SAME-PLATFORM"
+}

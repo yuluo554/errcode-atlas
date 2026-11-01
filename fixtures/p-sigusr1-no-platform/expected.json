@@ -1,0 +1,20 @@
+{
+  "case": "p-sigusr1-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "SIGUSR1"
+  },
+  "per_platform": {
+    "linux": 10,
+    "macos": 30
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "判定顺序序 8：SIGUSR1 在 linux/macos 都有（10/30），两个 win32 视角没有 → PLATFORM-ABSENT",
+  "verdict": "PLATFORM-ABSENT"
+}

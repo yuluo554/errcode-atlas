@@ -1,0 +1,15 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-1-linux-unattributable",
+  "exit_code": 1,
+  "input": {
+    "code": 1,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "通用失败",
+    "无特定语义"
+  ],
+  "source": "plan/01 §二 模块③ 硬纪律 + data/README §5.3：exit 1 必须 UNATTRIBUTABLE，notes 明写『通用失败，无特定语义』"
+}

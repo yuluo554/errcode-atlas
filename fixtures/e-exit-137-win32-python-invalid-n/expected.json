@@ -1,0 +1,14 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-137-win32-python-invalid-n",
+  "exit_code": 1,
+  "input": {
+    "code": 137,
+    "kind": "exitcode",
+    "platform": "win32-python"
+  },
+  "require_note_markers": [
+    "不是有效信号"
+  ],
+  "source": "n=9；本机 Python signal 模块导出的编号集合无 9 → 128+n 不成立，必须 UNATTRIBUTABLE（同一数字换平台即翻转）"
+}

@@ -1,0 +1,24 @@
+{
+  "case": "x-signal-7-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "7"
+  },
+  "per_platform": {
+    "linux": [
+      "SIGBUS"
+    ],
+    "macos": [
+      "SIGEMT"
+    ]
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "信号分叉点 §1.2：linux 7=SIGBUS / macos 7=SIGEMT（另 SEE 同文件 SIGPOLL 未入用户态口径）",
+  "verdict": "AMBIGUOUS-CROSS-PLATFORM"
+}

@@ -1,0 +1,14 @@
+{
+  "case": "u-timedout-win32-python-10060",
+  "domain": "errno",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "ETIMEDOUT"
+  },
+  "source": "本机 errno 模块：ETIMEDOUT = 10060",
+  "value": 10060,
+  "verdict": "UNAMBIGUOUS"
+}

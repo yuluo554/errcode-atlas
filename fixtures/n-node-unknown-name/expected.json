@@ -1,0 +1,12 @@
+{
+  "case": "n-node-unknown-name",
+  "exit_code": 3,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NOT_A_REAL_CODE_XYZ"
+  },
+  "source": "nodejs.org/api/errors.html 全文无此名 —— 名字在域内不存在（与 PLATFORM-ABSENT 是两个语义）",
+  "verdict": "UNKNOWN"
+}

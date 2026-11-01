@@ -1,0 +1,24 @@
+{
+  "case": "x-signal-30-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "30"
+  },
+  "per_platform": {
+    "linux": [
+      "SIGPWR"
+    ],
+    "macos": [
+      "SIGUSR1"
+    ]
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "信号分叉点 §1.2：linux 30=SIGPWR / macos 30=SIGUSR1",
+  "verdict": "AMBIGUOUS-CROSS-PLATFORM"
+}

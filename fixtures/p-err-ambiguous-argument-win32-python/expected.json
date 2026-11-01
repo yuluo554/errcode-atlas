@@ -1,0 +1,20 @@
+{
+  "case": "p-err-ambiguous-argument-win32-python",
+  "exit_code": 1,
+  "input": {
+    "domain": null,
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "ERR_AMBIGUOUS_ARGUMENT"
+  },
+  "per_platform": {
+    "linux": null,
+    "macos": null,
+    "win32-node": null
+  },
+  "platform_absent_in": [
+    "win32-python"
+  ],
+  "source": "data/README §2.3：node 域不挂 win32-python —— ERR_* 是 Node 运行时码，Python 视角不抛；此处必须是 PLATFORM-ABSENT 而非 UNKNOWN",
+  "verdict": "PLATFORM-ABSENT"
+}

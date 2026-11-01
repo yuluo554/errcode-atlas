@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-66",
+  "exit_code": 0,
+  "input": {
+    "code": 66,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_NOINPUT = 66",
+  "sources": [
+    "doc:#EX_NOINPUT"
+  ],
+  "sysexits_name": "EX_NOINPUT"
+}

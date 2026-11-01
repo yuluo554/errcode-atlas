@@ -1,0 +1,14 @@
+{
+  "case": "u-eaddr-inuse-win32-python-10048",
+  "domain": "errno",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "EADDRINUSE"
+  },
+  "source": "本机 errno 模块（Python / win32）：EADDRINUSE = 10048",
+  "value": 10048,
+  "verdict": "UNAMBIGUOUS"
+}

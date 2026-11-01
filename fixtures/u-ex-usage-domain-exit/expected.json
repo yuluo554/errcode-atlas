@@ -1,0 +1,21 @@
+{
+  "case": "u-ex-usage-domain-exit",
+  "exit_code": 0,
+  "input": {
+    "domain": "exit",
+    "kind": "explain",
+    "platform": null,
+    "query": "EX_USAGE"
+  },
+  "per_platform": {
+    "linux": 64,
+    "macos": 64,
+    "win32-node": 64,
+    "win32-python": 64
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_USAGE 为 64；exit 域四轴共享 → 四平台同值不是歧义（K20 反面）",
+  "verdict": "UNAMBIGUOUS"
+}

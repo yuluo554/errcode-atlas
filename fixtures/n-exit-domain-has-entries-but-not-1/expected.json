@@ -1,0 +1,12 @@
+{
+  "case": "n-exit-domain-has-entries-but-not-1",
+  "exit_code": 3,
+  "input": {
+    "domain": "exit",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "1"
+  },
+  "source": "exit 域有 15 条（64-78），1 不在其中 —— UNKNOWN 第二形态：域内有条目但无此值",
+  "verdict": "UNKNOWN"
+}

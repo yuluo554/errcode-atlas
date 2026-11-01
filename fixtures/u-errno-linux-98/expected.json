@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EADDRINUSE"
+  ],
+  "case": "u-errno-linux-98",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "98"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno.h:82 `#define EADDRINUSE 98`",
+  "verdict": "UNAMBIGUOUS"
+}

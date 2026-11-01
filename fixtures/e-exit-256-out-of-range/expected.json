@@ -1,0 +1,11 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-256-out-of-range",
+  "exit_code": 1,
+  "input": {
+    "code": 256,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "source": "data/README §5.3 序 1：code > 255 越界 → UNATTRIBUTABLE"
+}

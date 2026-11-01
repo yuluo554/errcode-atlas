@@ -21,6 +21,7 @@ def run_selftest(catalog: Catalog) -> list[str]:
     failures += _check_exit_one(catalog)
     failures += _check_signal_validity(catalog)
     failures += _check_gray_markers(catalog)
+    failures += _check_verdict_reachability(catalog)
     return failures
 
 
@@ -120,6 +121,133 @@ def _check_gray_markers(catalog: Catalog) -> list[str]:
     return out
 
 
+def _check_verdict_reachability(catalog: Catalog) -> list[str]:
+    """**五态可达性**（M3）：用真编目把五种 verdict 各真跑出来一次。
+
+    为什么这是不变量而不是"再跑一遍判定"：五判定态是本项目的招牌口径
+    （``plan/01`` §四 40 分维度）。任一态在真编目上**跑不出来**，说明编目或判定
+    已经退化成"只能答一种情况"—— 那时 ``bench`` 也只会一片绿，因为它比对的是
+    fixture 自己的期望。这条断言的是**可达性**本身：五态缺一即 FAIL。
+
+    探针从编目事实里现挑（不是写死 ``6``/``98`` 之类的数值）—— 写死会让编目
+    正常演进（例如某别名被上游移除）把自测变成假红。期望值写字面量
+    ``"UNAMBIGUOUS"`` / ``0`` 等，**不写 ``contract.*`` 常量**（K26：用常量写期望
+    就是自我参照，改错常量时实测与期望一起错）。
+    """
+    out: list[str] = []
+    found: dict[str, str] = {}  # verdict -> 探针说明
+
+    # 有值域上"一值 N 名"的两个极端：1 名 = 唯一，≥2 名 = 同平台歧义
+    single: tuple[str, str, int] | None = None
+    multi: tuple[str, str, int] | None = None
+    values: dict[tuple[str, str], set[int]] = {}
+    for entry in catalog.entries:
+        if entry.value is None:
+            continue
+        values.setdefault((entry.platform, entry.domain), set()).add(entry.value)
+    for (platform, domain), numbers in sorted(values.items()):
+        for number in sorted(numbers):
+            hits = catalog.names_at(platform, domain, number)
+            if len(hits) == 1 and single is None:
+                single = (platform, domain, number)
+            if len(hits) > 1 and multi is None:
+                multi = (platform, domain, number)
+
+    # 跨平台分歧：同一数字在各已覆盖平台的命中集合不一致，或某已覆盖平台没有它
+    divergent: tuple[str, int] | None = None
+    for domain in contract.DOMAINS:
+        covered = catalog.covered_platforms(domain)
+        if len(covered) < 2:
+            continue
+        seen: set[int] = set()
+        for platform in covered:
+            for number in values.get((platform, domain), set()):
+                seen.add(number)
+        for number in sorted(seen):
+            sets = {catalog.names_at(p, domain, number) for p in covered}
+            if len(sets) > 1 or () in sets:
+                divergent = (domain, number)
+                break
+        if divergent:
+            break
+
+    # 平台缺失：某名字在这个平台没有、在另一个**已覆盖该域**的平台有。
+    # 名字表就地建（本模块不是判定层，AST 守门只守 explain.py / exitcode.py）——
+    # `platforms_with_name(domain, name)` 是**单名查询**，不能拿来枚举名字。
+    absent: tuple[str, str, str] | None = None
+    names_by_domain: dict[str, set[str]] = {}
+    for entry in catalog.entries:
+        names_by_domain.setdefault(entry.domain, set()).add(entry.name)
+    for domain in contract.DOMAINS:
+        covered = catalog.covered_platforms(domain)
+        for platform in covered:
+            for name in sorted(names_by_domain.get(domain, ())):
+                if catalog.has_name(platform, domain, name):
+                    continue
+                if any(
+                    catalog.has_name(other, domain, name) for other in covered if other != platform
+                ):
+                    absent = (platform, domain, name)
+                    break
+            if absent:
+                break
+        if absent:
+            break
+
+    probes: list[tuple[str, str, Query, object]] = []
+    if single:
+        platform, domain, number = single
+        probes.append(("UNAMBIGUOUS", f"{number} --platform {platform} --domain {domain}",
+                       Query.parse(str(number), platform, domain), 0))
+    if multi:
+        platform, domain, number = multi
+        probes.append(("AMBIGUOUS-SAME-PLATFORM", f"{number} --platform {platform} --domain {domain}",
+                       Query.parse(str(number), platform, domain), 1))
+    if divergent:
+        domain, number = divergent
+        probes.append(("AMBIGUOUS-CROSS-PLATFORM", f"{number} --domain {domain}",
+                       Query.parse(str(number), None, domain), 1))
+    if absent:
+        platform, domain, name = absent
+        probes.append(("PLATFORM-ABSENT", f"{name} --platform {platform} --domain {domain}",
+                       Query.parse(name, platform, domain), 1))
+    # 越界值恒可达：编目里不可能有这么大的 errno/信号号
+    unknown_domain = catalog.covered_platforms(contract.DOMAIN_ERRNO)[0] if catalog.covered_platforms(
+        contract.DOMAIN_ERRNO
+    ) else None
+    if unknown_domain:
+        probes.append(("UNKNOWN", f"99999 --platform {unknown_domain}",
+                       Query.parse("99999", unknown_domain, contract.DOMAIN_ERRNO), 3))
+
+    for verdict, label, query, want_exit in probes:
+        result = explain(query, catalog)
+        if result.verdict != verdict:
+            out.append(
+                f"verdict_reachability: {label} 期望 {verdict}，实得 {result.verdict}"
+                "（编目或判定只能答一种情况了）"
+            )
+            continue
+        if result.exit_code != int(want_exit):
+            out.append(
+                f"verdict_reachability: {label} 是 {verdict}，退出码实得 "
+                f"{result.exit_code}（期望 {want_exit}）"
+            )
+            continue
+        found[verdict] = label
+
+    # 一个探针都没造出来 = 编目里连"一值一名"或"一值多名"都找不到 —— 那也是漏，且更严重。
+    for verdict in contract.VERDICTS:
+        if verdict in found:
+            continue
+        if any(f"期望 {verdict}" in line for line in out):
+            continue  # 已报过"跑出来是别的态"，不重复报
+        out.append(
+            f"verdict_reachability: {verdict} 在真编目上**跑不出来** —— "
+            "这不是数据不够，是判定面退化成了只能答一种情况"
+        )
+    return out
+
+
 def describe() -> dict[str, Any]:
     """给 `bench`/报告用的自测清单描述（数量由构造算出，不写死）。"""
     return {
@@ -129,5 +257,6 @@ def describe() -> dict[str, Any]:
             _check_exit_one,
             _check_signal_validity,
             _check_gray_markers,
+            _check_verdict_reachability,
         ]
     }

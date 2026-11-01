@@ -203,6 +203,11 @@ def _explain_number(query: Query, catalog: Catalog) -> Explanation:
             verdict=contract.AMBIGUOUS_CROSS_PLATFORM,
             query=_query_dict(query),
             per_platform=per_platform,
+            # 缺席平台**进结构字段**，不只进 distinguish 散文（M3）：
+            # 序 3 的触发条件之一就是"该域已覆盖的某个平台上没有这个值"，那件事实
+            # 必须可机读 —— 只写在说明里，消费方得自己反推 covered_platforms 才知道少了谁。
+            # 注意分母仍是 `covered`：未覆盖平台是"还没查"，不进本字段也不进分歧（见上）。
+            platform_absent_in=tuple(absent_keys),
             distinguish=(
                 "未指定平台，且各平台对该数字的归因不一致"
                 + (f"（{', '.join(absent_keys)} 上没有这个值）" if absent_keys else "")
@@ -243,7 +248,7 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
                     verdict=contract.UNAMBIGUOUS,
                     query=_query_dict(query),
                     candidates=(_candidate(entry),),
-                    notes=_maybe_gray_notes((domain,)),
+                    notes=_name_gray_notes((domain,)),
                     sources=(entry.source_label,),
                 )
         # 序 5：该平台没有，但别的平台有 —— PLATFORM-ABSENT（与 UNKNOWN 是两个语义）
@@ -257,6 +262,9 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
                 query=_query_dict(query),
                 platform_absent_in=(query.platform,),
                 per_platform=dict(sorted(elsewhere.items())),
+                notes=_name_gray_notes(
+                    tuple(domain for domain in domains if catalog.platforms_with_name(domain, query.name))
+                ),
                 distinguish=(
                     f"{query.name} 在 {query.platform} 上不存在；"
                     f"在 {', '.join(sorted(elsewhere))} 上存在"
@@ -268,27 +276,49 @@ def _explain_name(query: Query, catalog: Catalog) -> Explanation:
 
     # 未给平台：逐平台列值；任何一个平台缺失即 PLATFORM-ABSENT
     present: dict[str, int | None] = {}
+    #: 名字**实际落在哪些域**（探测了几个域 ≠ 命中在几个域）。
+    #: 标注按命中域给：`EINTR` 落在 `errno`，不该冒出"128+n 归因是惯例"——
+    #: 那句在它的查询里是无信息噪声，而噪声会让真正的强制标注贬值。
+    matched: tuple[str, ...] = ()
     for domain in domains:
-        present.update(catalog.platforms_with_name(domain, query.name))
+        found_here = catalog.platforms_with_name(domain, query.name)
+        if not found_here:
+            continue
+        present.update(found_here)
+        matched += (domain,)
     if not present:
         return _unknown(query)
-    missing = tuple(p for p in catalog.platforms() if p not in present)
+    # 分母 = **命中的域所覆盖的平台并集**，不是"全编目里出现过的平台"。
+    # 用后者会把 `node` 域的 `ERR_*`（不挂 `win32-python`）在**每一次**无平台查询里
+    # 判成 PLATFORM-ABSENT —— 那正是 data/README §2.3 警告的「假 PLATFORM-ABSENT」：
+    # `win32-python` 上根本没有这套码，它的缺席是"这套码在那里不成立"，不是"那里缺了一条"。
+    # 与序 3 的分母纪律是同一条：判据 = "这个平台的缺席，是『我查过没有』还是『我还没查』？"
+    covered_here = {
+        platform for domain in matched for platform in catalog.covered_platforms(domain)
+    }
+    missing = tuple(p for p in contract.PLATFORMS if p in covered_here and p not in present)
     if missing:
         return Explanation(
             verdict=contract.PLATFORM_ABSENT,
             query=_query_dict(query),
             platform_absent_in=missing,
             per_platform=dict(sorted(present.items())),
+            notes=_name_gray_notes(matched),
             distinguish=(
                 f"{query.name} 在 {', '.join(missing)} 上不存在；"
                 "要求全平台归因时必须先说清缺哪个平台"
+                + (
+                    "（该域只有错误码名、没有数字码值）"
+                    if _valueless(matched)
+                    else ""
+                )
             ),
         )
     return Explanation(
         verdict=contract.UNAMBIGUOUS,
         query=_query_dict(query),
         per_platform=dict(sorted(present.items())),
-        notes=_agree_notes(domains),
+        notes=_name_gray_notes(matched) + _agree_notes(matched),
     )
 
 
@@ -316,8 +346,26 @@ def _unknown(query: Query) -> Explanation:
 
 
 def _maybe_gray_notes(domains: tuple[str, ...]) -> tuple[str, ...]:
-    """`gray` 强度条目的措辞强制（plan/04 §2.3）—— 由 bench 断言字样存在，不靠人记得写。"""
+    """**数字形态**的 `gray` 措辞强制（plan/04 §2.3）—— 由 bench 断言字样存在。
+
+    ``128+n`` 是**退出码归因**的惯例，只在数字形态上谈。名字形态走
+    :func:`_name_gray_notes`（那支谈的是「约定非标准」）。
+    """
     notes: list[str] = []
     if "exit" in domains:
         notes.append("128+n 归因是 POSIX 惯例非标准（即惯例而非标准）")
     return tuple(notes)
+
+
+def _name_gray_notes(domains: tuple[str, ...]) -> tuple[str, ...]:
+    """**名字形态**的 `gray` 措辞强制：`exit` 域的名字来自 `sysexits` 约定。
+
+    为什么不能与数字形态共用一句话：`128+n` 讲的是"退出码怎么归因"，而
+    `EX_USAGE` 这个名字问的是"约定里有没有它、是几号"。套错句会把一条无信息
+    噪声挂在答案上，噪声多了真正的强制标注就贬值了（M3 分叉出来的）。
+    """
+    if "exit" in domains:
+        return (
+            "sysexits 64–78 段是约定非标准（即约定而非标准），各实现可自行约定",
+        )
+    return ()

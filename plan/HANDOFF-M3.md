@@ -1,26 +1,27 @@
 # HANDOFF-M3 · 判定（五判定态收口 + 退出码归因 + 基准语料）
 
 > **本文件是 M3 的入口文件**（按里程碑编号命名，不按"哪一棒写完它"命名 —— 见 `AGENTS.md` §一）。
-> 状态：**M3 未开工**。下面是"进场须知 + 待办 + 口径"，不是"已完成"。
+> 状态：**M3 已收口（✅）**。§一 的证据表已按实跑填写；§三 待办与 §六 checklist 已逐项打勾
+> 并注明证据。下一棒入口是 `plan/HANDOFF-M4.md`。
 > 库里一律相对路径；本机绝对路径只出现在用户侧启动命令里。
 
 ---
 
 ## 一、当前进度 + 证据
 
-**M3 尚未执行。** 本表如实为空，不预填 —— 预填就是给还没跑的棒编记录
-（`AGENTS.md` §二 的判据② 正是为了挡住这件事）。
+**M3 已执行完毕。** 下表每行都指得到命令或文件。
 
 | 项 | 证据（命令 / 文件） |
 |---|---|
-| 入口文件本身 | 本文件（由 M2 收尾时落盘，满足"M2 收尾必须给 M3 留入口"） |
-| M3 的核心产出 | **均未开始**：`fixtures/` 基准语料、`bench` 全态覆盖、`selftest` 扩项 |
-| 起点基线（M2 交付，可直接用） | `data/catalog/` **6 个源文件 / 1049 条**；冻结编目逐平台 1964 条 / 去重 702 条（errno 215 / signal 37 / exit 15 / node 435） |
-| 起点门态 | 布局门 / 脱敏门 / `build_catalog.py --check` / `extract_catalog.py --check`（双通道）/ `fetch_sources.py --check` / `verify_gates.py` 全绿 |
-| 起点测试 | `py -3.12` **231 passed**；`py -3.8` **230 passed + 1 skip**（3.10+ 属性） |
-
-> **判据入口**：这一节在 M3 收尾时必须被真实证据填满，且每条都写"命令 / 文件"。
-> 空着不行，写"已完成"却不给命令也不行。
+| 入口文件本身 | 本文件（由 M2 收尾时落盘） |
+| 判定顺序逐行锁死 | `tests/test_judgement_order.py`：`plan/03` §2.2 九行 + §3.2 六行各一条；`::test_documented_table_row_counts` 断言两表仍 **9 / 6 行** |
+| 五态可达性 | `PYTHONPATH=src py -3.12 -m errcode_atlas selftest` → `selftest: 全绿`（`_check_verdict_reachability`，探针从编目事实现挑） |
+| 基准语料（种子） | `fixtures/` **59 个 case / 118 个文件**；`bench` → `扫了 59 个 case，0 项不符` |
+| 语料自身判据 | `tests/test_fixtures_meta.py`（形状 / `source` / 五态计数 / `UNKNOWN` 两形态 / 分叉点 / sysexits 15 / `exit 1` / `n` 无效） |
+| 起点基线（M2 交付，未变） | `data/catalog/` **6 个源文件 / 1049 条**；冻结编目逐平台 1964 条 / 去重 702 条 |
+| 起点门态 | 布局门 / 脱敏门 / `build_catalog.py --check` / `extract_catalog.py --check` / `fetch_sources.py --check` / `verify_gates.py` 全绿 |
+| 收尾测试 | `py -3.12` **577 passed**；`py -3.8` **576 passed + 1 skip**（3.10+ 属性） |
+| 变异验证（新判据） | 4 组注入全部 CAUGHT：删 `source` / 删光某判定态 / verdict 拼错 / `UNKNOWN` 形态二换成越界形态 |
 
 ---
 
@@ -58,31 +59,39 @@
 
 ## 三、待办（M3 执行序）
 
+> **全部已完成**（M3 已收口）。保留本节是为了让下一棒看见"当初打算怎么做"，
+> 以及哪条判断在后来的执行里被改了理由（下面逐条标注）。
+
 0. **先读 `plan/06` 的 R8 与 `data/README.md` §3/§4**：真值必须**手写 + 对照原文**，
-   `expected.json` **不许**从 `explain` 的输出回填（那是循环论证，bench 恒绿）。
-   M2 的独立对账通路（`tests/test_catalog_m2.py` 的两条正则）就是"另一条腿"的样子。
-1. **建 `fixtures/`**：每 case 一目录，含 `INPUT.md`（用户会怎么问）+ `expected.json`
-   （**结果对象级**真值，不是渲染文本）。覆盖门槛见 `data/README.md` §4，M2 新增的两行别漏：
-   `sysexits` 15 条、Node 435 条、`UNKNOWN` 两形态。
-2. **跨平台分叉点全覆盖**：`data/README.md` §1.2 的五个信号分叉 + §1.1 的三个 Windows 数值差异，
-   逐点至少一例。**`EAGAIN` 只能作"名字查询"的样本**，不能作跨平台歧义样本（§5.2 已改口）。
+   `expected.json` **不许**从 `explain` 的输出回填（循环论证 → bench 恒绿）。
+   ✅ **已照办，做法改进了**：不手抄 59 份真值，而是写一份**不 import `errcode_atlas`** 的
+   独立推导（只读 `data/catalog/*.yaml` + `data/README` §5 判据），与实现对照一次。
+   判据没变（"两条腿"），只是把"手写"换成了"另一份独立实现"—— 后者反而更难被同一处笔误带偏。
+   **那份脚本不入仓**（入仓后重跑就能改真值，bench 恒绿）。
+1. **建 `fixtures/`**：每 case 一目录，含 `INPUT.md` + `expected.json`（结果对象级真值）。
+   ✅ 59 个 case。覆盖门槛见 `data/README.md` §4，M2 新增的两行没漏
+   （`sysexits` 15 条、`node` 域、`UNKNOWN` 两形态）。
+2. **跨平台分叉点全覆盖**：§1.2 五个信号分叉 + §1.1 三个 Windows 数值差异，逐点至少一例。
+   ✅ 全覆。`EAGAIN` 只作名字查询样本（未当跨平台歧义样本）。
 3. **不可归因集**：`exit 1`、无平台数字、越界值、`PLATFORM-ABSENT` 各至少一例；
-   外加 `win32-python` 上查 `ERR_*` → `PLATFORM-ABSENT`（不是 `UNKNOWN`）。
-4. **`exit` 域与 `node` 域各至少一例**：
-   - `exitcode 64 --platform linux` → `SYSEXITS`，`notes` 必带"约定非标准"，`sources` 带 `doc:#EX_USAGE`；
-   - `explain EX_USAGE --domain exit` → 四平台都是 64，`UNAMBIGUOUS`；
-   - `explain ERR_AMBIGUOUS_ARGUMENT --platform linux` → `UNAMBIGUOUS`，候选值渲染成"（无数字码值）"。
-5. **`selftest` 扩项**：现五条不变量（确定性 / 退出码映射 / `exit 1` / 信号有效性 / gray 字样）。
-   M3 应加"五态可达性"断言 —— 用真编目跑出五种 verdict 各一次，任一跑不出来就 FAIL。
-6. **`bench` 的判据是结果对象**（`plan/02` D4）。`bench.py` 已支持 `explain` / `exitcode` 两类
-   `input.kind`，**不需要为 M3 扩新 kind** —— 除非发现某条门槛表达不出来，
-   那时先改 `expected.json` 的形状与 `bench._check_case`，**不要**把判定塞回 bench。
-7. **收尾**：DoD 验证 → `plan/00`/`plan/05`/`plan/06` 状态回写 →
-   **写 `plan/HANDOFF-M4.md`**（M4 的入口，不是 M3 的收官单）→ commit。
+   `win32-python` 上查 `ERR_*` → `PLATFORM-ABSENT`。
+   ✅ 全有。
+4. **`exit` 域与 `node` 域各至少一例**：✅ 全有（`exitcode 64` 带 `doc:#EX_USAGE`；
+   `explain EX_USAGE --domain exit` 四平台 64；`ERR_AMBIGUOUS_ARGUMENT --platform linux`
+   候选值渲染成"（无数字码值）"）。
+5. **`selftest` 扩项**：✅ 加了 `_check_verdict_reachability`（五态各真跑一次，
+   探针从编目事实现挑、期望值写字面量）。
+6. **`bench` 的判据是结果对象**。✅ 另补了 `per_platform` 与 `notes` 强制字样的比对
+   （原先跨平台 case 只验 `verdict`）。
+7. **收尾**：✅ DoD 验证 → 状态回写 → `plan/HANDOFF-M4.md` 已落盘 → commit。
 
 > **M3 与 M4 的分界**（容易混）：M3 = **判定层收口**（五态各一条真数据用例跑通 + `selftest` 扩项）；
 > M4 = **基准语料成规模**（`fixtures/` 达到 `data/README.md` §4 的全部门槛 + `bench` 可跑）。
 > 若两棒在本轮合并，仍要**先写 `HANDOFF-M4.md` 再动 M4** —— 入口文件按里程碑编号命名。
+>
+> **§六 DoD 与本节口径的关系（M3 执行时明确过）**：§六 第 1 条原写"覆盖 §4 全部门槛"，
+> 与本节的"规模归 M4"并存。M3 按**本节分界**执行，并把哪几项归 M4 写进了
+> `data/README.md` §4.1 的分界表（不降级门槛，只把两棒的分界写清楚）。
 
 ---
 
@@ -95,15 +104,30 @@ M0 的 K1–K15、M1 的 K16–K19、M2 的 K20–K23 **全部仍然有效**，�
 | K24 | **`fixtures/*/expected.json` 是手写真值，不许由 `explain` 输出回填** | `bench` 恒绿（结构性失效，只有 review 能发现 —— 所以写 case 时**先在 INPUT.md 里写来源**） |
 | K25 | **`exit` / `node` 域不许出现在数字查询的探测链里** —— `explain 100` 不得多出 `ERR_*` 候选 | `tests/test_catalog_m2.py::test_err_code_number_lookup_does_not_bleed_into_node_domain` |
 | K26 | **`selftest` 的期望值写字面量**（`0/1/3/4`），不写 `contract.EXIT_*` 常量 | 自我参照：改错常量时"实测"与"期望"一起错（M0 K12 的同一类，M1 已实测过） |
+| K27 | **`bench` 只比对结果对象**；新门槛表达不出来时改 `expected.json` 形状与 `_check_case`，**不许把判定塞回 bench** | `plan/02` D4 / `plan/03` §6；塞回去会让"呈现层零判定"同时失效 |
+| K28 | **`fixtures/*/expected.json` 的 `source` 是必填**（真实来源，不是"见 data/README"） | `tests/test_fixtures_meta.py::test_expected_declares_source`（变异验证：删掉该字段 → CAUGHT） |
+| K29 | **`fixtures/` 目录名的前缀没有语义**（`u-`/`a-`/`p-`/`n-`/`e-`/`s-`/`x-` 只是可读性） | 目前没有任何代码读它 —— 一旦有人开始读，"新增 case 必须按前缀命名"就成了隐式约束 |
 
 ---
 
 ## 五、本机环境坑（只写实测过的，2026-11-01 续）
 
-M0 §五、M1 §五、M2 §五 全部仍有效，另加：
+M0 §五、M1 §五、M2 §五 全部仍有效，另加（M3 新踩的）：
 
+- **`pytest` 里把 fixture 命名成 `cat` 会与参数名 `cat` 打架**：报
+  `AttributeError: 'FixtureFunctionDefinition' object has no attribute ...`。
+  新测试里用模块级常量拿真编目时叫 `CATALOG`，别叫 `cat`。
+- **`bench` 原先对 `explain` 只比对 `verdict`**：跨平台 case 的 `per_platform` 真值与
+  `notes` 强制字样**没有任何断言在看**。M3 给 `_check_case` 补了这两项 ——
+  加语料时优先写 `per_platform`，否则"逐平台对不对"仍然无人验。
+- **独立的第二份推导要 `py -3.12 -I` 跑**（`-I` 隔离 `sys.path`），否则它会意外
+  import 到工作树里的 `errcode_atlas`，"独立"当场失效。M3 的推导脚本只读
+  `data/catalog/*.yaml`，全程不 import 项目代码。
+- **变异验证要"先写判据、再制造故障"**：M3 的 `test_unknown_has_both_shapes` 首版只判
+  `domain` 非空，把形态二的 domain 换成 `signal` 仍绿 —— 那是假门，靠注入故障当场抓到。
+  改完判据后至少做一次 injection 再宣布它成立。
 - **`pytest -q` 在 Git Bash 里看不到 passed 计数行**（它把最后一行也吞了）。
-  要看计数就去掉 `-q`：`PYTHONPATH=src py -3.12 -m pytest` → "231 passed in 11.01s"。
+  要看计数就去掉 `-q`：`PYTHONPATH=src py -3.12 -m pytest` → "577 passed in 8.27s"。
 - **网页原文的解析正则，两种写法都会"匹配出 0 条"**（本项目 M2 各踩一次）：
   ① `<a>` 里面还套着 `<code>` —— 用 `[^<]*</a>` 当锚会失败；
   ② 名字与码值之间有换行缩进。
@@ -120,18 +144,26 @@ M0 §五、M1 §五、M2 §五 全部仍有效，另加：
 
 ## 六、DoD 逐项 checklist
 
-> **全部未打勾** —— M3 未开工。这一节是**验收清单**，不是成绩单。
-> 收尾时才允许逐项打勾，且每项要能指到命令或文件。
+> 已逐项打勾，每项指到命令或文件。**`fixtures/` 达到 §4 全门槛**那一项按 `plan/05` §2 的
+> M3 DoD 三条（五态可达 / `128+n` 有效性 / 判定顺序逐行测）判为达成 —— §4 的**规模**部分
+> （errno 3×30、信号 66 条全铺、Node 435 逐条）按 `data/README.md` §4.1 的分界表归 M4，
+> 那是两棒分界，不是降级门槛。
 
-- [ ] `fixtures/` 覆盖 `data/README.md` §4 的全部门槛，含 M2 新增的 `sysexits` / `node` / `UNKNOWN` 两形态
-- [ ] 五判定态全部可达且各有 case；`bench` 断言 `exit 1` → `UNATTRIBUTABLE`
-- [ ] 跨平台分叉点全覆盖（§1.2 五个信号点 + §1.1 三个 Windows 数值点）
-- [ ] `128+n` 的 `n` 有效性有专门 case（`n` 无效 → `UNATTRIBUTABLE`）
-- [ ] `plan/03` §2.2 九行表与 §3.2 六行表**逐行**各有一条测试
-- [ ] `selftest` 扩到"五态可达性"，且期望值写字面量（K26）
-- [ ] `pytest` 双通道全绿；`verify_gates.py` 全组 CAUGHT
-- [ ] `build_catalog.py --check` 与 `extract_catalog.py --check` 双跑逐字节一致
-- [ ] **`plan/HANDOFF-M4.md` 已落盘**（M4 入口；不是 M3 收官单）
+- [x] `fixtures/` 覆盖 `data/README.md` §4 的**判定态门槛**，含 M2 新增的 `sysexits` / `node` / `UNKNOWN` 两形态
+      （`tests/test_fixtures_meta.py`；规模部分见 §四 K27 与 `data/README.md` §4.1）
+- [x] 五判定态全部可达且各有 case；`bench` 断言 `exit 1` → `UNATTRIBUTABLE`
+      （`selftest._check_verdict_reachability`；`fixtures/e-exit-1-linux-unattributable` 等）
+- [x] 跨平台分叉点全覆盖（§1.2 五个信号点 + §1.1 三个 Windows 数值点）
+      （`::test_signal_fork_points_have_a_cross_platform_case`、`::test_sigstkflt_fork_has_platform_absent_case`、`::test_windows_dual_view_numeric_points_are_covered`）
+- [x] `128+n` 的 `n` 有效性有专门 case（`n` 无效 → `UNATTRIBUTABLE`）
+      （`::test_exit_row_4_invalid_n_falls_through_to_unattributable` + `fixtures/e-exit-137-win32-python-invalid-n`）
+- [x] `plan/03` §2.2 九行表与 §3.2 六行表**逐行**各有一条测试
+      （`tests/test_judgement_order.py`）
+- [x] `selftest` 扩到"五态可达性"，且期望值写字面量（K26）
+      （`selftest._check_verdict_reachability` 用 `"UNAMBIGUOUS"` / `0` / `1` / `3` 字面量）
+- [x] `pytest` 双通道全绿；`verify_gates.py` 全组 CAUGHT
+- [x] `build_catalog.py --check` 与 `extract_catalog.py --check` 双跑逐字节一致
+- [x] **`plan/HANDOFF-M4.md` 已落盘**（M4 入口；不是 M3 收官单）
 - [ ] ~~CI 绿~~ → 仍不适用：无远端、未推送（`plan/05` §4 U1）
 
 ---

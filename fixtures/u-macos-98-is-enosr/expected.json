@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOSR"
+  ],
+  "case": "u-macos-98-is-enosr",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "98"
+  },
+  "source": "xnu bsd/sys/errno.h：98 = ENOSR（不是 EADDRINUSE）—— 同一数字在两平台不是同一个错误",
+  "verdict": "UNAMBIGUOUS"
+}

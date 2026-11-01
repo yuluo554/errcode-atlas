@@ -67,6 +67,15 @@ def run_bench(catalog: Catalog, root: Path | None = None, emit=print) -> int:
     return contract.EXIT_OK if not failures else contract.EXIT_NON_UNIQUE
 
 
+def _normalized_per_platform(value: Any) -> dict[str, Any]:
+    """``per_platform`` 的比对形态：列表收成 ``tuple``（顺序只由实现给，真值只声明集合），
+    其余（标量 / ``None``）原样 —— `None` 是**无值域的合法取值**，不能被当成"空"消掉。"""
+    normalized: dict[str, Any] = {}
+    for platform, hit in (value or {}).items():
+        normalized[platform] = tuple(sorted(hit)) if isinstance(hit, list) else hit
+    return dict(sorted(normalized.items()))
+
+
 def _check_case(name: str, expected: dict[str, Any], catalog: Catalog) -> list[str]:
     problems: list[str] = []
     query_spec = expected.get("input", {})
@@ -95,6 +104,20 @@ def _check_case(name: str, expected: dict[str, Any], catalog: Catalog) -> list[s
                 problems.append(
                     f"{name}: platform_absent_in 期望 {want_absent} 实得 {got_absent}"
                 )
+        # 跨平台 case 的核心证据是**逐平台归因**：只断言 verdict 的话，
+        # "linux 是 X、macos 是 Y" 这件事没有任何断言在看（M3 补）。
+        if "per_platform" in expected:
+            got = _normalized_per_platform(actual["per_platform"])
+            want = _normalized_per_platform(expected["per_platform"])
+            if got != want:
+                problems.append(f"{name}: per_platform 期望 {want} 实得 {got}")
+        # `gray` 强制字样（"惯例非标准"/"约定非标准"）必须真出现在 notes 里 ——
+        # 这不是靠人记得写，而是 bench 断言它存在（plan/04 §2.3）。
+        if expected.get("require_note_markers"):
+            joined = " ".join(actual.get("notes") or [])
+            for marker in expected["require_note_markers"]:
+                if marker not in joined:
+                    problems.append(f"{name}: 说明里缺强制字样 {marker!r}")
     elif kind == "exitcode":
         result = attribute(int(query_spec["code"]), str(query_spec["platform"]), catalog)
         actual = result.as_dict()

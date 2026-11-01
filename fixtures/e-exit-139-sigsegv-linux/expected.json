@@ -1,0 +1,16 @@
+{
+  "attribution": "SIGNAL-KILLED",
+  "case": "e-exit-139-sigsegv-linux",
+  "exit_code": 0,
+  "input": {
+    "code": 139,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "惯例非标准"
+  ],
+  "signal": 11,
+  "signal_name": "SIGSEGV",
+  "source": "128+11 = 139；linux signal.h:22 `#define SIGSEGV 11`"
+}

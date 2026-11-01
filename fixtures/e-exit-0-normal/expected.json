@@ -1,0 +1,11 @@
+{
+  "attribution": "NORMAL-EXIT",
+  "case": "e-exit-0-normal",
+  "exit_code": 0,
+  "input": {
+    "code": 0,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "source": "data/README §5.3：code == 0 → NORMAL-EXIT"
+}

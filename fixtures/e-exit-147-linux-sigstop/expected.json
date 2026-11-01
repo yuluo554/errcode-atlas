@@ -1,0 +1,16 @@
+{
+  "attribution": "SIGNAL-KILLED",
+  "case": "e-exit-147-linux-sigstop",
+  "exit_code": 0,
+  "input": {
+    "code": 147,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "惯例非标准"
+  ],
+  "signal": 19,
+  "signal_name": "SIGSTOP",
+  "source": "128+19；linux signal.h:30 `#define SIGSTOP 19`"
+}

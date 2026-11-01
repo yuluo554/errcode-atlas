@@ -1,0 +1,14 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-147-win32-python-unattributable",
+  "exit_code": 1,
+  "input": {
+    "code": 147,
+    "kind": "exitcode",
+    "platform": "win32-python"
+  },
+  "require_note_markers": [
+    "不是有效信号"
+  ],
+  "source": "n=19 不在本机 Python signal 导出集合内 → 128+n 不成立"
+}

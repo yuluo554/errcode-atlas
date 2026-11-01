@@ -1,0 +1,24 @@
+{
+  "case": "x-signal-17-no-platform",
+  "exit_code": 1,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": null,
+    "query": "17"
+  },
+  "per_platform": {
+    "linux": [
+      "SIGCHLD"
+    ],
+    "macos": [
+      "SIGSTOP"
+    ]
+  },
+  "platform_absent_in": [
+    "win32-node",
+    "win32-python"
+  ],
+  "source": "信号分叉点 §1.2：linux 17=SIGCHLD / macos 17=SIGSTOP",
+  "verdict": "AMBIGUOUS-CROSS-PLATFORM"
+}

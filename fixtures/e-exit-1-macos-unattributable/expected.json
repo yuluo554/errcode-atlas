@@ -1,0 +1,15 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-1-macos-unattributable",
+  "exit_code": 1,
+  "input": {
+    "code": 1,
+    "kind": "exitcode",
+    "platform": "macos"
+  },
+  "require_note_markers": [
+    "通用失败",
+    "无特定语义"
+  ],
+  "source": "同上，跨平台同一结论"
+}

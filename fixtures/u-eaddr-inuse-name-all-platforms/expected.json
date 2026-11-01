@@ -1,0 +1,18 @@
+{
+  "case": "u-eaddr-inuse-name-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": null,
+    "kind": "explain",
+    "platform": null,
+    "query": "EADDRINUSE"
+  },
+  "per_platform": {
+    "linux": 98,
+    "macos": 48,
+    "win32-node": 100,
+    "win32-python": 10048
+  },
+  "source": "名字查询：四平台都有定义，取值为 98/48/100/10048 —— 值发散不构成歧义",
+  "verdict": "UNAMBIGUOUS"
+}

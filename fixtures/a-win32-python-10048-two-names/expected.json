@@ -1,0 +1,16 @@
+{
+  "candidate_names": [
+    "EADDRINUSE",
+    "WSAEADDRINUSE"
+  ],
+  "case": "a-win32-python-10048-two-names",
+  "exit_code": 1,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "10048"
+  },
+  "source": "本机 errno 模块：EADDRINUSE 与 WSAEADDRINUSE 同为 10048（Python 视同一数值两名，实测导出）",
+  "verdict": "AMBIGUOUS-SAME-PLATFORM"
+}

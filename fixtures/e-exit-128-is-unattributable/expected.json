@@ -1,0 +1,11 @@
+{
+  "attribution": "UNATTRIBUTABLE",
+  "case": "e-exit-128-is-unattributable",
+  "exit_code": 1,
+  "input": {
+    "code": 128,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "source": "data/README §5.3：128+n 的 n=0 不是信号 → 128 本身不可归因"
+}

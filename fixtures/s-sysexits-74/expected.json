@@ -1,0 +1,18 @@
+{
+  "attribution": "SYSEXITS",
+  "case": "s-sysexits-74",
+  "exit_code": 0,
+  "input": {
+    "code": 74,
+    "kind": "exitcode",
+    "platform": "linux"
+  },
+  "require_note_markers": [
+    "约定非标准"
+  ],
+  "source": "man.openbsd.org/sysexits #EX_IOERR = 74",
+  "sources": [
+    "doc:#EX_IOERR"
+  ],
+  "sysexits_name": "EX_IOERR"
+}
