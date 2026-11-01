@@ -1,6 +1,8 @@
 {
+  "candidate_values": [
+    null
+  ],
   "case": "u-err-ambiguous-argument-linux",
-  "domain": "node",
   "exit_code": 0,
   "input": {
     "domain": null,
@@ -9,6 +11,5 @@
     "query": "ERR_AMBIGUOUS_ARGUMENT"
   },
   "source": "nodejs.org/api/errors.html #err_ambiguous_argument；node 是无值域 → 候选值必须是 null（无数字码值）",
-  "value": null,
   "verdict": "UNAMBIGUOUS"
 }

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_RENEGOTIATION_DISABLED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-renegotiation-disabled",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_RENEGOTIATION_DISABLED"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_renegotiation_disabled（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

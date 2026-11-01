@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EISDIR"
+  ],
+  "case": "u-errno-win32-node-21-eisdir",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-node",
+    "query": "21"
+  },
+  "source": "runtime:node v24.15.0 `#define EISDIR 21`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_TOO_MANY_ORIGINS"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-too-many-origins",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_TOO_MANY_ORIGINS"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_too_many_origins（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

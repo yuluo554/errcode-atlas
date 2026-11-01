@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_TRAILERS_ALREADY_SENT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-trailers-already-sent",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_TRAILERS_ALREADY_SENT"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_trailers_already_sent（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

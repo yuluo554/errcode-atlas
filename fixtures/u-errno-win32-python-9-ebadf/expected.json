@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EBADF"
+  ],
+  "case": "u-errno-win32-python-9-ebadf",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "9"
+  },
+  "source": "runtime:python 3.12.10 `#define EBADF 9`",
+  "verdict": "UNAMBIGUOUS"
+}

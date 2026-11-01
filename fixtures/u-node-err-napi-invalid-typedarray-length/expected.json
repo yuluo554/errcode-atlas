@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_INVALID_TYPEDARRAY_LENGTH"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-invalid-typedarray-length",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_INVALID_TYPEDARRAY_LENGTH"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_invalid_typedarray_length（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

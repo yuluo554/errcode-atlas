@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_ALPN_CALLBACK_INVALID_RESULT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-alpn-callback-invalid-result",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_ALPN_CALLBACK_INVALID_RESULT"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_alpn_callback_invalid_result（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

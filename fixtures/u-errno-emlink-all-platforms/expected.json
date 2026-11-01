@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-emlink-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EMLINK"
+  },
+  "per_platform": {
+    "linux": 31,
+    "macos": 31,
+    "win32-node": 31,
+    "win32-python": 31
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:35 `#define EMLINK 31`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

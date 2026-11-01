@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_BROTLI_INVALID_PARAM"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-brotli-invalid-param",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_BROTLI_INVALID_PARAM"
+  },
+  "source": "nodejs.org/api/errors.html#err_brotli_invalid_param（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

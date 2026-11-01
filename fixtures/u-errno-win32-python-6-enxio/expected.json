@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENXIO"
+  ],
+  "case": "u-errno-win32-python-6-enxio",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "6"
+  },
+  "source": "runtime:python 3.12.10 `#define ENXIO 6`",
+  "verdict": "UNAMBIGUOUS"
+}

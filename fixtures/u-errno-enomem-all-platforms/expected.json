@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-enomem-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "ENOMEM"
+  },
+  "per_platform": {
+    "linux": 12,
+    "macos": 12,
+    "win32-node": 12,
+    "win32-python": 12
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:16 `#define ENOMEM 12`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

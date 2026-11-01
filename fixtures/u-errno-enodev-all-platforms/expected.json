@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-enodev-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "ENODEV"
+  },
+  "per_platform": {
+    "linux": 19,
+    "macos": 19,
+    "win32-node": 19,
+    "win32-python": 19
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:23 `#define ENODEV 19`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

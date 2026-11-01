@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENFILE"
+  ],
+  "case": "u-errno-macos-23-enfile",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "23"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:115 `#define ENFILE 23`",
+  "verdict": "UNAMBIGUOUS"
+}

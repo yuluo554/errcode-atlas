@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EISDIR"
+  ],
+  "case": "u-errno-macos-21-eisdir",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "21"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:113 `#define EISDIR 21`",
+  "verdict": "UNAMBIGUOUS"
+}

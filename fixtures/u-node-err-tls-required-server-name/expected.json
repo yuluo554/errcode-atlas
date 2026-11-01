@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_REQUIRED_SERVER_NAME"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-required-server-name",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_REQUIRED_SERVER_NAME"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_required_server_name（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

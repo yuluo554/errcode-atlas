@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGBUS"
+  ],
+  "candidate_values": [
+    7
+  ],
+  "case": "u-signal-linux-sigbus",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGBUS"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:18 `#define SIGBUS 7`",
+  "verdict": "UNAMBIGUOUS"
+}

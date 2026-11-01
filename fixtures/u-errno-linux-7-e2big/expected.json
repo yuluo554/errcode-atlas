@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "E2BIG"
+  ],
+  "case": "u-errno-linux-7-e2big",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "7"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:11 `#define E2BIG 7`",
+  "verdict": "UNAMBIGUOUS"
+}

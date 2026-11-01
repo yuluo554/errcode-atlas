@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGXCPU"
+  ],
+  "candidate_values": [
+    24
+  ],
+  "case": "u-signal-macos-sigxcpu",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGXCPU"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:114 `#define SIGXCPU 24`",
+  "verdict": "UNAMBIGUOUS"
+}

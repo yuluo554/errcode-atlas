@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ZSTD_INVALID_PARAM"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-zstd-invalid-param",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ZSTD_INVALID_PARAM"
+  },
+  "source": "nodejs.org/api/errors.html#err_zstd_invalid_param（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

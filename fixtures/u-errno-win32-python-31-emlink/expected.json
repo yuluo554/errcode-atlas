@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EMLINK"
+  ],
+  "case": "u-errno-win32-python-31-emlink",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "31"
+  },
+  "source": "runtime:python 3.12.10 `#define EMLINK 31`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EISDIR"
+  ],
+  "case": "u-errno-linux-21-eisdir",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "21"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:25 `#define EISDIR 21`",
+  "verdict": "UNAMBIGUOUS"
+}

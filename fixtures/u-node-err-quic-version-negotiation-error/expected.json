@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_QUIC_VERSION_NEGOTIATION_ERROR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-quic-version-negotiation-error",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_QUIC_VERSION_NEGOTIATION_ERROR"
+  },
+  "source": "nodejs.org/api/errors.html#err_quic_version_negotiation_error（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

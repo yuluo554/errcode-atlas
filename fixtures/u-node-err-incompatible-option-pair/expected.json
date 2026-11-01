@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INCOMPATIBLE_OPTION_PAIR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-incompatible-option-pair",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INCOMPATIBLE_OPTION_PAIR"
+  },
+  "source": "nodejs.org/api/errors.html#err_incompatible_option_pair（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

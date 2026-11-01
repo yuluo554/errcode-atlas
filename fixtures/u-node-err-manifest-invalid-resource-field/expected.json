@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_MANIFEST_INVALID_RESOURCE_FIELD"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-manifest-invalid-resource-field",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_MANIFEST_INVALID_RESOURCE_FIELD"
+  },
+  "source": "nodejs.org/api/errors.html#err_manifest_invalid_resource_field（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

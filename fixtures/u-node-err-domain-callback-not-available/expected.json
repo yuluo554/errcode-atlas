@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DOMAIN_CALLBACK_NOT_AVAILABLE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-domain-callback-not-available",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DOMAIN_CALLBACK_NOT_AVAILABLE"
+  },
+  "source": "nodejs.org/api/errors.html#err_domain_callback_not_available（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

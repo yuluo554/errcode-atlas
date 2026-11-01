@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EMFILE"
+  ],
+  "case": "u-errno-24-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "24"
+  },
+  "per_platform": {
+    "linux": [
+      "EMFILE"
+    ],
+    "macos": [
+      "EMFILE"
+    ],
+    "win32-node": [
+      "EMFILE"
+    ],
+    "win32-python": [
+      "EMFILE"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EMFILE=24 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

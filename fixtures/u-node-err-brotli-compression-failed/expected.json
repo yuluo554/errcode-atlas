@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_BROTLI_COMPRESSION_FAILED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-brotli-compression-failed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_BROTLI_COMPRESSION_FAILED"
+  },
+  "source": "nodejs.org/api/errors.html#err_brotli_compression_failed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

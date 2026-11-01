@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_REQUIRE_ESM_RACE_CONDITION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-require-esm-race-condition",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_REQUIRE_ESM_RACE_CONDITION"
+  },
+  "source": "nodejs.org/api/errors.html#err_require_esm_race_condition（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

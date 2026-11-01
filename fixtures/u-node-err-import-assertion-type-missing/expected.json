@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_IMPORT_ASSERTION_TYPE_MISSING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-import-assertion-type-missing",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_IMPORT_ASSERTION_TYPE_MISSING"
+  },
+  "source": "nodejs.org/api/errors.html#err_import_assertion_type_missing（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

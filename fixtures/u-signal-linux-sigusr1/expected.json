@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGUSR1"
+  ],
+  "candidate_values": [
+    10
+  ],
+  "case": "u-signal-linux-sigusr1",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGUSR1"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:21 `#define SIGUSR1 10`",
+  "verdict": "UNAMBIGUOUS"
+}

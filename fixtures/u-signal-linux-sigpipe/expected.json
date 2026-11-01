@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGPIPE"
+  ],
+  "candidate_values": [
+    13
+  ],
+  "case": "u-signal-linux-sigpipe",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGPIPE"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:24 `#define SIGPIPE 13`",
+  "verdict": "UNAMBIGUOUS"
+}

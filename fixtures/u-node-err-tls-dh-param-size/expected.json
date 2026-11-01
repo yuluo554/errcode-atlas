@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_DH_PARAM_SIZE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-dh-param-size",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_DH_PARAM_SIZE"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_dh_param_size（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

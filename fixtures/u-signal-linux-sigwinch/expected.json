@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGWINCH"
+  ],
+  "candidate_values": [
+    28
+  ],
+  "case": "u-signal-linux-sigwinch",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGWINCH"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:39 `#define SIGWINCH 28`",
+  "verdict": "UNAMBIGUOUS"
+}

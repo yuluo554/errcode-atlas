@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EINVAL"
+  ],
+  "case": "u-errno-linux-22-einval",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "22"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:26 `#define EINVAL 22`",
+  "verdict": "UNAMBIGUOUS"
+}

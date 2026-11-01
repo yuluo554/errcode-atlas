@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_STREAM_READ_NOT_IMPLEMENTED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-stream-read-not-implemented",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_STREAM_READ_NOT_IMPLEMENTED"
+  },
+  "source": "nodejs.org/api/errors.html#err_stream_read_not_implemented（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

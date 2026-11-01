@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_STREAM_SELF_DEPENDENCY"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-stream-self-dependency",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_STREAM_SELF_DEPENDENCY"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_stream_self_dependency（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

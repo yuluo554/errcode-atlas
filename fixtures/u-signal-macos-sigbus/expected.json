@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGBUS"
+  ],
+  "candidate_values": [
+    10
+  ],
+  "case": "u-signal-macos-sigbus",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGBUS"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:98 `#define SIGBUS 10`",
+  "verdict": "UNAMBIGUOUS"
+}

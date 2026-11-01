@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTTIN"
+  ],
+  "candidate_values": [
+    21
+  ],
+  "case": "u-signal-macos-sigttin",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGTTIN"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:109 `#define SIGTTIN 21`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ECHILD"
+  ],
+  "case": "u-errno-macos-10-echild",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "10"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:99 `#define ECHILD 10`",
+  "verdict": "UNAMBIGUOUS"
+}

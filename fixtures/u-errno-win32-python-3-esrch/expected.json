@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ESRCH"
+  ],
+  "case": "u-errno-win32-python-3-esrch",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "3"
+  },
+  "source": "runtime:python 3.12.10 `#define ESRCH 3`",
+  "verdict": "UNAMBIGUOUS"
+}

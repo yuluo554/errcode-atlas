@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_SCRYPT_NOT_SUPPORTED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-scrypt-not-supported",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_SCRYPT_NOT_SUPPORTED"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_scrypt_not_supported（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

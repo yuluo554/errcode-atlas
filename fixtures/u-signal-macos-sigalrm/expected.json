@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGALRM"
+  ],
+  "candidate_values": [
+    14
+  ],
+  "case": "u-signal-macos-sigalrm",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGALRM"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:102 `#define SIGALRM 14`",
+  "verdict": "UNAMBIGUOUS"
+}

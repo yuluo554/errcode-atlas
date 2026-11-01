@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_ASYNC_ID"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-async-id",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_ASYNC_ID"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_async_id（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

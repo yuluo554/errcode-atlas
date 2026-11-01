@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_TOO_MANY_INVALID_FRAMES"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-too-many-invalid-frames",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_TOO_MANY_INVALID_FRAMES"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_too_many_invalid_frames（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

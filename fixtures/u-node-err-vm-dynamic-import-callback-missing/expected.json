@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-vm-dynamic-import-callback-missing",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING"
+  },
+  "source": "nodejs.org/api/errors.html#err_vm_dynamic_import_callback_missing（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

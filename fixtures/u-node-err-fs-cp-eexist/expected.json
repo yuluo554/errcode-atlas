@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_CP_EEXIST"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-cp-eexist",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_CP_EEXIST"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_cp_eexist（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

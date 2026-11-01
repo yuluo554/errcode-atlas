@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-edom-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EDOM"
+  },
+  "per_platform": {
+    "linux": 33,
+    "macos": 33,
+    "win32-node": 33,
+    "win32-python": 33
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:37 `#define EDOM 33`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

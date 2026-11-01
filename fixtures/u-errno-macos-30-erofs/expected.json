@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EROFS"
+  ],
+  "case": "u-errno-macos-30-erofs",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "30"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:122 `#define EROFS 30`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_WATCH_QUEUE_OVERFLOW"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-watch-queue-overflow",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_WATCH_QUEUE_OVERFLOW"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_watch_queue_overflow（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

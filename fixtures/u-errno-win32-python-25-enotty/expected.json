@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOTTY"
+  ],
+  "case": "u-errno-win32-python-25-enotty",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "25"
+  },
+  "source": "runtime:python 3.12.10 `#define ENOTTY 25`",
+  "verdict": "UNAMBIGUOUS"
+}

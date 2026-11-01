@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ARG_NOT_ITERABLE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-arg-not-iterable",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ARG_NOT_ITERABLE"
+  },
+  "source": "nodejs.org/api/errors.html#err_arg_not_iterable（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

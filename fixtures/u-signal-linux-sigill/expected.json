@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGILL"
+  ],
+  "candidate_values": [
+    4
+  ],
+  "case": "u-signal-linux-sigill",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGILL"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:14 `#define SIGILL 4`",
+  "verdict": "UNAMBIGUOUS"
+}

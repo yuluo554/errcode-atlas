@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_ALPN_CALLBACK_WITH_PROTOCOLS"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-alpn-callback-with-protocols",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_ALPN_CALLBACK_WITH_PROTOCOLS"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_alpn_callback_with_protocols（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

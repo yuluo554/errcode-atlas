@@ -182,23 +182,28 @@
 
 > 未达上表门槛不得进入 M4 出口。**具体数值以本节为准，`plan/01` 不复述。**
 
-### 4.1 M3 已落实的部分与 M4 承接的部分（分界，不是打折）
+### 4.1 M3/M4 的分界与落点（分界，不是打折）
 
-| 门槛项 | M3 状态 | 证据 |
+| 门槛项 | 状态 | 证据 |
 |---|---|---|
-| 判定态五态各 ≥2 / `UNKNOWN` 与 `UNAMBIGUOUS` 各 ≥3 | ✅ 已在种子语料里达到 | `tests/test_fixtures_meta.py::test_every_verdict_has_at_least_two_cases` 与 `::test_high_bar_verdicts_have_at_least_three_cases` |
-| `UNKNOWN` 两形态各 ≥1 | ✅ | `::test_unknown_has_both_shapes`（按真编目查表判定形态，不是只看"给了域"） |
+| 判定态五态各 ≥2 / `UNKNOWN` 与 `UNAMBIGUOUS` 各 ≥3 | ✅ M3 | `tests/test_fixtures_meta.py::test_every_verdict_has_at_least_two_cases` 与 `::test_high_bar_verdicts_have_at_least_three_cases` |
+| `UNKNOWN` 两形态各 ≥1 | ✅ M3 | `::test_unknown_has_both_shapes`（按真编目查表判定形态，不是只看"给了域"） |
 | 退出码 `0` / `1` / `64–78` / `128+n`(n∈{2,9,11,15}) / 越界 | ✅ `64–78` 全 15 条；`128+n` 取 n∈{2,9,11,15,19}；越界含 `-1/256` | `::test_all_fifteen_sysexits_codes_are_covered`、`::test_unattributable_exit_one_is_present`、`::test_128_plus_n_invalid_case_is_present` |
 | 信号分叉点五个（`SIGBUS`/`SIGSTKFLT`/`SIGSTOP`/`SIGCHLD`/`SIGUSR1`） | ✅ 各一例（其中 `SIGSTKFLT` 走 `PLATFORM-ABSENT` 形态） | `::test_signal_fork_points_have_a_cross_platform_case`、`::test_sigstkflt_fork_has_platform_absent_case` |
 | 三个 Windows 数值差异点 | ✅ 双视角各一例 | `::test_windows_dual_view_numeric_points_are_covered` |
-| **errno 三平台 × ≥30 个公共常量** | ⬜ **M4** | 种子语料只取差异点与代表值，未铺满 30 个/平台 |
-| **信号两平台 × 全部 `#define SIG*`**（66 条） | ⬜ **M4** | 同上：已覆盖全部分叉点，未逐条铺满 |
-| **Node 435 节逐条** | ⬜ **M4** | 种子语料取 3 条代表（现行 / 弃用 / 跨视角缺失） |
+| **errno 三平台 × ≥30 个公共常量** | ✅ **M4**：31 个四轴同值常量 × 4 个平台轴 = **124 条数字查询**（`linux` / `macos` / `win32-node` / `win32-python` 各 31）+ 31 条无平台名字查询 | `::test_errno_three_platforms_cover_thirty_common_constants`（4 个平台轴逐轴断言；"公共常量"从真编目现算，不写死名单） |
+| **信号两平台 × 全部 `#define SIG*`**（66 条） | ✅ **M4**：`linux` **34** 条 + `macos` **32** 条 = 66 条，逐条一条 case，名字查询钉到号数 | `::test_signals_cover_every_catalog_define`（编目里有的名字必须在语料里有一条，缺一条即红） |
+| **Node 435 节逐条** | ✅ **M4**：**435** 条逐条一条 case（名字 + 平台，无数字码值）；弃用 **52** 条在 `source` 里点名 legacy | `::test_node_covers_every_catalog_section`、`::test_legacy_node_codes_name_legacy_in_their_source` |
+| 反向样本压过歧义样本 | ✅ **M4**：`UNAMBIGUOUS` 700 例 vs `AMBIGUOUS-*` 10 例 | `::test_unambiguous_cases_outnumber_ambiguous_ones`（两侧都从语料现数，不写死比例） |
 
 > **这张表的存在理由**：`plan/HANDOFF-M3.md` §三把 M3 定义为"判定层收口"、M4 定义为"语料成规模"，
 > 而 §六 的 DoD 又写着"覆盖 §4 全部门槛"。两处并存会让人把 M4 的规模活算进 M3。
 > 表把"已在种子语料里证明可达"与"还要铺满规模"分开列 —— **不是降级门槛，是把两棒的分界写清楚**。
 > `plan/05` §2 的 M3 DoD 三条（五态可达 / `128+n` 有效性 / 判定顺序逐行测）与本节上半张表一致。
+>
+> **M4 收尾时本表末尾四行由 ⬜ 翻 ✅**（`plan/HANDOFF-M4.md` §三 第 1 条的落点）：
+> 三条规模门槛各有一条**可跑红**的判据在看，不是靠人认定"铺够了"。语料规模：
+> `fixtures/` **746 个 case / 1492 个文件**，`bench` 扫全部 746 个 case **0 项不符**。
 
 ---
 

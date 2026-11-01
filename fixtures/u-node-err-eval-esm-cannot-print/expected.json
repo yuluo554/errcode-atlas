@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_EVAL_ESM_CANNOT_PRINT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-eval-esm-cannot-print",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_EVAL_ESM_CANNOT_PRINT"
+  },
+  "source": "nodejs.org/api/errors.html#err_eval_esm_cannot_print（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

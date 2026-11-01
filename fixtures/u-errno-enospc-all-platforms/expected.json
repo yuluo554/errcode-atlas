@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-enospc-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "ENOSPC"
+  },
+  "per_platform": {
+    "linux": 28,
+    "macos": 28,
+    "win32-node": 28,
+    "win32-python": 28
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:32 `#define ENOSPC 28`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_OBJECT_DEFINE_PROPERTY"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-object-define-property",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_OBJECT_DEFINE_PROPERTY"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_object_define_property（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

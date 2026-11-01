@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_EVENT_RECURSION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-event-recursion",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_EVENT_RECURSION"
+  },
+  "source": "nodejs.org/api/errors.html#err_event_recursion（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

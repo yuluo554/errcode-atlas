@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EPERM"
+  ],
+  "case": "u-errno-1-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "1"
+  },
+  "per_platform": {
+    "linux": [
+      "EPERM"
+    ],
+    "macos": [
+      "EPERM"
+    ],
+    "win32-node": [
+      "EPERM"
+    ],
+    "win32-python": [
+      "EPERM"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EPERM=1 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

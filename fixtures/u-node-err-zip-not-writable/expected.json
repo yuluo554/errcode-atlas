@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ZIP_NOT_WRITABLE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-zip-not-writable",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ZIP_NOT_WRITABLE"
+  },
+  "source": "nodejs.org/api/errors.html#err_zip_not_writable（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

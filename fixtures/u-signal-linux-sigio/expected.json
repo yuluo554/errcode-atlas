@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGIO"
+  ],
+  "candidate_values": [
+    29
+  ],
+  "case": "u-signal-linux-sigio",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGIO"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:40 `#define SIGIO 29`",
+  "verdict": "UNAMBIGUOUS"
+}

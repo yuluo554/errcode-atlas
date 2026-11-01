@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EINVAL"
+  ],
+  "case": "u-errno-22-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "22"
+  },
+  "per_platform": {
+    "linux": [
+      "EINVAL"
+    ],
+    "macos": [
+      "EINVAL"
+    ],
+    "win32-node": [
+      "EINVAL"
+    ],
+    "win32-python": [
+      "EINVAL"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EINVAL=22 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGFPE"
+  ],
+  "candidate_values": [
+    8
+  ],
+  "case": "u-signal-linux-sigfpe",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGFPE"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:19 `#define SIGFPE 8`",
+  "verdict": "UNAMBIGUOUS"
+}

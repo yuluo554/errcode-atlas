@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_SYNC_FORK_INPUT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-sync-fork-input",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_SYNC_FORK_INPUT"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_sync_fork_input（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

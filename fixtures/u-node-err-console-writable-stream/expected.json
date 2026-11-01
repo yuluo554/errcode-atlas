@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CONSOLE_WRITABLE_STREAM"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-console-writable-stream",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CONSOLE_WRITABLE_STREAM"
+  },
+  "source": "nodejs.org/api/errors.html#err_console_writable_stream（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

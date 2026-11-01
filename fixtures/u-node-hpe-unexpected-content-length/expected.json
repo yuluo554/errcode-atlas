@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "HPE_UNEXPECTED_CONTENT_LENGTH"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-hpe-unexpected-content-length",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "HPE_UNEXPECTED_CONTENT_LENGTH"
+  },
+  "source": "nodejs.org/api/errors.html#hpe_unexpected_content_length（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_TIMING_SAFE_EQUAL_LENGTH"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-timing-safe-equal-length",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_TIMING_SAFE_EQUAL_LENGTH"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_timing_safe_equal_length（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

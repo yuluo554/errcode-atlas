@@ -56,7 +56,8 @@
 | Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 编目入包 | `bench` 抽样 | ✅ M2（`node` 域 435 条 = 现行 383 + 弃用 52，`kind: doc`） |
 | `sysexits` 64–78 | `man.openbsd.org/sysexits` | ✅ 编目入包 | `bench` | ✅ M2（`exit` 域 15 条，`kind: doc`，四轴共享） |
 | `128+n` 归因 | POSIX 惯例（**非标准**，须标注） | ✅ 内置规则 | `selftest` 断言含 `n` 有效性检查 | ✅ M3（`selftest._check_signal_validity` + 语料 `e-exit-137-win32-python-invalid-n`） |
-| 五判定态 | `data/README.md` §5 | ✅ | `bench` 全态覆盖 | ✅ M3（`selftest` 五态可达 + `bench` 59 case 比对结果对象） |
+| 基准语料覆盖 §4 全部门槛 | `data/README.md` §4 + `fixtures/` | ✅ | `bench` + `tests/test_fixtures_meta.py` | ✅ M4（746 case / 1492 文件；三条规模门槛各一条判据） |
+| 五判定态 | `data/README.md` §5 | ✅ | `bench` 全态覆盖 | ✅ M3（`selftest` 五态可达）；M4 扩到 **746 case** 仍逐 case 比对结果对象 |
 | Skill 契约块双向一致 | `SKILL.md` ↔ `src` | ✅ | `tests/test_contract.py` | ⬜ 待 M5 |
 | 裸 clone 可复现 | README 步骤 | ✅ | 手工 + CI | ⬜ 待 M6 |
 
@@ -73,7 +74,7 @@
 | M1 | 数据先行 | 三平台头文件逐条抽取入编目、出处行号登记、`data/gaps.md` 建表 | 编目每条**带出处**；`build --check` 可复现；`data/README.md` §5 口径定稿 | ✅ |
 | M2 | 解析 | Node 错误码抽取、sysexits 入编目、编目→查询索引 | 抽样对账一致；`UNKNOWN` 路径可复现 | ✅ |
 | M3 | 判定 | 五判定态 + 退出码归因 | `bench` 全绿，含 `exit 1`→`UNATTRIBUTABLE` 断言 | ✅ |
-| M4 | 基准 | 植入真值语料（含跨平台分叉点全覆盖）+ 不可归因集 | `selftest`/`bench` 可跑，退出码语义断言通过 | ⬜ |
+| M4 | 基准 | 语料成规模（`data/README.md` §4 三条规模门槛）+ 跨平台不偏歧义 + `bench`/`selftest` 加固 | `bench` 扫 746 case 全绿；§4 三条规模门槛各有一条可跑红判据 | ✅ |
 | M5 | 交付 | CLI + `SKILL.md` + 技术报告 + demo GIF | 四格表全绿；`docs/技术报告.md`、`docs/demo/demo.gif` 存在 | ⬜ |
 | M6 | 发布 | 公开发布 | **①git tag ②GitHub Release（附产物：≥1 个手工上传附件，本地留副本 + sha256）③`plan/RELEASE-M6.md`（tag 前落盘，tag 后事实分栏追加）**；`check_release.py` 无 FAIL | ⬜ |
 
@@ -109,7 +110,7 @@
 | 数据计划 | `plan/04-数据计划.md` | M1 | `git ls-files` |
 | 三平台编目源 | `data/catalog/{linux,macos,windows}.yaml` | M1 | `git ls-files data/catalog/` |
 | 缺口登记 | `data/gaps.md` | M1 | `git ls-files data/gaps.md` |
-| 基准语料 | `fixtures/*/INPUT.md` + `expected.json` | M2 | `git ls-files fixtures/` |
+| 基准语料 | `fixtures/*/INPUT.md` + `expected.json` | M2（种子）+ M4（§4 规模） | `git ls-files fixtures/` |
 | 自测与基准 | `tests/` + `selftest`/`bench` | M3/M4 | `pytest && errcode-atlas bench` |
 | Agent Skill | `SKILL.md` | M5 | `git ls-files SKILL.md` |
 | 技术报告 | `docs/技术报告.md` | M5 | `git ls-files docs/` |

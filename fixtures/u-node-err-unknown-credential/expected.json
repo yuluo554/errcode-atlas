@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNKNOWN_CREDENTIAL"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unknown-credential",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNKNOWN_CREDENTIAL"
+  },
+  "source": "nodejs.org/api/errors.html#err_unknown_credential（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

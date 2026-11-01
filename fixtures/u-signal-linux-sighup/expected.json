@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGHUP"
+  ],
+  "candidate_values": [
+    1
+  ],
+  "case": "u-signal-linux-sighup",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGHUP"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:11 `#define SIGHUP 1`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGILL"
+  ],
+  "candidate_values": [
+    4
+  ],
+  "case": "u-signal-macos-sigill",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGILL"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:87 `#define SIGILL 4`",
+  "verdict": "UNAMBIGUOUS"
+}

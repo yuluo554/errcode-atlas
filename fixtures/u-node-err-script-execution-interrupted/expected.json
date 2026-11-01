@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_SCRIPT_EXECUTION_INTERRUPTED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-script-execution-interrupted",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_SCRIPT_EXECUTION_INTERRUPTED"
+  },
+  "source": "nodejs.org/api/errors.html#err_script_execution_interrupted（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

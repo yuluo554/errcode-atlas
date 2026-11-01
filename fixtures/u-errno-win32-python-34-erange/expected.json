@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ERANGE"
+  ],
+  "case": "u-errno-win32-python-34-erange",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "34"
+  },
+  "source": "runtime:python 3.12.10 `#define ERANGE 34`",
+  "verdict": "UNAMBIGUOUS"
+}

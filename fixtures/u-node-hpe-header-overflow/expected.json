@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "HPE_HEADER_OVERFLOW"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-hpe-header-overflow",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "HPE_HEADER_OVERFLOW"
+  },
+  "source": "nodejs.org/api/errors.html#hpe_header_overflow（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

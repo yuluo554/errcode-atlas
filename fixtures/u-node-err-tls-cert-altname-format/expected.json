@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_CERT_ALTNAME_FORMAT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-cert-altname-format",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_CERT_ALTNAME_FORMAT"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_cert_altname_format（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

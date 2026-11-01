@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ECHILD"
+  ],
+  "case": "u-errno-linux-10-echild",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "10"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:14 `#define ECHILD 10`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-erofs-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EROFS"
+  },
+  "per_platform": {
+    "linux": 30,
+    "macos": 30,
+    "win32-node": 30,
+    "win32-python": 30
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:34 `#define EROFS 30`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

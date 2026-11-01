@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EXDEV"
+  ],
+  "case": "u-errno-macos-18-exdev",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "18"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:110 `#define EXDEV 18`",
+  "verdict": "UNAMBIGUOUS"
+}

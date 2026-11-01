@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INPUT_TYPE_NOT_ALLOWED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-input-type-not-allowed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INPUT_TYPE_NOT_ALLOWED"
+  },
+  "source": "nodejs.org/api/errors.html#err_input_type_not_allowed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

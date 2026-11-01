@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-exdev-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EXDEV"
+  },
+  "per_platform": {
+    "linux": 18,
+    "macos": 18,
+    "win32-node": 18,
+    "win32-python": 18
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:22 `#define EXDEV 18`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

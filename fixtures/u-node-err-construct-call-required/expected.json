@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CONSTRUCT_CALL_REQUIRED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-construct-call-required",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CONSTRUCT_CALL_REQUIRED"
+  },
+  "source": "nodejs.org/api/errors.html#err_construct_call_required（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

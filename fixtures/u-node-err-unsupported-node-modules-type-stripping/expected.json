@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unsupported-node-modules-type-stripping",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING"
+  },
+  "source": "nodejs.org/api/errors.html#err_unsupported_node_modules_type_stripping（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

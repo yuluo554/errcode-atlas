@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_SIGN_KEY_REQUIRED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-sign-key-required",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_SIGN_KEY_REQUIRED"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_sign_key_required（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

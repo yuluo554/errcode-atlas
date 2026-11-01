@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-ebusy-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EBUSY"
+  },
+  "per_platform": {
+    "linux": 16,
+    "macos": 16,
+    "win32-node": 16,
+    "win32-python": 16
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:20 `#define EBUSY 16`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

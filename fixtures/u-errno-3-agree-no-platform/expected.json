@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ESRCH"
+  ],
+  "case": "u-errno-3-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "3"
+  },
+  "per_platform": {
+    "linux": [
+      "ESRCH"
+    ],
+    "macos": [
+      "ESRCH"
+    ],
+    "win32-node": [
+      "ESRCH"
+    ],
+    "win32-python": [
+      "ESRCH"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ESRCH=3 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_INVALID_SESSION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-invalid-session",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_INVALID_SESSION"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_invalid_session（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

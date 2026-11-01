@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_OPTIONS_BEFORE_BOOTSTRAPPING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-options-before-bootstrapping",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_OPTIONS_BEFORE_BOOTSTRAPPING"
+  },
+  "source": "nodejs.org/api/errors.html#err_options_before_bootstrapping（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "MODULE_NOT_FOUND"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-module-not-found",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "MODULE_NOT_FOUND"
+  },
+  "source": "nodejs.org/api/errors.html#module_not_found（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

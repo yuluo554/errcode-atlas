@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-eisdir-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EISDIR"
+  },
+  "per_platform": {
+    "linux": 21,
+    "macos": 21,
+    "win32-node": 21,
+    "win32-python": 21
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:25 `#define EISDIR 21`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

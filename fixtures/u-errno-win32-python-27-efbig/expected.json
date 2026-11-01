@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EFBIG"
+  ],
+  "case": "u-errno-win32-python-27-efbig",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "27"
+  },
+  "source": "runtime:python 3.12.10 `#define EFBIG 27`",
+  "verdict": "UNAMBIGUOUS"
+}

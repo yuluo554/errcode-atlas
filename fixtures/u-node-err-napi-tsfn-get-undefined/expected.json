@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_TSFN_GET_UNDEFINED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-tsfn-get-undefined",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_TSFN_GET_UNDEFINED"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_tsfn_get_undefined（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

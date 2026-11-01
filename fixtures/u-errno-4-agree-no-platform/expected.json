@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EINTR"
+  ],
+  "case": "u-errno-4-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "4"
+  },
+  "per_platform": {
+    "linux": [
+      "EINTR"
+    ],
+    "macos": [
+      "EINTR"
+    ],
+    "win32-node": [
+      "EINTR"
+    ],
+    "win32-python": [
+      "EINTR"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EINTR=4 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

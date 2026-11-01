@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EXDEV"
+  ],
+  "case": "u-errno-linux-18-exdev",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "18"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:22 `#define EXDEV 18`",
+  "verdict": "UNAMBIGUOUS"
+}

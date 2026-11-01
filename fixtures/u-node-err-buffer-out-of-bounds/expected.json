@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_BUFFER_OUT_OF_BOUNDS"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-buffer-out-of-bounds",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_BUFFER_OUT_OF_BOUNDS"
+  },
+  "source": "nodejs.org/api/errors.html#err_buffer_out_of_bounds（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

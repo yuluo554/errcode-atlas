@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNAVAILABLE_DURING_EXIT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unavailable-during-exit",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNAVAILABLE_DURING_EXIT"
+  },
+  "source": "nodejs.org/api/errors.html#err_unavailable_during_exit（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

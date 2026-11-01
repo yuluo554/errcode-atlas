@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CHILD_PROCESS_IPC_REQUIRED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-child-process-ipc-required",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CHILD_PROCESS_IPC_REQUIRED"
+  },
+  "source": "nodejs.org/api/errors.html#err_child_process_ipc_required（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

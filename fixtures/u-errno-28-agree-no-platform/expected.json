@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ENOSPC"
+  ],
+  "case": "u-errno-28-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "28"
+  },
+  "per_platform": {
+    "linux": [
+      "ENOSPC"
+    ],
+    "macos": [
+      "ENOSPC"
+    ],
+    "win32-node": [
+      "ENOSPC"
+    ],
+    "win32-python": [
+      "ENOSPC"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ENOSPC=28 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

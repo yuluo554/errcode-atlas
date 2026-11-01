@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGCHLD"
+  ],
+  "candidate_values": [
+    17
+  ],
+  "case": "u-signal-linux-sigchld",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGCHLD"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:28 `#define SIGCHLD 17`",
+  "verdict": "UNAMBIGUOUS"
+}

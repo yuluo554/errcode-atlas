@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTTOU"
+  ],
+  "candidate_values": [
+    22
+  ],
+  "case": "u-signal-macos-sigttou",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGTTOU"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:110 `#define SIGTTOU 22`",
+  "verdict": "UNAMBIGUOUS"
+}

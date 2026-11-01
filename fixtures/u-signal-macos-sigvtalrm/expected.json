@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGVTALRM"
+  ],
+  "candidate_values": [
+    26
+  ],
+  "case": "u-signal-macos-sigvtalrm",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGVTALRM"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:116 `#define SIGVTALRM 26`",
+  "verdict": "UNAMBIGUOUS"
+}

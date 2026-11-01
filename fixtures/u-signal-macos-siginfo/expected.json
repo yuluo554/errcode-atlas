@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGINFO"
+  ],
+  "candidate_values": [
+    29
+  ],
+  "case": "u-signal-macos-siginfo",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGINFO"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:120 `#define SIGINFO 29`",
+  "verdict": "UNAMBIGUOUS"
+}

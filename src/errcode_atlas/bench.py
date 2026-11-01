@@ -76,6 +76,16 @@ def _normalized_per_platform(value: Any) -> dict[str, Any]:
     return dict(sorted(normalized.items()))
 
 
+def _sorted_values(values: list[Any]) -> list[Any]:
+    """候选值排序：``None``（无值域的合法取值）与整数不能直接比大小。
+
+    键把 ``None`` 统一排到前面 —— 否则 `node` 域的 case 会在排序上抛 TypeError，
+    而"排序崩了"会被误读成"语料错了"。命名带前导下划线是**有意**的：`test_report.py`
+    的 AST 守门会扫描本模块，私有排序助手不该被当成导出面。
+    """
+    return sorted(values, key=lambda v: (v is not None, v if v is not None else 0))
+
+
 def _check_case(name: str, expected: dict[str, Any], catalog: Catalog) -> list[str]:
     problems: list[str] = []
     query_spec = expected.get("input", {})
@@ -97,6 +107,16 @@ def _check_case(name: str, expected: dict[str, Any], catalog: Catalog) -> list[s
             want = sorted(expected["candidate_names"])
             if got_names != want:
                 problems.append(f"{name}: candidate_names 期望 {want} 实得 {got_names}")
+        # 名字查询的核心证据是**这个名字对应几号**：只断言名字的话，
+        # `SIGHUP` 答成 2 号也全绿（M4 补）。数字形态不写本字段 —— 它恒等于查询值，
+        # 写了就是自我参照（K26 同一类）。
+        if "candidate_values" in expected:
+            got_values = _sorted_values([c.get("value") for c in actual["candidates"]])
+            want_values = _sorted_values(list(expected["candidate_values"]))
+            if got_values != want_values:
+                problems.append(
+                    f"{name}: candidate_values 期望 {want_values} 实得 {got_values}"
+                )
         if "platform_absent_in" in expected:
             got_absent = sorted(actual["platform_absent_in"])
             want_absent = sorted(expected["platform_absent_in"])

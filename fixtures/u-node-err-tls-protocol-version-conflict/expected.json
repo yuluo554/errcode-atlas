@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_PROTOCOL_VERSION_CONFLICT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-protocol-version-conflict",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_PROTOCOL_VERSION_CONFLICT"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_protocol_version_conflict（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

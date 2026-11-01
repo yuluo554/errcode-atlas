@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_WORKER_MESSAGING_ERRORED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-worker-messaging-errored",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_WORKER_MESSAGING_ERRORED"
+  },
+  "source": "nodejs.org/api/errors.html#err_worker_messaging_errored（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

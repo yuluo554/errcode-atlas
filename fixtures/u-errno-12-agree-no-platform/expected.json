@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ENOMEM"
+  ],
+  "case": "u-errno-12-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "12"
+  },
+  "per_platform": {
+    "linux": [
+      "ENOMEM"
+    ],
+    "macos": [
+      "ENOMEM"
+    ],
+    "win32-node": [
+      "ENOMEM"
+    ],
+    "win32-python": [
+      "ENOMEM"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ENOMEM=12 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

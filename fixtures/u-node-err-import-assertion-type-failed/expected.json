@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_IMPORT_ASSERTION_TYPE_FAILED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-import-assertion-type-failed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_IMPORT_ASSERTION_TYPE_FAILED"
+  },
+  "source": "nodejs.org/api/errors.html#err_import_assertion_type_failed（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

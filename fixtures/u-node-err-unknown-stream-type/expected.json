@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNKNOWN_STREAM_TYPE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unknown-stream-type",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNKNOWN_STREAM_TYPE"
+  },
+  "source": "nodejs.org/api/errors.html#err_unknown_stream_type（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

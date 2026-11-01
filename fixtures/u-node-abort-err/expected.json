@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ABORT_ERR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-abort-err",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ABORT_ERR"
+  },
+  "source": "nodejs.org/api/errors.html#abort_err（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

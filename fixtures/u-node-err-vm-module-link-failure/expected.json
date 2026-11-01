@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_VM_MODULE_LINK_FAILURE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-vm-module-link-failure",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_VM_MODULE_LINK_FAILURE"
+  },
+  "source": "nodejs.org/api/errors.html#err_vm_module_link_failure（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

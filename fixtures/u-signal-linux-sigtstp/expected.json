@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTSTP"
+  ],
+  "candidate_values": [
+    20
+  ],
+  "case": "u-signal-linux-sigtstp",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGTSTP"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:31 `#define SIGTSTP 20`",
+  "verdict": "UNAMBIGUOUS"
+}

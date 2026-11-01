@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ZIP_ENTRY_CORRUPT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-zip-entry-corrupt",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ZIP_ENTRY_CORRUPT"
+  },
+  "source": "nodejs.org/api/errors.html#err_zip_entry_corrupt（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

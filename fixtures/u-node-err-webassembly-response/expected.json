@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_WEBASSEMBLY_RESPONSE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-webassembly-response",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_WEBASSEMBLY_RESPONSE"
+  },
+  "source": "nodejs.org/api/errors.html#err_webassembly_response（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

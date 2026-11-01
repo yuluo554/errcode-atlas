@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_PROTO_ACCESS"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-proto-access",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_PROTO_ACCESS"
+  },
+  "source": "nodejs.org/api/errors.html#err_proto_access（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

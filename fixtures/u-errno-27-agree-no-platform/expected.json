@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EFBIG"
+  ],
+  "case": "u-errno-27-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "27"
+  },
+  "per_platform": {
+    "linux": [
+      "EFBIG"
+    ],
+    "macos": [
+      "EFBIG"
+    ],
+    "win32-node": [
+      "EFBIG"
+    ],
+    "win32-python": [
+      "EFBIG"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EFBIG=27 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ENOEXEC"
+  ],
+  "case": "u-errno-8-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "8"
+  },
+  "per_platform": {
+    "linux": [
+      "ENOEXEC"
+    ],
+    "macos": [
+      "ENOEXEC"
+    ],
+    "win32-node": [
+      "ENOEXEC"
+    ],
+    "win32-python": [
+      "ENOEXEC"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ENOEXEC=8 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

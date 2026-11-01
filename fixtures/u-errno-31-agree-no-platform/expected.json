@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EMLINK"
+  ],
+  "case": "u-errno-31-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "31"
+  },
+  "per_platform": {
+    "linux": [
+      "EMLINK"
+    ],
+    "macos": [
+      "EMLINK"
+    ],
+    "win32-node": [
+      "EMLINK"
+    ],
+    "win32-python": [
+      "EMLINK"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EMLINK=31 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

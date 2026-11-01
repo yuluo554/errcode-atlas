@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_VM_MODULE_ALREADY_LINKED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-vm-module-already-linked",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_VM_MODULE_ALREADY_LINKED"
+  },
+  "source": "nodejs.org/api/errors.html#err_vm_module_already_linked（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

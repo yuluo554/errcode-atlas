@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ACCESS_DENIED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-access-denied",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ACCESS_DENIED"
+  },
+  "source": "nodejs.org/api/errors.html#err_access_denied（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NOT_BUILDING_SNAPSHOT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-not-building-snapshot",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NOT_BUILDING_SNAPSHOT"
+  },
+  "source": "nodejs.org/api/errors.html#err_not_building_snapshot（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

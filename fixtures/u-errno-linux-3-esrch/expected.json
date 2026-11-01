@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ESRCH"
+  ],
+  "case": "u-errno-linux-3-esrch",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "3"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:7 `#define ESRCH 3`",
+  "verdict": "UNAMBIGUOUS"
+}

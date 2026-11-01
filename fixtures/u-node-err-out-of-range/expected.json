@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_OUT_OF_RANGE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-out-of-range",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_OUT_OF_RANGE"
+  },
+  "source": "nodejs.org/api/errors.html#err_out_of_range（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

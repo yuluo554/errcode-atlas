@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EBADF"
+  ],
+  "case": "u-errno-win32-node-9-ebadf",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-node",
+    "query": "9"
+  },
+  "source": "runtime:node v24.15.0 `#define EBADF 9`",
+  "verdict": "UNAMBIGUOUS"
+}

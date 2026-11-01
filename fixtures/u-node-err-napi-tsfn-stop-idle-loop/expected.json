@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_TSFN_STOP_IDLE_LOOP"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-tsfn-stop-idle-loop",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_TSFN_STOP_IDLE_LOOP"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_tsfn_stop_idle_loop（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

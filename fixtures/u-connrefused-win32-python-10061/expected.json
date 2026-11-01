@@ -1,6 +1,8 @@
 {
+  "candidate_values": [
+    10061
+  ],
   "case": "u-connrefused-win32-python-10061",
-  "domain": "errno",
   "exit_code": 0,
   "input": {
     "domain": "errno",
@@ -9,6 +11,5 @@
     "query": "ECONNREFUSED"
   },
   "source": "本机 errno 模块：ECONNREFUSED = 10061",
-  "value": 10061,
   "verdict": "UNAMBIGUOUS"
 }

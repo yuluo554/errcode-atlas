@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INSPECTOR_ALREADY_CONNECTED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-inspector-already-connected",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INSPECTOR_ALREADY_CONNECTED"
+  },
+  "source": "nodejs.org/api/errors.html#err_inspector_already_connected（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

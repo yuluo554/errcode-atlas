@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_SOCKET_ALREADY_BOUND"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-socket-already-bound",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_SOCKET_ALREADY_BOUND"
+  },
+  "source": "nodejs.org/api/errors.html#err_socket_already_bound（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

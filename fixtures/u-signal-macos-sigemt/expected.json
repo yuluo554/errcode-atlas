@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGEMT"
+  ],
+  "candidate_values": [
+    7
+  ],
+  "case": "u-signal-macos-sigemt",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGEMT"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:94 `#define SIGEMT 7`",
+  "verdict": "UNAMBIGUOUS"
+}

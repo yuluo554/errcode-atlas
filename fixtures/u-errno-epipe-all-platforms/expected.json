@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-epipe-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EPIPE"
+  },
+  "per_platform": {
+    "linux": 32,
+    "macos": 32,
+    "win32-node": 32,
+    "win32-python": 32
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:36 `#define EPIPE 32`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

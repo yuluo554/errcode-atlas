@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_INVALID_DATAVIEW_ARGS"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-invalid-dataview-args",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_INVALID_DATAVIEW_ARGS"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_invalid_dataview_args（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

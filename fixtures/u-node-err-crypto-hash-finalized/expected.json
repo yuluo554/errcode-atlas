@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_HASH_FINALIZED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-hash-finalized",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_HASH_FINALIZED"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_hash_finalized（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

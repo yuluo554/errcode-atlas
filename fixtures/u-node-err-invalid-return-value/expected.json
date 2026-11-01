@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_RETURN_VALUE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-return-value",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_RETURN_VALUE"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_return_value（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

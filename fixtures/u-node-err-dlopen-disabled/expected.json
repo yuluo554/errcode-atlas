@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DLOPEN_DISABLED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-dlopen-disabled",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DLOPEN_DISABLED"
+  },
+  "source": "nodejs.org/api/errors.html#err_dlopen_disabled（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

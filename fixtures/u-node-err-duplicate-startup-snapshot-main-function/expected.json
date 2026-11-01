@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DUPLICATE_STARTUP_SNAPSHOT_MAIN_FUNCTION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-duplicate-startup-snapshot-main-function",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DUPLICATE_STARTUP_SNAPSHOT_MAIN_FUNCTION"
+  },
+  "source": "nodejs.org/api/errors.html#err_duplicate_startup_snapshot_main_function（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

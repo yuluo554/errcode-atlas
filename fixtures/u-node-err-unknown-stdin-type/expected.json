@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNKNOWN_STDIN_TYPE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unknown-stdin-type",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNKNOWN_STDIN_TYPE"
+  },
+  "source": "nodejs.org/api/errors.html#err_unknown_stdin_type（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

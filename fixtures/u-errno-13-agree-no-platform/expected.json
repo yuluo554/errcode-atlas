@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EACCES"
+  ],
+  "case": "u-errno-13-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "13"
+  },
+  "per_platform": {
+    "linux": [
+      "EACCES"
+    ],
+    "macos": [
+      "EACCES"
+    ],
+    "win32-node": [
+      "EACCES"
+    ],
+    "win32-python": [
+      "EACCES"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EACCES=13 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

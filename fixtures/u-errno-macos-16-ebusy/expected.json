@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EBUSY"
+  ],
+  "case": "u-errno-macos-16-ebusy",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "16"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:108 `#define EBUSY 16`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_STREAM_ITER_MISSING_FLAG"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-stream-iter-missing-flag",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_STREAM_ITER_MISSING_FLAG"
+  },
+  "source": "nodejs.org/api/errors.html#err_stream_iter_missing_flag（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

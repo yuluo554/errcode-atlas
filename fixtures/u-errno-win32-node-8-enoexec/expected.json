@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOEXEC"
+  ],
+  "case": "u-errno-win32-node-8-enoexec",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-node",
+    "query": "8"
+  },
+  "source": "runtime:node v24.15.0 `#define ENOEXEC 8`",
+  "verdict": "UNAMBIGUOUS"
+}

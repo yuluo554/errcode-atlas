@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOEXEC"
+  ],
+  "case": "u-errno-win32-python-8-enoexec",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "8"
+  },
+  "source": "runtime:python 3.12.10 `#define ENOEXEC 8`",
+  "verdict": "UNAMBIGUOUS"
+}

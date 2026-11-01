@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP_TRAILER_INVALID"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http-trailer-invalid",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP_TRAILER_INVALID"
+  },
+  "source": "nodejs.org/api/errors.html#err_http_trailer_invalid（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

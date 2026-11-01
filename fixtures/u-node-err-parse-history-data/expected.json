@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_PARSE_HISTORY_DATA"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-parse-history-data",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_PARSE_HISTORY_DATA"
+  },
+  "source": "nodejs.org/api/errors.html#err_parse_history_data（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TRANSFORM_WITH_LENGTH_0"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-transform-with-length-0",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TRANSFORM_WITH_LENGTH_0"
+  },
+  "source": "nodejs.org/api/errors.html#err_transform_with_length_0（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

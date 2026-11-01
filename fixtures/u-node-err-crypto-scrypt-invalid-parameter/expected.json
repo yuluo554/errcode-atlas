@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_SCRYPT_INVALID_PARAMETER"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-scrypt-invalid-parameter",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_SCRYPT_INVALID_PARAMETER"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_scrypt_invalid_parameter（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

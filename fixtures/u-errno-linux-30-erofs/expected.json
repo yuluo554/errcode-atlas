@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EROFS"
+  ],
+  "case": "u-errno-linux-30-erofs",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "30"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:34 `#define EROFS 30`",
+  "verdict": "UNAMBIGUOUS"
+}

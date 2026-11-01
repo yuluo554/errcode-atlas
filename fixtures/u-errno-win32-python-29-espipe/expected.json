@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ESPIPE"
+  ],
+  "case": "u-errno-win32-python-29-espipe",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "29"
+  },
+  "source": "runtime:python 3.12.10 `#define ESPIPE 29`",
+  "verdict": "UNAMBIGUOUS"
+}

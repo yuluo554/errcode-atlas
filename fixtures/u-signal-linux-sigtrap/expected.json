@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTRAP"
+  ],
+  "candidate_values": [
+    5
+  ],
+  "case": "u-signal-linux-sigtrap",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGTRAP"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:15 `#define SIGTRAP 5`",
+  "verdict": "UNAMBIGUOUS"
+}

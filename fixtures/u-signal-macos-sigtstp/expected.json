@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTSTP"
+  ],
+  "candidate_values": [
+    18
+  ],
+  "case": "u-signal-macos-sigtstp",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGTSTP"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:106 `#define SIGTSTP 18`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EFAULT"
+  ],
+  "case": "u-errno-win32-python-14-efault",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "14"
+  },
+  "source": "runtime:python 3.12.10 `#define EFAULT 14`",
+  "verdict": "UNAMBIGUOUS"
+}

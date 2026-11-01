@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_INVALID_KEY_OBJECT_TYPE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-invalid-key-object-type",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_INVALID_KEY_OBJECT_TYPE"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_invalid_key_object_type（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FEATURE_UNAVAILABLE_ON_PLATFORM"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-feature-unavailable-on-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FEATURE_UNAVAILABLE_ON_PLATFORM"
+  },
+  "source": "nodejs.org/api/errors.html#err_feature_unavailable_on_platform（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

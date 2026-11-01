@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_UNKNOWN_CIPHER"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-unknown-cipher",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_UNKNOWN_CIPHER"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_unknown_cipher（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

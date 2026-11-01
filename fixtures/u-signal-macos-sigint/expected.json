@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGINT"
+  ],
+  "candidate_values": [
+    2
+  ],
+  "case": "u-signal-macos-sigint",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGINT"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:85 `#define SIGINT 2`",
+  "verdict": "UNAMBIGUOUS"
+}

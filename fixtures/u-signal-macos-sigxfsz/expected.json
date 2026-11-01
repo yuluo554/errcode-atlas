@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGXFSZ"
+  ],
+  "candidate_values": [
+    25
+  ],
+  "case": "u-signal-macos-sigxfsz",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGXFSZ"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:115 `#define SIGXFSZ 25`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_CP_NON_DIR_TO_DIR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-cp-non-dir-to-dir",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_CP_NON_DIR_TO_DIR"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_cp_non_dir_to_dir（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

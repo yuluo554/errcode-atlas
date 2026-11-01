@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CANNOT_WATCH_SIGINT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-cannot-watch-sigint",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CANNOT_WATCH_SIGINT"
+  },
+  "source": "nodejs.org/api/errors.html#err_cannot_watch_sigint（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

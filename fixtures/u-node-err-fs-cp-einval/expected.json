@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_CP_EINVAL"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-cp-einval",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_CP_EINVAL"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_cp_einval（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

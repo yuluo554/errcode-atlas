@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DIR_CLOSED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-dir-closed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DIR_CLOSED"
+  },
+  "source": "nodejs.org/api/errors.html#err_dir_closed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

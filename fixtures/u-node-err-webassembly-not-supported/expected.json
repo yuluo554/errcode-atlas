@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_WEBASSEMBLY_NOT_SUPPORTED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-webassembly-not-supported",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_WEBASSEMBLY_NOT_SUPPORTED"
+  },
+  "source": "nodejs.org/api/errors.html#err_webassembly_not_supported（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-enotty-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "ENOTTY"
+  },
+  "per_platform": {
+    "linux": 25,
+    "macos": 25,
+    "win32-node": 25,
+    "win32-python": 25
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:29 `#define ENOTTY 25`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

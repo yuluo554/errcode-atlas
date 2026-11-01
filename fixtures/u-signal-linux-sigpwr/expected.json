@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGPWR"
+  ],
+  "candidate_values": [
+    30
+  ],
+  "case": "u-signal-linux-sigpwr",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGPWR"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:45 `#define SIGPWR 30`",
+  "verdict": "UNAMBIGUOUS"
+}

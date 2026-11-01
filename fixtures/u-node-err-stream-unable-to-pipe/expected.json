@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_STREAM_UNABLE_TO_PIPE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-stream-unable-to-pipe",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_STREAM_UNABLE_TO_PIPE"
+  },
+  "source": "nodejs.org/api/errors.html#err_stream_unable_to_pipe（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

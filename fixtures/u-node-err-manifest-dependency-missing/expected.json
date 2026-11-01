@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_MANIFEST_DEPENDENCY_MISSING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-manifest-dependency-missing",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_MANIFEST_DEPENDENCY_MISSING"
+  },
+  "source": "nodejs.org/api/errors.html#err_manifest_dependency_missing（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

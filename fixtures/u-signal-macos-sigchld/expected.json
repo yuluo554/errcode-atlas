@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGCHLD"
+  ],
+  "candidate_values": [
+    20
+  ],
+  "case": "u-signal-macos-sigchld",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGCHLD"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:108 `#define SIGCHLD 20`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_UNSUPPORTED_PROTOCOL"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-unsupported-protocol",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_UNSUPPORTED_PROTOCOL"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_unsupported_protocol（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

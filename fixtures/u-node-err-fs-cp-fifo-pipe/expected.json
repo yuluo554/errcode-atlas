@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_CP_FIFO_PIPE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-cp-fifo-pipe",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_CP_FIFO_PIPE"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_cp_fifo_pipe（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

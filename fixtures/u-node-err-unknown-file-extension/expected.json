@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNKNOWN_FILE_EXTENSION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-unknown-file-extension",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNKNOWN_FILE_EXTENSION"
+  },
+  "source": "nodejs.org/api/errors.html#err_unknown_file_extension（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

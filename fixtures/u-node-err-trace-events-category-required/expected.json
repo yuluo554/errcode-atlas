@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TRACE_EVENTS_CATEGORY_REQUIRED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-trace-events-category-required",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TRACE_EVENTS_CATEGORY_REQUIRED"
+  },
+  "source": "nodejs.org/api/errors.html#err_trace_events_category_required（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

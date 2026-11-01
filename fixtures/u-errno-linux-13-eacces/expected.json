@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EACCES"
+  ],
+  "case": "u-errno-linux-13-eacces",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "13"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:17 `#define EACCES 13`",
+  "verdict": "UNAMBIGUOUS"
+}

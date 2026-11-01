@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ASYNC_LOADER_REQUEST_NEVER_SETTLED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-async-loader-request-never-settled",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ASYNC_LOADER_REQUEST_NEVER_SETTLED"
+  },
+  "source": "nodejs.org/api/errors.html#err_async_loader_request_never_settled（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

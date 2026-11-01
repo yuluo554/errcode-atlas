@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TLS_SESSION_ATTACK"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-tls-session-attack",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TLS_SESSION_ATTACK"
+  },
+  "source": "nodejs.org/api/errors.html#err_tls_session_attack（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

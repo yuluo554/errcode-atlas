@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DNS_SET_SERVERS_FAILED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-dns-set-servers-failed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DNS_SET_SERVERS_FAILED"
+  },
+  "source": "nodejs.org/api/errors.html#err_dns_set_servers_failed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

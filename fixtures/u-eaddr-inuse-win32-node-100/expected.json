@@ -1,6 +1,8 @@
 {
+  "candidate_values": [
+    100
+  ],
   "case": "u-eaddr-inuse-win32-node-100",
-  "domain": "errno",
   "exit_code": 0,
   "input": {
     "domain": "errno",
@@ -9,6 +11,5 @@
     "query": "EADDRINUSE"
   },
   "source": "本机 os.constants.errno（Node v24.15.0 / win32）：EADDRINUSE = 100",
-  "value": 100,
   "verdict": "UNAMBIGUOUS"
 }

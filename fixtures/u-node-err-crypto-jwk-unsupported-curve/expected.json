@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_JWK_UNSUPPORTED_CURVE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-jwk-unsupported-curve",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_JWK_UNSUPPORTED_CURVE"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_jwk_unsupported_curve（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

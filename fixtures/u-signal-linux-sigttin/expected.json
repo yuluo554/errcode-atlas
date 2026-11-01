@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTTIN"
+  ],
+  "candidate_values": [
+    21
+  ],
+  "case": "u-signal-linux-sigttin",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGTTIN"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:32 `#define SIGTTIN 21`",
+  "verdict": "UNAMBIGUOUS"
+}

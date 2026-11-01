@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EIO"
+  ],
+  "case": "u-errno-linux-5-eio",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "5"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:9 `#define EIO 5`",
+  "verdict": "UNAMBIGUOUS"
+}

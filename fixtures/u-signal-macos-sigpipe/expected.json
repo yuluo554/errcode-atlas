@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGPIPE"
+  ],
+  "candidate_values": [
+    13
+  ],
+  "case": "u-signal-macos-sigpipe",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGPIPE"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:101 `#define SIGPIPE 13`",
+  "verdict": "UNAMBIGUOUS"
+}

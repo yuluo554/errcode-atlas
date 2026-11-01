@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_MANIFEST_UNKNOWN_ONERROR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-manifest-unknown-onerror",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_MANIFEST_UNKNOWN_ONERROR"
+  },
+  "source": "nodejs.org/api/errors.html#err_manifest_unknown_onerror（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

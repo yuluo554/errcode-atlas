@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DIR_CONCURRENT_OPERATION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-dir-concurrent-operation",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DIR_CONCURRENT_OPERATION"
+  },
+  "source": "nodejs.org/api/errors.html#err_dir_concurrent_operation（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

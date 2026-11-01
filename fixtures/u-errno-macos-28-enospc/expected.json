@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOSPC"
+  ],
+  "case": "u-errno-macos-28-enospc",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "28"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:120 `#define ENOSPC 28`",
+  "verdict": "UNAMBIGUOUS"
+}

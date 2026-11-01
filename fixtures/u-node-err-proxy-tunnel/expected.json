@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_PROXY_TUNNEL"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-proxy-tunnel",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_PROXY_TUNNEL"
+  },
+  "source": "nodejs.org/api/errors.html#err_proxy_tunnel（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

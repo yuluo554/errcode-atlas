@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_QUIC_OPEN_STREAM_FAILED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-quic-open-stream-failed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_QUIC_OPEN_STREAM_FAILED"
+  },
+  "source": "nodejs.org/api/errors.html#err_quic_open_stream_failed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

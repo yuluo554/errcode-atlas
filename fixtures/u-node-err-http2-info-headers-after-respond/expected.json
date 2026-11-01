@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_INFO_HEADERS_AFTER_RESPOND"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-info-headers-after-respond",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_INFO_HEADERS_AFTER_RESPOND"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_info_headers_after_respond（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOENT"
+  ],
+  "case": "u-errno-win32-python-2-enoent",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "2"
+  },
+  "source": "runtime:python 3.12.10 `#define ENOENT 2`",
+  "verdict": "UNAMBIGUOUS"
+}

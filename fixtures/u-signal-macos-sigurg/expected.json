@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGURG"
+  ],
+  "candidate_values": [
+    16
+  ],
+  "case": "u-signal-macos-sigurg",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGURG"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:104 `#define SIGURG 16`",
+  "verdict": "UNAMBIGUOUS"
+}

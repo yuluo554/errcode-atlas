@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGCONT"
+  ],
+  "candidate_values": [
+    18
+  ],
+  "case": "u-signal-linux-sigcont",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGCONT"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:29 `#define SIGCONT 18`",
+  "verdict": "UNAMBIGUOUS"
+}

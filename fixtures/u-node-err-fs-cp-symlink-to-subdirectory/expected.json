@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FS_CP_SYMLINK_TO_SUBDIRECTORY"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-fs-cp-symlink-to-subdirectory",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FS_CP_SYMLINK_TO_SUBDIRECTORY"
+  },
+  "source": "nodejs.org/api/errors.html#err_fs_cp_symlink_to_subdirectory（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

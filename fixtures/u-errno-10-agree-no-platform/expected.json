@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ECHILD"
+  ],
+  "case": "u-errno-10-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "10"
+  },
+  "per_platform": {
+    "linux": [
+      "ECHILD"
+    ],
+    "macos": [
+      "ECHILD"
+    ],
+    "win32-node": [
+      "ECHILD"
+    ],
+    "win32-python": [
+      "ECHILD"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ECHILD=10 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

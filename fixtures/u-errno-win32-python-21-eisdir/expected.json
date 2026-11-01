@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EISDIR"
+  ],
+  "case": "u-errno-win32-python-21-eisdir",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "21"
+  },
+  "source": "runtime:python 3.12.10 `#define EISDIR 21`",
+  "verdict": "UNAMBIGUOUS"
+}

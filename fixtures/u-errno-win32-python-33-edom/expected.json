@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EDOM"
+  ],
+  "case": "u-errno-win32-python-33-edom",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "33"
+  },
+  "source": "runtime:python 3.12.10 `#define EDOM 33`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_INVALID_SETTING_VALUE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-invalid-setting-value",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_INVALID_SETTING_VALUE"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_invalid_setting_value（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

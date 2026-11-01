@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_LOADER_CHAIN_INCOMPLETE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-loader-chain-incomplete",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_LOADER_CHAIN_INCOMPLETE"
+  },
+  "source": "nodejs.org/api/errors.html#err_loader_chain_incomplete（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

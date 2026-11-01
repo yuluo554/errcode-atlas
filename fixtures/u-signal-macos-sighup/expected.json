@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGHUP"
+  ],
+  "candidate_values": [
+    1
+  ],
+  "case": "u-signal-macos-sighup",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGHUP"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:84 `#define SIGHUP 1`",
+  "verdict": "UNAMBIGUOUS"
+}

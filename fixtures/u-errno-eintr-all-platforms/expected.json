@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-eintr-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "EINTR"
+  },
+  "per_platform": {
+    "linux": 4,
+    "macos": 4,
+    "win32-node": 4,
+    "win32-python": 4
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:8 `#define EINTR 4`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

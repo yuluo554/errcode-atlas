@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "ENODEV"
+  ],
+  "case": "u-errno-19-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "19"
+  },
+  "per_platform": {
+    "linux": [
+      "ENODEV"
+    ],
+    "macos": [
+      "ENODEV"
+    ],
+    "win32-node": [
+      "ENODEV"
+    ],
+    "win32-python": [
+      "ENODEV"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "ENODEV=19 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

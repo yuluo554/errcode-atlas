@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_OPT_VALUE_ENCODING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-opt-value-encoding",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_OPT_VALUE_ENCODING"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_opt_value_encoding（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

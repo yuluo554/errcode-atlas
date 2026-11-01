@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_FFI_INVALID_POINTER"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-ffi-invalid-pointer",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_FFI_INVALID_POINTER"
+  },
+  "source": "nodejs.org/api/errors.html#err_ffi_invalid_pointer（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

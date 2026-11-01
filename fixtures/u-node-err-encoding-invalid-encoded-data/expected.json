@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ENCODING_INVALID_ENCODED_DATA"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-encoding-invalid-encoded-data",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ENCODING_INVALID_ENCODED_DATA"
+  },
+  "source": "nodejs.org/api/errors.html#err_encoding_invalid_encoded_data（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

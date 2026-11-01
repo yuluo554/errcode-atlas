@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_UNCAUGHT_EXCEPTION_CAPTURE_ALREADY_SET"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-uncaught-exception-capture-already-set",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_UNCAUGHT_EXCEPTION_CAPTURE_ALREADY_SET"
+  },
+  "source": "nodejs.org/api/errors.html#err_uncaught_exception_capture_already_set（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTTOU"
+  ],
+  "candidate_values": [
+    22
+  ],
+  "case": "u-signal-linux-sigttou",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGTTOU"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:33 `#define SIGTTOU 22`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP2_HEADERS_OBJECT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http2-headers-object",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP2_HEADERS_OBJECT"
+  },
+  "source": "nodejs.org/api/errors.html#err_http2_headers_object（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

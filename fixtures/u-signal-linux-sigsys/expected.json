@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGSYS"
+  ],
+  "candidate_values": [
+    31
+  ],
+  "case": "u-signal-linux-sigsys",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGSYS"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:46 `#define SIGSYS 31`",
+  "verdict": "UNAMBIGUOUS"
+}

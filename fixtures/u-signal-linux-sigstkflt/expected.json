@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGSTKFLT"
+  ],
+  "candidate_values": [
+    16
+  ],
+  "case": "u-signal-linux-sigstkflt",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGSTKFLT"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:27 `#define SIGSTKFLT 16`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NON_CONTEXT_AWARE_DISABLED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-non-context-aware-disabled",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NON_CONTEXT_AWARE_DISABLED"
+  },
+  "source": "nodejs.org/api/errors.html#err_non_context_aware_disabled（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

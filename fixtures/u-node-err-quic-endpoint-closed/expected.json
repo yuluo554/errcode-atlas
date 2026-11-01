@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_QUIC_ENDPOINT_CLOSED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-quic-endpoint-closed",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_QUIC_ENDPOINT_CLOSED"
+  },
+  "source": "nodejs.org/api/errors.html#err_quic_endpoint_closed（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INTERNAL_ASSERTION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-internal-assertion",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INTERNAL_ASSERTION"
+  },
+  "source": "nodejs.org/api/errors.html#err_internal_assertion（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

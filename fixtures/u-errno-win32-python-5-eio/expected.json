@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EIO"
+  ],
+  "case": "u-errno-win32-python-5-eio",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-python",
+    "query": "5"
+  },
+  "source": "runtime:python 3.12.10 `#define EIO 5`",
+  "verdict": "UNAMBIGUOUS"
+}

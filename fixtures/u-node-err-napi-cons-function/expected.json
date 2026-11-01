@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_CONS_FUNCTION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-cons-function",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_CONS_FUNCTION"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_cons_function（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

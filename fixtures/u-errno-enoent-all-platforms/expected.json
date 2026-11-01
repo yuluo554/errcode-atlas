@@ -1,0 +1,18 @@
+{
+  "case": "u-errno-enoent-all-platforms",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "ENOENT"
+  },
+  "per_platform": {
+    "linux": 2,
+    "macos": 2,
+    "win32-node": 2,
+    "win32-python": 2
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:6 `#define ENOENT 2`；macos/win32 两视角同值同义",
+  "verdict": "UNAMBIGUOUS"
+}

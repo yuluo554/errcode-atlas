@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOENT"
+  ],
+  "case": "u-errno-macos-2-enoent",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "2"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:91 `#define ENOENT 2`",
+  "verdict": "UNAMBIGUOUS"
+}

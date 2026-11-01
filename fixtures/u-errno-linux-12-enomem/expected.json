@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOMEM"
+  ],
+  "case": "u-errno-linux-12-enomem",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "12"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/errno-base.h:16 `#define ENOMEM 12`",
+  "verdict": "UNAMBIGUOUS"
+}

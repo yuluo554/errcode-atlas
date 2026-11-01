@@ -1,6 +1,8 @@
 {
+  "candidate_values": [
+    107
+  ],
   "case": "u-connrefused-win32-node-107",
-  "domain": "errno",
   "exit_code": 0,
   "input": {
     "domain": "errno",
@@ -9,6 +11,5 @@
     "query": "ECONNREFUSED"
   },
   "source": "本机 os.constants.errno：ECONNREFUSED = 107",
-  "value": 107,
   "verdict": "UNAMBIGUOUS"
 }

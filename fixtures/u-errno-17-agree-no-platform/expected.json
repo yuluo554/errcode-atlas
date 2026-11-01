@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "EEXIST"
+  ],
+  "case": "u-errno-17-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "17"
+  },
+  "per_platform": {
+    "linux": [
+      "EEXIST"
+    ],
+    "macos": [
+      "EEXIST"
+    ],
+    "win32-node": [
+      "EEXIST"
+    ],
+    "win32-python": [
+      "EEXIST"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "EEXIST=17 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

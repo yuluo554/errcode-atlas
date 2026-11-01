@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_HTTP_SOCKET_ASSIGNED"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-http-socket-assigned",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_HTTP_SOCKET_ASSIGNED"
+  },
+  "source": "nodejs.org/api/errors.html#err_http_socket_assigned（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

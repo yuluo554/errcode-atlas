@@ -213,8 +213,13 @@ def test_windows_dual_view_numeric_points_are_covered(name: str):
     """三个 Windows 数值差异点（§1.1 E4/E5）各要两个视角的 case。
 
     判据比的是**两个视角确实各自出过一次**，而不是"名字出现过"——只写一个视角
-    等于把本题最硬的事实（同一台机器两个数值）抹平。真值里若带 `value`，
+    等于把本题最硬的事实（同一台机器两个数值）抹平。真值里若带 `candidate_values`，
     还要比它俩不相等。
+
+    **字段名是 `candidate_values`，不是 `value`**（M4 改）：`value` 那版 `bench` 不比对，
+    写了等于没写；现在同一份字段既进 `bench` 断言、也进本判据。M4 当场验到过这一点 ——
+    字段一改名，本测试的 `payload.get("value")` 静默变 `None`，判据退化成"两个视角都有
+    case 就行"，**是靠"改完先看它会不会松"抓到的**。
     """
     values: dict[str, int | None] = {}
     for case in CASES:
@@ -223,13 +228,16 @@ def test_windows_dual_view_numeric_points_are_covered(name: str):
         if spec["kind"] != "explain" or spec.get("query") != name:
             continue
         if spec.get("platform") in ("win32-node", "win32-python"):
-            values[spec["platform"]] = payload.get("value")
+            reported = payload.get("candidate_values")
+            values[spec["platform"]] = reported[0] if reported else None
 
     assert "win32-node" in values, f"{name} 缺 win32-node 视角的 case"
     assert "win32-python" in values, f"{name} 缺 win32-python 视角的 case"
     node, python = values["win32-node"], values["win32-python"]
-    if node is not None and python is not None:
-        assert node != python, f"{name} 两个视角的 case 值是同一个（{node}）—— 双视角事实被抹平"
+    assert node is not None and python is not None, (
+        f"{name} 的两个视角 case 没有声明 `candidate_values` —— 双视角数值无从复核"
+    )
+    assert node != python, f"{name} 两个视角的 case 值是同一个（{node}）—— 双视角事实被抹平"
 
 
 # ── 不可归因集（§3 强制项）────────────────────────────────────────────────
@@ -274,10 +282,127 @@ def test_coverage_thresholds_are_stated_in_data_readme():
     """覆盖度门槛只许有一份 —— `data/README.md` §4。
 
     本文件只引用它；如果 §4 那段被删了，这里的门槛就成了"测试自己编的数"。
-    判据 = §4 仍在且含"判定态"与"两形态"两行。
+    判据 = §4 仍在、含"判定态"与"两形态"两行，且 M4 的三个规模门槛（30 / 435）同现。
     """
     text = DATA_README.read_text(encoding="utf-8")
     assert "## 4. 覆盖度口径" in text, "data/README 的 §4 覆盖度口径不见了"
     section = text[text.index("## 4. 覆盖度口径") :]
     assert "判定态" in section
     assert "两形态" in section
+    assert "30 个公共常量" in section, "§4 的 errno 门槛（三平台 × 30 个公共常量）不见了"
+    assert "435" in section, "§4 的 Node 门槛（页面全部 435 节）不见了"
+
+
+# ── M4 规模门槛（data/README §4 的三行 ⬜ 在此变成可跑红的判据）───────────
+#: 这三条的**数字**全部现算：常量集从真编目取、信号集从真编目取，本文件不另存一份名单
+#: —— 存了就会出现"编目改了而语料门槛不动"的第二份真相。
+ERRNO_MIN_COMMON = 30
+
+
+def _errno_common_names() -> set[str]:
+    """四轴都有的 errno 常量名（= §4 里"公共常量"的可算定义）。"""
+    per_axis = {}
+    for platform in contract.PLATFORMS:
+        per_axis[platform] = {
+            name for name, _value in CATALOG.by_name.get(platform, {}).get("errno", {}).items()
+        }
+    return set.intersection(*(per_axis[p] for p in contract.PLATFORMS))
+
+
+@pytest.mark.parametrize("platform", contract.PLATFORMS)
+def test_errno_three_platforms_cover_thirty_common_constants(platform: str):
+    """**errno 三平台 × ≥30 个公共常量**（§4「errno」行）。
+
+    "公共常量" = 四轴都定义了的 errno 名（从**真编目**现算，不写死名单）。
+    每个平台至少要被 §4 门槛条数个这样的常量**以数字查询 + 显式平台**覆盖到 ——
+    名字查询不算：那验的是"名字在不在"，不是"这个平台上这个数字是什么"。
+    """
+    common = _errno_common_names()
+    assert len(common) >= ERRNO_MIN_COMMON, (
+        f"编目四轴公共 errno 常量只有 {len(common)} 个（< {ERRNO_MIN_COMMON}）—— 门槛本身不成立"
+    )
+    covered: set[str] = set()
+    for payload in _explain_cases():
+        spec = payload["input"]
+        if spec.get("platform") != platform or spec.get("domain") != "errno":
+            continue
+        query = str(spec.get("query", ""))
+        if not query.lstrip("-").isdigit():
+            continue
+        for name in payload.get("candidate_names") or []:
+            if name in common:
+                covered.add(name)
+    assert len(covered) >= ERRNO_MIN_COMMON, (
+        f"{platform} 的 errno 公共常量只覆盖了 {len(covered)} 个（门槛 {ERRNO_MIN_COMMON}）："
+        f"{sorted(covered)}"
+    )
+
+
+@pytest.mark.parametrize("platform", ["linux", "macos"])
+def test_signals_cover_every_catalog_define(platform: str):
+    """**信号两平台 × 全部 `#define SIG*`**（§4「信号」行）：编目里每一条都要有 case。"""
+    catalog_names = set(CATALOG.by_name.get(platform, {}).get("signal", {}))
+    assert len(catalog_names) >= 30, f"{platform} 编目信号只有 {len(catalog_names)} 条"
+    covered = {
+        str(p["input"].get("query"))
+        for p in _explain_cases()
+        if p["input"].get("platform") == platform and p["input"].get("domain") == "signal"
+    }
+    missing = sorted(catalog_names - covered)
+    assert not missing, f"{platform} 有 {len(missing)} 条信号没有 case：{missing}"
+
+
+def test_node_covers_every_catalog_section():
+    """**Node 435 节逐条**（§4「Node 错误码」行）：编目里每个名字都要有 case。
+
+    判据从真编目现算条目数（不写 435），但门槛值必须与 §4 同现
+    （`test_coverage_thresholds_are_stated_in_data_readme` 管那一半）。
+    """
+    catalog_names = set(CATALOG.by_name.get("linux", {}).get("node", {}))
+    assert len(catalog_names) == 435, (
+        f"编目 node 域应有 435 个名字（§4），实得 {len(catalog_names)}"
+    )
+    covered = {
+        str(p["input"].get("query"))
+        for p in _explain_cases()
+        if p["input"].get("domain") == "node"
+    }
+    missing = sorted(catalog_names - covered)
+    assert not missing, f"有 {len(missing)} 条 Node 错误码没有 case：{missing[:10]}"
+
+
+def test_legacy_node_codes_name_legacy_in_their_source():
+    """**弃用的 52 条要点名 legacy**（§4「Node 错误码」行后半句）。
+
+    判据 = 每条 legacy 码的 case 的 `source` 里出现 `Legacy` —— 只说"有 case"不够：
+    用户拿到弃用码必须能立刻看出它是 legacy（`tests/test_catalog_m2.py` 管编目那一侧，
+    本判据管语料这一侧的落点）。
+    """
+    legacy = {
+        name
+        for name in CATALOG.by_name.get("linux", {}).get("node", {})
+        if "Legacy Node.js error codes" in (CATALOG.entry_for("linux", "node", name).description_zh)
+    }
+    assert len(legacy) == 52, f"编目 legacy 码应为 52 条，实得 {len(legacy)}"
+    silent = [
+        p["case"]
+        for p in _explain_cases()
+        if str(p["input"].get("query")) in legacy
+        and "Legacy" not in str(p.get("source", ""))
+    ]
+    assert not silent, f"这些 legacy 码的 case 没有点名 legacy：{silent[:10]}"
+
+
+def test_unambiguous_cases_outnumber_ambiguous_ones():
+    """**同值同义压过歧义样本**（`plan/HANDOFF-M4.md` §三 第 3 条的反向样本门槛）。
+
+    语料若系统性偏向"歧义"，`bench` 全绿也证明不了"不该歧义时不歧义"。判据：
+    `UNAMBIGUOUS` 的 case 数必须**多于** `AMBIGUOUS-*` 之和。两边都从语料现数，
+    不写死比例 —— 写死会随铺量立刻过期。
+    """
+    counts = _verdict_counts()
+    ambiguous = counts[contract.AMBIGUOUS_SAME_PLATFORM] + counts[contract.AMBIGUOUS_CROSS_PLATFORM]
+    assert counts[contract.UNAMBIGUOUS] > ambiguous, (
+        f"语料偏向歧义：UNAMBIGUOUS {counts[contract.UNAMBIGUOUS]} 例 ≤ "
+        f"AMBIGUOUS-* {ambiguous} 例（反向样本压不过歧义样本）"
+    )

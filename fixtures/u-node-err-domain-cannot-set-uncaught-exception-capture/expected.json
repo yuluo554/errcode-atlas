@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_DOMAIN_CANNOT_SET_UNCAUGHT_EXCEPTION_CAPTURE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-domain-cannot-set-uncaught-exception-capture",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_DOMAIN_CANNOT_SET_UNCAUGHT_EXCEPTION_CAPTURE"
+  },
+  "source": "nodejs.org/api/errors.html#err_domain_cannot_set_uncaught_exception_capture（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

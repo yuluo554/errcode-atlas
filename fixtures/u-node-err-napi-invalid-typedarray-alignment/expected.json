@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_NAPI_INVALID_TYPEDARRAY_ALIGNMENT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-napi-invalid-typedarray-alignment",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_NAPI_INVALID_TYPEDARRAY_ALIGNMENT"
+  },
+  "source": "nodejs.org/api/errors.html#err_napi_invalid_typedarray_alignment（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

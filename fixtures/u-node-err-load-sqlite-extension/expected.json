@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_LOAD_SQLITE_EXTENSION"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-load-sqlite-extension",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_LOAD_SQLITE_EXTENSION"
+  },
+  "source": "nodejs.org/api/errors.html#err_load_sqlite_extension（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

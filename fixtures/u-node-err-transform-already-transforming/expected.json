@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_TRANSFORM_ALREADY_TRANSFORMING"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-transform-already-transforming",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_TRANSFORM_ALREADY_TRANSFORMING"
+  },
+  "source": "nodejs.org/api/errors.html#err_transform_already_transforming（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

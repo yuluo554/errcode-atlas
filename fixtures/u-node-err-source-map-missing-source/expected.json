@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_SOURCE_MAP_MISSING_SOURCE"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-source-map-missing-source",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_SOURCE_MAP_MISSING_SOURCE"
+  },
+  "source": "nodejs.org/api/errors.html#err_source_map_missing_source（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

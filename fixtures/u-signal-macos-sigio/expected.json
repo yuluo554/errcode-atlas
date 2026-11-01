@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGIO"
+  ],
+  "candidate_values": [
+    23
+  ],
+  "case": "u-signal-macos-sigio",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGIO"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:112 `#define SIGIO 23`",
+  "verdict": "UNAMBIGUOUS"
+}

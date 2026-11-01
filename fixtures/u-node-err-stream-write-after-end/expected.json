@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_STREAM_WRITE_AFTER_END"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-stream-write-after-end",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_STREAM_WRITE_AFTER_END"
+  },
+  "source": "nodejs.org/api/errors.html#err_stream_write_after_end（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

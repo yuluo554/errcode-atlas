@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGQUIT"
+  ],
+  "candidate_values": [
+    3
+  ],
+  "case": "u-signal-macos-sigquit",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGQUIT"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:86 `#define SIGQUIT 3`",
+  "verdict": "UNAMBIGUOUS"
+}

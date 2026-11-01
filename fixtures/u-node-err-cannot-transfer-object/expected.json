@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CANNOT_TRANSFER_OBJECT"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-cannot-transfer-object",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CANNOT_TRANSFER_OBJECT"
+  },
+  "source": "nodejs.org/api/errors.html#err_cannot_transfer_object（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

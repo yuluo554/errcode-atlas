@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGTRAP"
+  ],
+  "candidate_values": [
+    5
+  ],
+  "case": "u-signal-macos-sigtrap",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGTRAP"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:88 `#define SIGTRAP 5`",
+  "verdict": "UNAMBIGUOUS"
+}

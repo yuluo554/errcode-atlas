@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_MISSING_MESSAGE_PORT_IN_TRANSFER_LIST"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-missing-message-port-in-transfer-list",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_MISSING_MESSAGE_PORT_IN_TRANSFER_LIST"
+  },
+  "source": "nodejs.org/api/errors.html#err_missing_message_port_in_transfer_list（**Legacy Node.js error codes 小节：已弃用**）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INVALID_MIME_SYNTAX"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-invalid-mime-syntax",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INVALID_MIME_SYNTAX"
+  },
+  "source": "nodejs.org/api/errors.html#err_invalid_mime_syntax（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

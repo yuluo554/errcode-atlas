@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_CRYPTO_ENGINE_UNKNOWN"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-crypto-engine-unknown",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_CRYPTO_ENGINE_UNKNOWN"
+  },
+  "source": "nodejs.org/api/errors.html#err_crypto_engine_unknown（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "ENOTDIR"
+  ],
+  "case": "u-errno-win32-node-20-enotdir",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-node",
+    "query": "20"
+  },
+  "source": "runtime:node v24.15.0 `#define ENOTDIR 20`",
+  "verdict": "UNAMBIGUOUS"
+}

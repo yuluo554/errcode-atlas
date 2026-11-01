@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_INSPECTOR_COMMAND"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-inspector-command",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_INSPECTOR_COMMAND"
+  },
+  "source": "nodejs.org/api/errors.html#err_inspector_command（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGIOT"
+  ],
+  "candidate_values": [
+    6
+  ],
+  "case": "u-signal-linux-sigiot",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "SIGIOT"
+  },
+  "source": "torvalds/linux include/uapi/asm-generic/signal.h:17 `#define SIGIOT 6`",
+  "verdict": "UNAMBIGUOUS"
+}

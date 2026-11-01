@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "SIGUSR1"
+  ],
+  "candidate_values": [
+    30
+  ],
+  "case": "u-signal-macos-sigusr1",
+  "exit_code": 0,
+  "input": {
+    "domain": "signal",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "SIGUSR1"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/signal.h:122 `#define SIGUSR1 30`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_ILLEGAL_CONSTRUCTOR"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-illegal-constructor",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_ILLEGAL_CONSTRUCTOR"
+  },
+  "source": "nodejs.org/api/errors.html#err_illegal_constructor（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}

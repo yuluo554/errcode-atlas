@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EMFILE"
+  ],
+  "case": "u-errno-macos-24-emfile",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "macos",
+    "query": "24"
+  },
+  "source": "apple-oss-distributions/xnu bsd/sys/errno.h:116 `#define EMFILE 24`",
+  "verdict": "UNAMBIGUOUS"
+}

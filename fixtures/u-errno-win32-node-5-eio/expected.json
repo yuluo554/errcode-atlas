@@ -1,0 +1,15 @@
+{
+  "candidate_names": [
+    "EIO"
+  ],
+  "case": "u-errno-win32-node-5-eio",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": "win32-node",
+    "query": "5"
+  },
+  "source": "runtime:node v24.15.0 `#define EIO 5`",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,0 +1,32 @@
+{
+  "candidate_names": [
+    "E2BIG"
+  ],
+  "case": "u-errno-7-agree-no-platform",
+  "exit_code": 0,
+  "input": {
+    "domain": "errno",
+    "kind": "explain",
+    "platform": null,
+    "query": "7"
+  },
+  "per_platform": {
+    "linux": [
+      "E2BIG"
+    ],
+    "macos": [
+      "E2BIG"
+    ],
+    "win32-node": [
+      "E2BIG"
+    ],
+    "win32-python": [
+      "E2BIG"
+    ]
+  },
+  "require_note_markers": [
+    "platforms_agree"
+  ],
+  "source": "E2BIG=7 四轴同值同名（linux/macos 头文件 + 两个运行时视角）",
+  "verdict": "UNAMBIGUOUS"
+}

@@ -1,6 +1,8 @@
 {
+  "candidate_values": [
+    138
+  ],
   "case": "u-timedout-win32-node-138",
-  "domain": "errno",
   "exit_code": 0,
   "input": {
     "domain": "errno",
@@ -9,6 +11,5 @@
     "query": "ETIMEDOUT"
   },
   "source": "本机 os.constants.errno：ETIMEDOUT = 138",
-  "value": 138,
   "verdict": "UNAMBIGUOUS"
 }

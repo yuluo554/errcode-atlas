@@ -1,0 +1,18 @@
+{
+  "candidate_names": [
+    "ERR_VFS_INVALID_TARGET"
+  ],
+  "candidate_values": [
+    null
+  ],
+  "case": "u-node-err-vfs-invalid-target",
+  "exit_code": 0,
+  "input": {
+    "domain": "node",
+    "kind": "explain",
+    "platform": "linux",
+    "query": "ERR_VFS_INVALID_TARGET"
+  },
+  "source": "nodejs.org/api/errors.html#err_vfs_invalid_target（现行小节）",
+  "verdict": "UNAMBIGUOUS"
+}
