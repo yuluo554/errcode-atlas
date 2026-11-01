@@ -319,15 +319,40 @@ def _delete_current_handoff() -> Callable[[], None]:
 
 
 def _create_lookahead_handoff() -> Callable[[], None]:
-    """给**还早的**里程碑预写入口 —— 门必须报"超前入口"。"""
+    """给**还早的**里程碑预写入口 —— 门必须报"超前入口"。
+
+    靶子不能依赖"仓库里还剩几个未完成里程碑"（M5 收尾实测）：那时只剩 M6 = current，
+    `far` 为空，本组直接 ERROR —— 那不是门坏了，是**变异靶子把仓库进度绑进了判据**。
+    修法 = 在 `plan/00` 状态表里**临时插一行合成里程碑**（状态 ⬜、号比当前大），
+    造出"未来的里程碑"；还原由 harness 的备份/回滚负责（它本来就备份整棵树）。
+
+    合成行不造假：被测的是门的**超前分支**，不是仓库状态 —— 判据看的是
+    "状态 ⬜ 且不是当前里程碑的编号有没有入口文件"，那一行刚好是它的靶子。
+    """
 
     def apply() -> None:
         current = _current_milestone()
         states = _milestone_states()
         far = [k for k, cell in sorted(states.items()) if not _is_done(cell) and k != current]
-        if not far:
-            raise RuntimeError("没有「未来的」里程碑，L6d 不适用")
-        rel = f"plan/HANDOFF-M{far[-1]}.md"
+        if far:
+            rel = f"plan/HANDOFF-M{far[-1]}.md"
+        else:
+            # 没有"未来的"里程碑（只剩当前那一根）：临时插一个合成里程碑
+            assert current is not None, "全部里程碑已 ✅ —— 那连「当前」都没有，本组无靶子"
+            synthetic = max(states) + 1
+            path = ROOT / "plan/00-README总览.md"
+            lines = path.read_text(encoding="utf-8").split("\n")
+            anchor = next(
+                (i for i, line in enumerate(lines) if re.match(rf"^\|\s*M{current}\s*\|", line)),
+                -1,
+            )
+            assert anchor >= 0, f"plan/00 里找不到 M{current} 那一行（靶子漂了）"
+            lines.insert(
+                anchor + 1,
+                f"| M{synthetic} | 变异注入的合成里程碑（本组用完即还原） | — | ⬜ |",
+            )
+            path.write_text("\n".join(lines), encoding="utf-8")
+            rel = f"plan/HANDOFF-M{synthetic}.md"
         if (ROOT / rel).is_file():
             raise RuntimeError(f"{rel} 本来就存在 —— 靶子已漂（先确认它确实不该有）")
         (ROOT / rel).write_text(

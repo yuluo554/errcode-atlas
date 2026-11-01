@@ -58,8 +58,11 @@
 | `128+n` 归因 | POSIX 惯例（**非标准**，须标注） | ✅ 内置规则 | `selftest` 断言含 `n` 有效性检查 | ✅ M3（`selftest._check_signal_validity` + 语料 `e-exit-137-win32-python-invalid-n`） |
 | 基准语料覆盖 §4 全部门槛 | `data/README.md` §4 + `fixtures/` | ✅ | `bench` + `tests/test_fixtures_meta.py` | ✅ M4（746 case / 1492 文件；三条规模门槛各一条判据） |
 | 五判定态 | `data/README.md` §5 | ✅ | `bench` 全态覆盖 | ✅ M3（`selftest` 五态可达）；M4 扩到 **746 case** 仍逐 case 比对结果对象 |
-| Skill 契约块双向一致 | `SKILL.md` ↔ `src` | ✅ | `tests/test_contract.py` | ⬜ 待 M5 |
-| 裸 clone 可复现 | README 步骤 | ✅ | 手工 + CI | ⬜ 待 M6 |
+| Skill 契约块双向一致 | `SKILL.md` ↔ `src` | ✅ | `tests/test_contract.py`（契约块那六条） | ✅ M5（围栏扫描 + 集合相等 + 数量相等） |
+| Skill 的 Python 级入口 | `src/errcode_atlas/api.py` | ✅ | `tests/test_api.py`（信封与 CLI 逐字节同源） | ✅ M5（`plan/00` §5 点名的 `run()` 已落实物） |
+| 技术报告 | `docs/技术报告.md` | ✅ | `tests/test_docs.py`（样例逐字节比对） | ✅ M5（样例全部从真跑复制） |
+| 演示产物 | `docs/demo/demo.gif` | ✅ | `tests/test_docs.py`（多帧 + 无本机路径） | ✅ M5（真跑录制，提示符脱敏） |
+| 裸 clone 可复现 | README 步骤 | ✅ | 手工（无 `.git` 导出树逐条敲） | ✅ M5（导出树里全量 pytest + 门 + bench 全绿） |
 
 > **本台账状态列必须与里程碑同一次提交里一起翻转。** 其他文档只可引用，不得复制。
 
@@ -75,7 +78,7 @@
 | M2 | 解析 | Node 错误码抽取、sysexits 入编目、编目→查询索引 | 抽样对账一致；`UNKNOWN` 路径可复现 | ✅ |
 | M3 | 判定 | 五判定态 + 退出码归因 | `bench` 全绿，含 `exit 1`→`UNATTRIBUTABLE` 断言 | ✅ |
 | M4 | 基准 | 语料成规模（`data/README.md` §4 三条规模门槛）+ 跨平台不偏歧义 + `bench`/`selftest` 加固 | `bench` 扫 746 case 全绿；§4 三条规模门槛各有一条可跑红判据 | ✅ |
-| M5 | 交付 | CLI + `SKILL.md` + 技术报告 + demo GIF | 四格表全绿；`docs/技术报告.md`、`docs/demo/demo.gif` 存在 | ⬜ |
+| M5 | 交付 | CLI + `SKILL.md` + 技术报告 + demo GIF | 四格表全绿；`docs/技术报告.md`、`docs/demo/demo.gif` 存在 | ✅ |
 | M6 | 发布 | 公开发布 | **①git tag ②GitHub Release（附产物：≥1 个手工上传附件，本地留副本 + sha256）③`plan/RELEASE-M6.md`（tag 前落盘，tag 后事实分栏追加）**；`check_release.py` 无 FAIL | ⬜ |
 
 > **DoD 口径二选一，本仓选 A：Release 附产物。** 自 M1 起**不得删改或降级**。
@@ -85,7 +88,17 @@
 | 形态 | 主入口 | 主命令/控件 | 接到哪个业务函数 | 断言在哪条测试 | 产物在哪个附件 |
 |---|---|---|---|---|---|
 | CLI | `pyproject.toml` `[project.scripts]` | `errcode-atlas explain 98 --platform linux` | `atlas.explain()` | `tests/test_cli_exitcode.py` | Release 附件 `errcode-atlas-<ver>.zip` |
-| Agent Skill | `SKILL.md` | 契约块声明的五判定态 + 退出码 | `src/errcode_atlas/api.py::run()` | `tests/test_contract.py`（双向断言） | 同上 |
+| Agent Skill | `SKILL.md` | 契约块声明的五判定态 + 退出码 | `src/errcode_atlas/api.py::run()` | `tests/test_contract.py`（契约块双向断言）+ `tests/test_api.py`（信封同源） | 同上 |
+
+> **Skill 形态为什么有一个 Python 级入口（`api.py::run()`）而不是让 Skill 直接 shell 调 CLI**：
+> Skill 侧要的是**结构化的两路文本 + 一个整数**。子进程方案要把编码、换行、stderr 分离
+> 各处理一遍，每一处都可能把 `--json` 的字节口径弄歪；在同一解释器里把 `cli.main` 的输出
+> 收进信封，字节与 CLI 自己的输出**逐字节相同**（`tests/test_api.py::test_api_text_is_byte_identical_to_cli_main`）。
+>
+> **这一层不做任何判定**：出口码就是 `cli.main` 的返回值，映射仍只在
+> `contract.exit_code_for_*` 一处。AST 守门
+> （`::test_api_does_not_define_its_own_verdict_mapping`）断言它里面没有判定态分支 ——
+> 否则就是 D5「唯一处」的第二份真相源。
 
 ## 6. 招牌动词表
 

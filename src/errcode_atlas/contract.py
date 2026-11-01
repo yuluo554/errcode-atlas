@@ -7,7 +7,8 @@
 三个禁忌：
 1. 这里只放**名字与语义标签**，不放任何会漂的编目数值（如 ``EAGAIN=11``）——那些在 catalog 里。
 2. 判定层不许 import 呈现层；呈现层不许自己定义判定态字面量，一律从这里取。
-3. 退出码映射只在 ``cli.py::_exit_code_for`` 一处，本模块只导出映射表的数据。
+3. 退出码映射只在 ``contract.exit_code_for_verdict`` / ``exit_code_for_attribution`` 一处，
+   本模块既定义映射表的数据、也定义这个函数；``cli.py`` 只许调它，不许自己写分支。
 """
 
 from __future__ import annotations

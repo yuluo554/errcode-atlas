@@ -110,14 +110,27 @@ def test_handoff_lookahead_is_rejected() -> None:
     """给**还没到的**里程碑预写入口也必须变红 —— 那是给没跑的棒编记录。
 
     首版门完全不管这一半：`HANDOFF-M6.md` 现在写出来，门照样全绿。
+
+    **靶子用合成状态造，不依赖仓库里还剩几个未完成里程碑**（M5 收尾时只剩 M6 一个，
+    那时"至少要有两个 pending"这个前提直接不成立，测试自己红 —— 那不是门坏了，
+    是测试把仓库的里程碑进度绑进了判据）。合成本身不造假：被测的是门的
+    **超前分支**，不是仓库状态。
     """
     module = _load(REPO_ROOT / "tools" / "check_sprint_layout.py")
     states = _milestone_states()
     done = sorted(k for k, ok in states.items() if ok)
     pending = sorted(k for k, ok in states.items() if not ok)
-    assert len(pending) >= 2, "至少要有两个未完成里程碑才能造「超前」靶子"
+    assert done, "全部里程碑都未完成，本测试的前提（存在已完成里程碑）不成立"
 
-    far = f"plan/HANDOFF-M{pending[-1]}.md"
+    # 当前里程碑 = 最小的未完成号（没有未完成时，用 done 的最大号 + 1 造一个）
+    current = pending[0] if pending else max(done) + 1
+    # 超前靶子 = 比当前更大、且状态仍是 ⬜ 的号（合成，保证一定存在）
+    far_number = max(list(states) + [current]) + 1
+    synthetic_states = dict(states)
+    synthetic_states[far_number] = False
+    synthetic_done = sorted(k for k, ok in synthetic_states.items() if ok)
+    far = f"plan/HANDOFF-M{far_number}.md"
+
     original_read = module.read
     original_is_file = Path.is_file
     try:
@@ -125,7 +138,7 @@ def test_handoff_lookahead_is_rejected() -> None:
         module.read = lambda rel: None if rel == far else original_read(rel)
         # 让门"看见"超前文件存在（但不真的写进仓库）
         Path.is_file = lambda self: True if self.as_posix().endswith(far) else original_is_file(self)
-        module.check_handoffs(done, sorted(states))
+        module.check_handoffs(synthetic_done, sorted(synthetic_states))
     finally:
         module.read = original_read
         Path.is_file = original_is_file
