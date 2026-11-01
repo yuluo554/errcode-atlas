@@ -37,6 +37,10 @@ SKIP_DIR_NAMES = frozenset({"__pycache__", ".pytest_cache", "build", "dist"})
 
 LAYOUT = ("tools/check_sprint_layout.py",)
 DESENS = ("tools/check_desensitized.py",)
+#: 发布门用 **offline 档**做靶：它是"留档结构 + 本地附件"的全量面，不联网也能跑红。
+#: （``--pre-tag`` 只跑结构那一半，``--online`` 要远端 —— 靶子选中间那档最划算。）
+RELEASE = ("tools/check_release.py", "--offline")
+ALL_GATES = (LAYOUT, DESENS, RELEASE)
 
 
 @dataclass(frozen=True)
@@ -231,6 +235,24 @@ def build_mutations() -> list[Mutation]:
         Mutation("D5-negative-placeholder", "desens", "absolute-session-path",
                  append_line("README.md", _probe_placeholder()),
                  expect_green=True),
+        # ═══ 发布门（--offline 档）═══════════════════════════════════════════════
+        # 靶子锚**留档的既有事实**（两栏标题 / 覆盖对账小节 / 三态行 / 力一的名字行），
+        # 不锚"还没到的发布步骤" —— 「tag 打了没有」随进度变，而这几样在 tag 前后都在。
+        Mutation("R1-doc-missing", "release", "RELEASE.DOC",
+                 delete_file("plan/RELEASE-M6.md")),
+        Mutation("R2-column", "release", "RELEASE.DOC",
+                 replace_once("plan/RELEASE-M6.md", "## 二、tag 后追加", "## 二、收尾")),
+        Mutation("R3-coverage", "release", "RELEASE.DOC",
+                 replace_once("plan/RELEASE-M6.md", "### 1.4 覆盖对账", "### 1.4 对账表")),
+        Mutation("R4-name", "release", "RELEASE.NAME",
+                 _strip_recheck_date()),
+        Mutation("R5-self-ref", "release", "RELEASE.TREE",
+                 _append_self_ref_to_head()),
+        Mutation("R6-states", "release", "RELEASE.DOC",
+                 _drop_state_rows()),
+        Mutation("R7-negative", "release", "RELEASE.DOC",
+                 append_line("plan/RELEASE-M6.md", "\n> 追加一句与判据无关的说明。\n"),
+                 expect_green=True),
     ]
 
 
@@ -251,28 +273,87 @@ def _probe_placeholder() -> str:
     return "\n<!-- mutation: C:" + "\\Users\\<user>\\x -->\n"
 
 
+def _strip_recheck_date() -> Callable[[], None]:
+    """把 §一 里的复核日期整片抹掉 —— ``RELEASE.NAME`` 必红。
+
+    这一组咬的是**"名字占用记录没带日期"**这个分支：没有日期，就没法把它和 ``plan/06`` §4.1
+    的旧快照区分开，判据也就失去意义。只删日期、保留 PyPI/404/GitHub 三个词 ——
+    这样红的必然是日期那一条，不会与别的分支混在一起。
+    """
+
+    def apply() -> None:
+        path = ROOT / "plan" / "RELEASE-M6.md"
+        text = path.read_text(encoding="utf-8")
+        head, sep, tail = text.partition("## 二、")
+        assert sep, "留档里找不到 `## 二、` 分栏 —— 靶子漂了"
+        stripped = re.sub(r"20\d{2}-\d{2}-\d{2}", "某日", head)
+        assert stripped != head, "§一 里没有日期可抹（靶子已过期？）"
+        path.write_text(stripped + sep + tail, encoding="utf-8")
+
+    return apply
+
+
+def _append_self_ref_to_head() -> Callable[[], None]:
+    """把附件 sha256 形态的值塞进 §一（tag 前事实）—— ``RELEASE.TREE`` 必红。
+
+    值**运行时拼出来**（本文件自身因此不含 64 位 hex 字面量，不必为本组开豁免）。
+    """
+
+    def apply() -> None:
+        path = ROOT / "plan" / "RELEASE-M6.md"
+        text = path.read_text(encoding="utf-8")
+        head, sep, tail = text.partition("## 二、")
+        assert sep, "留档里找不到 `## 二、` 分栏 —— 靶子漂了"
+        digest = "sha256: " + "0123456789abcdef" * 4
+        updated = head + f"\n> 附件 sha256（变异注入）: {digest}\n\n" + sep + tail
+        assert updated != text
+        path.write_text(updated, encoding="utf-8")
+
+    return apply
+
+
+def _drop_state_rows() -> Callable[[], None]:
+    """把三态行改成两种不表态的形态：①全部挂同一态 ②一行同时挂两态。**两条都必红**。"""
+
+    def apply() -> None:
+        path = ROOT / "plan" / "RELEASE-M6.md"
+        text = path.read_text(encoding="utf-8")
+        # ① 把「不适用」与「待首推」整列改写成「实现」→ 三态里两态归零、总数仍 ≥3
+        updated = text.replace("| 不适用 |", "| 实现 |").replace("| 待首推 |", "| 实现 |")
+        assert updated != text, "三态列没变（靶子已过期？）"
+        # ② 再让其中一行同时挂两态 —— 覆盖 _state_rows 的 multi 分支
+        updated = updated.replace("| 实现 | 即本文", "| 实现 待首推 | 即本文", 1)
+        path.write_text(updated, encoding="utf-8")
+
+    return apply
+
+
 def _register_stale_tool() -> Callable[[], None]:
     """造一个真实的 stale 登记：文档点名 ``tools/not_yet.py``（实物不存在），
     且 ``PENDING_TOOLS`` 把它登记在**已 ✅ 的 M0** 名下 → stale 分支必红。
+
+    **靶子不在 ``PENDING_TOOLS`` 的真实条目上插一行**（首版这么写）：
+    真实条目会随进度按纪律被删掉（M1 删 `fetch_sources.py` 那行、M6 删 `check_release.py`
+    那行），于是本组在那一棒必然 ERROR —— 那不是门坏了，是**靶子绑了仓库进度**（K11 同一族）。
+    现在的做法 = **把整张表换成合成表**（只留 `not_yet.py -> M0`）：M0 永远 ✅，
+    所以"文档点名 + 实物不存在 + 登记在已 ✅ 里程碑"这三件事恒成立。
     """
 
     def apply() -> None:
         path = ROOT / "tools/check_sprint_layout.py"
         text = path.read_text(encoding="utf-8")
-        # 靶子锚 `check_release.py`（M6，尚未 ✅）那一行 —— 它是本表里唯一**还在待**的登记项，
-        # 随 M1 落位后也不会消失。首版锚的是 `fetch_sources.py`（M1），M1 翻 ✅ 时该行按纪律
-        # 被删掉，靶子随即漂移 → 本组 ERROR。这正是 K11「靶子锚既有事实、不锚某个里程碑
-        # 还没完成」的同一类坑，只是换了个位置复发。
-        anchor = '    "tools/check_release.py": 6,'
-        assert text.count(anchor) == 1, "PENDING_TOOLS 靶子漂了"
-        updated = text.replace(
-            anchor, anchor + '\n    "tools/not_yet.py": 0,', 1
-        )
+        anchor = "PENDING_TOOLS: dict[str, int] = {"
+        assert text.count(anchor) == 1, "PENDING_TOOLS 定义行漂了（靶子锚不住）"
+        # 把 `= {` 之后到下一个空行之前的内容整体换成合成登记
+        start = text.index(anchor) + len(anchor)
+        end = text.find("\n#", start)
+        assert end > start, "PENDING_TOOLS 之后没有 `#` 注释行 —— 切片边界漂了"
+        updated = text[:start] + '\n    "tools/not_yet.py": 0,\n}\n' + text[end:]
         assert updated != text
         path.write_text(updated, encoding="utf-8")
-        (ROOT / "plan/02-架构与技术选型.md").write_text(
-            (ROOT / "plan/02-架构与技术选型.md").read_text(encoding="utf-8")
-            + "\n\n见 `tools/not_yet.py`。\n",
+        doc = ROOT / "plan/02-架构与技术选型.md"
+        doc.write_text(
+            doc.read_text(encoding="utf-8") + "\n\n见 `tools/not_yet.py`。\n",
             encoding="utf-8",
         )
 
@@ -365,11 +446,19 @@ def _create_lookahead_handoff() -> Callable[[], None]:
 
 
 def _flip_m6_done() -> Callable[[], None]:
-    """两处副本同时把 M6 翻 ✅ → 状态一致，但缺 `plan/RELEASE-M6.md` → RELEASE 必红。"""
+    """两处副本同时把 M6 翻 ✅ **并删掉留档** → 状态一致但 `LAYOUT.RELEASE` 必红。
+
+    为什么必须连带删留档（M6 实测首版 MISSED）：留档已经落盘之后，"把 M6 翻 ✅"本身就是
+    **合法终态** —— 门正确地绿了，不是假门。靶子要咬的是"已 ✅ 但没有收尾记录"这个分支，
+    所以两条事实必须同时成立。
+    """
 
     def apply() -> None:
         edit_status("plan/00-README总览.md", 6, "✅")()
         edit_status("plan/05-里程碑与发布.md", 6, "✅")()
+        release = ROOT / "plan/RELEASE-M6.md"
+        assert release.is_file(), "留档不存在 —— 抓不到「已 ✅ 但无记录」这个分支"
+        release.unlink()
 
     return apply
 
@@ -385,6 +474,9 @@ def _host_username() -> Callable[[], None]:
 
 
 # ── 执行 ────────────────────────────────────────────────────────────────────
+GATE_BY_TARGET = {"layout": LAYOUT, "desens": DESENS, "release": RELEASE}
+
+
 def run_gate(argv: tuple[str, ...]) -> tuple[int, str]:
     env = {**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONDONTWRITEBYTECODE": "1"}
     proc = subprocess.run(
@@ -401,8 +493,9 @@ def main(argv: list[str] | None = None) -> int:
 
     baseline = snapshot()
 
-    # 阳性对照：建模之前两道门必须绿
-    for gate in (LAYOUT, DESENS):
+    # 阳性对照：建模之前三道门必须绿
+    # （发布门用 --offline 档：它是"留档结构 + 本地附件"的全量面，不联网也能跑红）
+    for gate in ALL_GATES:
         code, out = run_gate(gate)
         if code != 0:
             sys.stdout.write(f"FAIL  阳性对照：{' '.join(gate)} 本来就红（rc={code}）\n{out}\n")
@@ -410,7 +503,7 @@ def main(argv: list[str] | None = None) -> int:
 
     results: list[tuple[str, str, str]] = []  # (group, status, detail)
     for mutation in build_mutations():
-        gate = LAYOUT if mutation.target == "layout" else DESENS
+        gate = GATE_BY_TARGET[mutation.target]
         try:
             mutation.apply()
             code, out = run_gate(gate)
@@ -439,20 +532,20 @@ def main(argv: list[str] | None = None) -> int:
             results.append((mutation.group, "CAUGHT", f"{mutation.check_id} 如预期变红"))
 
     # 还原后必须复绿
-    for gate in (LAYOUT, DESENS):
+    for gate in ALL_GATES:
         code, out = run_gate(gate)
         if code != 0:
             sys.stdout.write(f"FAIL  还原后未复绿（{' '.join(gate)} rc={code}）\n{out}\n")
             return 1
 
     bad = [r for r in results if r[1] != "CAUGHT"]
-    sys.stdout.write("变异验证（两道门）\n" + "=" * 60 + "\n")
+    sys.stdout.write("变异验证（三道门）\n" + "=" * 60 + "\n")
     for group, status, detail in results:
         sys.stdout.write(f"{status:7} {group:28} {detail}\n")
     sys.stdout.write("=" * 60 + "\n")
     sys.stdout.write(
         f"共 {len(results)} 组：{len(results) - len(bad)} 符合预期 / {len(bad)} 不符；"
-        "还原后两道门复绿\n"
+        "还原后三道门复绿\n"
     )
     return 0 if not bad else 1
 

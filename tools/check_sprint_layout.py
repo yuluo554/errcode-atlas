@@ -109,12 +109,15 @@ RELEASE_MILESTONE = 6
 
 #: 文档已点名、但**还没到该里程碑**的脚本。该里程碑翻 ✅ 后必须删掉本条，否则 stale 分支变红。
 #:
-#: M1 落位时 `tools/fetch_sources.py` 的登记项与本笔**同笔删掉** —— 只落脚本不删登记，
-#: stale 分支会报"已 ✅ 的里程碑名下还挂着待办"（HANDOFF-M0 §二 第 7 条）。
-#: 本表的靶子在 `tools/verify_gates.py` 的 L4b 组里锚 `check_release.py` 那一行。
-PENDING_TOOLS: dict[str, int] = {
-    "tools/check_release.py": 6,  # plan/00 M6 DoD / plan/05 §2：发布门
-}
+#: M1 落位时 `tools/fetch_sources.py`、M6 落位时 `tools/check_release.py` 的登记项都与脚本
+#: **同笔删掉** —— 只落脚本不删登记，stale 分支会报"已 ✅ 的里程碑名下还挂着待办"
+#: （HANDOFF-M0 §二 第 7 条 / K36）。**本表当前为空**是合法终态，但不会是永久的：
+#: 下一棒的发布门若还没落位，就要从这里登。
+#:
+#: 本表的靶子在 `tools/verify_gates.py` 的 L4b 组里 —— 它**自己造**一条合成登记
+#: （`tools/not_yet.py` 锚在 M0 = 永远 ✅），不锚本表的真实条目：真实条目会随进度被删掉，
+#: 锚它的那一组必然在某棒变 ERROR（M6 实测：本表删空后 L4b 当场变成"靶子漂了"）。
+PENDING_TOOLS: dict[str, int] = {}
 #: 确实不打算实现的脚本（理由必须写在注释里）。本项目为空。
 EXEMPT_TOOLS: frozenset[str] = frozenset()
 

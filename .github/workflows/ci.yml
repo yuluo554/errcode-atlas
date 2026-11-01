@@ -37,6 +37,10 @@ jobs:
         run: python tools/check_desensitized.py
       - name: 门的变异验证
         run: python tools/verify_gates.py
+      - name: 发布门（pre-tag 档）
+        # 只跑 pre-tag。另两档要 tag 与远端事实，放在**每次** push 上会在打 tag 之前恒红 ——
+        # 那不是缺陷信号，是档位选错了。发布收尾由人工跑 `--offline` / `--online`。
+        run: python tools/check_release.py --pre-tag
       - name: 生成器冻结态
         run: python tools/build_catalog.py --check
 
