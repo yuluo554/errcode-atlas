@@ -81,21 +81,32 @@ def test_handoff_required_for_current_milestone_not_only_done_ones() -> None:
 
     这条测试直接对 `check_handoffs` 断言：把当前里程碑的入口"藏起来"（只读时返回 None），
     门必须变红并且在结论里点出"当前在做的里程碑"。
+
+    **末棒之后怎么造靶子**（M6 实测的漂移）：全部里程碑 ✅ 时"当前里程碑"根本不存在，
+    首版直接 ``assert pending`` → 测试自己红。那不是门坏了，是**靶子绑了仓库进度**。
+    修法 = 合成一个未完成的里程碑号（只在内存里的状态里，不写仓库），让"当前"成立。
     """
     module = _load(REPO_ROOT / "tools" / "check_sprint_layout.py")
     states = _milestone_states()
     done = sorted(k for k, ok in states.items() if ok)
     pending = sorted(k for k, ok in states.items() if not ok)
-    assert pending, "全部里程碑已 ✅，本测试的前提（存在当前里程碑）不成立"
+    synthetic_states = dict(states)
+    if pending:
+        current = pending[0]
+    else:
+        # 末棒之后：合成一个未完成里程碑当"当前"，状态不进仓库
+        current = max(states) + 1
+        synthetic_states[current] = False
+        done = sorted(k for k, ok in synthetic_states.items() if ok)
+    assert done, "全部里程碑都未完成，本测试的前提（存在已完成里程碑）不成立"
 
-    current = pending[0]
     hide = f"plan/HANDOFF-M{current}.md"
     original_read = module.read
     try:
         module.CHECKS.clear()
         module.SCANNED["handoffs"] = 0
         module.read = lambda rel: None if rel == hide else original_read(rel)
-        module.check_handoffs(done, sorted(states))
+        module.check_handoffs(done, sorted(synthetic_states))
     finally:
         module.read = original_read
         module.SCANNED["handoffs"] = 0
@@ -112,9 +123,8 @@ def test_handoff_lookahead_is_rejected() -> None:
     首版门完全不管这一半：`HANDOFF-M6.md` 现在写出来，门照样全绿。
 
     **靶子用合成状态造，不依赖仓库里还剩几个未完成里程碑**（M5 收尾时只剩 M6 一个，
-    那时"至少要有两个 pending"这个前提直接不成立，测试自己红 —— 那不是门坏了，
-    是测试把仓库的里程碑进度绑进了判据）。合成本身不造假：被测的是门的
-    **超前分支**，不是仓库状态。
+    而 M6 打完时连一个都不剩 —— 那时"至少要有两个 pending"的前提直接不成立，
+    测试自己红）。合成本身不造假：被测的是门的**超前分支**，不是仓库状态。
     """
     module = _load(REPO_ROOT / "tools" / "check_sprint_layout.py")
     states = _milestone_states()
@@ -128,6 +138,7 @@ def test_handoff_lookahead_is_rejected() -> None:
     far_number = max(list(states) + [current]) + 1
     synthetic_states = dict(states)
     synthetic_states[far_number] = False
+    synthetic_states.setdefault(current, False)
     synthetic_done = sorted(k for k, ok in synthetic_states.items() if ok)
     far = f"plan/HANDOFF-M{far_number}.md"
 

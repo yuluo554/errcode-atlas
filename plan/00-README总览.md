@@ -63,6 +63,7 @@
 | 技术报告 | `docs/技术报告.md` | ✅ | `tests/test_docs.py`（样例逐字节比对） | ✅ M5（样例全部从真跑复制） |
 | 演示产物 | `docs/demo/demo.gif` | ✅ | `tests/test_docs.py`（多帧 + 无本机路径） | ✅ M5（真跑录制，提示符脱敏） |
 | 裸 clone 可复现 | README 步骤 | ✅ | 手工（无 `.git` 导出树逐条敲） | ✅ M5（导出树里全量 pytest + 门 + bench 全绿） |
+| 公开发布（tag + Release 附产物） | GitHub 远端 | ✅ | `tools/check_release.py` 三档 + 回下载对账 | ✅ M6（tag `v0.1.0` annotated；Release 附 **2 个**手工附件；附件与 tag 树 1566/1566 文件逐字节同源；回下载 `sha256sum -c` OK；CI run **41320856857** success） |
 
 > **本台账状态列必须与里程碑同一次提交里一起翻转。** 其他文档只可引用，不得复制。
 
@@ -79,7 +80,7 @@
 | M3 | 判定 | 五判定态 + 退出码归因 | `bench` 全绿，含 `exit 1`→`UNATTRIBUTABLE` 断言 | ✅ |
 | M4 | 基准 | 语料成规模（`data/README.md` §4 三条规模门槛）+ 跨平台不偏歧义 + `bench`/`selftest` 加固 | `bench` 扫 746 case 全绿；§4 三条规模门槛各有一条可跑红判据 | ✅ |
 | M5 | 交付 | CLI + `SKILL.md` + 技术报告 + demo GIF | 四格表全绿；`docs/技术报告.md`、`docs/demo/demo.gif` 存在 | ✅ |
-| M6 | 发布 | 公开发布 | **①git tag ②GitHub Release（附产物：≥1 个手工上传附件，本地留副本 + sha256）③`plan/RELEASE-M6.md`（tag 前落盘，tag 后事实分栏追加）**；`check_release.py` 无 FAIL | ⬜ |
+| M6 | 发布 | 公开发布 | **①git tag ②GitHub Release（附产物：≥1 个手工上传附件，本地留副本 + sha256）③`plan/RELEASE-M6.md`（tag 前落盘，tag 后事实分栏追加）**；`check_release.py` 无 FAIL | ✅ |
 
 > **DoD 口径二选一，本仓选 A：Release 附产物。** 自 M1 起**不得删改或降级**。
 

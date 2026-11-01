@@ -249,7 +249,9 @@ def build_mutations() -> list[Mutation]:
         Mutation("R5-self-ref", "release", "RELEASE.TREE",
                  _append_self_ref_to_head()),
         Mutation("R6-states", "release", "RELEASE.DOC",
-                 _drop_state_rows()),
+                 _make_all_states_noop()),
+        Mutation("R6b-multi-state", "release", "RELEASE.DOC",
+                 _make_one_row_two_states()),
         Mutation("R7-negative", "release", "RELEASE.DOC",
                  append_line("plan/RELEASE-M6.md", "\n> 追加一句与判据无关的说明。\n"),
                  expect_green=True),
@@ -312,17 +314,40 @@ def _append_self_ref_to_head() -> Callable[[], None]:
     return apply
 
 
-def _drop_state_rows() -> Callable[[], None]:
-    """把三态行改成两种不表态的形态：①全部挂同一态 ②一行同时挂两态。**两条都必红**。"""
+def _make_all_states_noop() -> Callable[[], None]:
+    """把三态行**全部**改成「不适用」或「待首推」→ `RELEASE.DOC` 必红。
+
+    咬的是「**没有任何一条实现**」这一支：拿三态表当免票（什么都写"不适用/待首推"）
+    是这类留档最经济的作弊路径 —— 条数够、两栏齐、表看着满，但一句实话没有。
+
+    首版这一组同时改"全挂同一态 + 一行挂两态"，M6 收尾时判据分支演进到
+    「至少一条实现 + 一行只挂一个态」之后，**只改前者恰好落在合法区间**（全挂实现 = 合法
+    终态），于是本组 MISSED。处置不是放宽判据，而是**按判据分支拆成两组**：
+    这里咬"没有实现态"，`R6b` 咬"一行挂多态"。
+    """
 
     def apply() -> None:
         path = ROOT / "plan" / "RELEASE-M6.md"
         text = path.read_text(encoding="utf-8")
-        # ① 把「不适用」与「待首推」整列改写成「实现」→ 三态里两态归零、总数仍 ≥3
-        updated = text.replace("| 不适用 |", "| 实现 |").replace("| 待首推 |", "| 实现 |")
-        assert updated != text, "三态列没变（靶子已过期？）"
-        # ② 再让其中一行同时挂两态 —— 覆盖 _state_rows 的 multi 分支
-        updated = updated.replace("| 实现 | 即本文", "| 实现 待首推 | 即本文", 1)
+        updated = text.replace("| 实现 |", "| 不适用 |")
+        assert updated != text, "三态列没变（靶子已过期？留档里已经没有『实现』行了）"
+        path.write_text(updated, encoding="utf-8")
+
+    return apply
+
+
+def _make_one_row_two_states() -> Callable[[], None]:
+    """让一条三态行同时挂两个标签 → `RELEASE.DOC` 必红（一行只能表一个态）。
+
+    与 `R6` 是两个独立分支：留档完全可以"有实现行、条数够"，但若某行写着
+    「实现 待首推」，那等于没表态 —— 这一支只有本组能咬到。
+    """
+
+    def apply() -> None:
+        path = ROOT / "plan" / "RELEASE-M6.md"
+        text = path.read_text(encoding="utf-8")
+        updated = text.replace("| 实现 |", "| 实现 待首推 |", 1)
+        assert updated != text, "没有『实现』行可改（靶子已过期？）"
         path.write_text(updated, encoding="utf-8")
 
     return apply
@@ -383,18 +408,53 @@ def _current_milestone() -> int | None:
     return pending[0] if pending else None
 
 
+def _insert_synthetic_milestones(count: int) -> list[int]:
+    """在 ``plan/00`` 状态表里临时插 ``count`` 行合成里程碑（状态 ⬜、号比现有最大值大）。
+
+    返回插入的编号（升序）。还原由 harness 的整树快照负责。
+
+    **为什么必须能"没有未完成里程碑"时也造得出来**（M6 末棒实测）：
+    ``L6c`` / ``L6d`` 首版都断言"存在未完成的里程碑"，于是全仓打完最后一棒时两组一起
+    ERROR —— 那不是门坏了，是**变异靶子把仓库进度绑进了判据**。合成行不造假：
+    被测的是门的"当前入口缺失"与"超前入口"两个分支，不是仓库状态。
+    """
+    path = ROOT / "plan" / "00-README总览.md"
+    lines = path.read_text(encoding="utf-8").split("\n")
+    states = _milestone_states()
+    if not states:
+        raise RuntimeError("plan/00 里没有里程碑行（靶子锚不住）")
+    anchor = max(
+        i for i, line in enumerate(lines) if re.match(r"^\|\s*M\d+\s*\|", line)
+    )
+    highest = max(states)
+    inserted = [highest + k for k in range(1, count + 1)]
+    new_lines = [
+        f"| M{k} | 变异注入的合成里程碑（本组用完即还原） | — | ⬜ |" for k in inserted
+    ]
+    lines[anchor + 1 : anchor + 1] = new_lines
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return inserted
+
+
 def _delete_current_handoff() -> Callable[[], None]:
-    """删掉**当前在做的里程碑**的入口文件 —— 门必须报"上一棒没留入口"。"""
+    """删掉**当前在做的里程碑**的入口文件 —— 门必须报"上一棒没留入口"。
+
+    当前里程碑已不存在（末棒打完）时，先合成一个；**并且故意不建它的入口** ——
+    那正是本组要的靶子（门应报"当前在做的里程碑缺入口"）。
+    """
 
     def apply() -> None:
         current = _current_milestone()
         if current is None:
-            raise RuntimeError("没有未完成的里程碑，L6c 不适用（全部已完成时本组无靶子）")
+            _insert_synthetic_milestones(1)
+            current = _current_milestone()
+        if current is None:  # pragma: no cover - 合成之后不可能仍为空
+            raise RuntimeError("合成之后仍没有当前里程碑（靶子构造失败）")
         rel = f"plan/HANDOFF-M{current}.md"
         path = ROOT / rel
-        if not path.is_file():
-            raise RuntimeError(f"{rel}: 不存在 —— 当前里程碑 {current} 根本没有入口（先补上再验）")
-        path.unlink()
+        if path.is_file():
+            path.unlink()
+        # 门必须**真的**找不到它：不建就是"上一棒没留入口"的精确形态
 
     return apply
 
@@ -402,38 +462,22 @@ def _delete_current_handoff() -> Callable[[], None]:
 def _create_lookahead_handoff() -> Callable[[], None]:
     """给**还早的**里程碑预写入口 —— 门必须报"超前入口"。
 
-    靶子不能依赖"仓库里还剩几个未完成里程碑"（M5 收尾实测）：那时只剩 M6 = current，
-    `far` 为空，本组直接 ERROR —— 那不是门坏了，是**变异靶子把仓库进度绑进了判据**。
-    修法 = 在 `plan/00` 状态表里**临时插一行合成里程碑**（状态 ⬜、号比当前大），
-    造出"未来的里程碑"；还原由 harness 的备份/回滚负责（它本来就备份整棵树）。
-
-    合成行不造假：被测的是门的**超前分支**，不是仓库状态 —— 判据看的是
-    "状态 ⬜ 且不是当前里程碑的编号有没有入口文件"，那一行刚好是它的靶子。
+    找"比当前里程碑更晚、状态仍是 ⬜"的号；一个都没有（末棒已打完 / 只剩当前那一根）时，
+    用 ``_insert_synthetic_milestones`` 造两个：一个当"当前"，一个当"未来"。
+    判据看的是"状态 ⬜ 且不是当前里程碑的编号有没有入口文件"，合成的第二行刚好是它的靶子。
     """
 
     def apply() -> None:
         current = _current_milestone()
         states = _milestone_states()
         far = [k for k, cell in sorted(states.items()) if not _is_done(cell) and k != current]
-        if far:
-            rel = f"plan/HANDOFF-M{far[-1]}.md"
-        else:
-            # 没有"未来的"里程碑（只剩当前那一根）：临时插一个合成里程碑
-            assert current is not None, "全部里程碑已 ✅ —— 那连「当前」都没有，本组无靶子"
-            synthetic = max(states) + 1
-            path = ROOT / "plan/00-README总览.md"
-            lines = path.read_text(encoding="utf-8").split("\n")
-            anchor = next(
-                (i for i, line in enumerate(lines) if re.match(rf"^\|\s*M{current}\s*\|", line)),
-                -1,
-            )
-            assert anchor >= 0, f"plan/00 里找不到 M{current} 那一行（靶子漂了）"
-            lines.insert(
-                anchor + 1,
-                f"| M{synthetic} | 变异注入的合成里程碑（本组用完即还原） | — | ⬜ |",
-            )
-            path.write_text("\n".join(lines), encoding="utf-8")
-            rel = f"plan/HANDOFF-M{synthetic}.md"
+        if not far:
+            if current is None:
+                inserted = _insert_synthetic_milestones(2)
+                current, far = inserted[0], [inserted[1]]
+            else:
+                far = _insert_synthetic_milestones(1)
+        rel = f"plan/HANDOFF-M{far[-1]}.md"
         if (ROOT / rel).is_file():
             raise RuntimeError(f"{rel} 本来就存在 —— 靶子已漂（先确认它确实不该有）")
         (ROOT / rel).write_text(
@@ -446,19 +490,26 @@ def _create_lookahead_handoff() -> Callable[[], None]:
 
 
 def _flip_m6_done() -> Callable[[], None]:
-    """两处副本同时把 M6 翻 ✅ **并删掉留档** → 状态一致但 `LAYOUT.RELEASE` 必红。
+    """把**发布里程碑**翻成 ✅ 但**删掉留档** → 状态一致，`LAYOUT.RELEASE` 必红。
 
-    为什么必须连带删留档（M6 实测首版 MISSED）：留档已经落盘之后，"把 M6 翻 ✅"本身就是
-    **合法终态** —— 门正确地绿了，不是假门。靶子要咬的是"已 ✅ 但没有收尾记录"这个分支，
-    所以两条事实必须同时成立。
+    靶子随进度自适应的两态：
+
+    * **发布里程碑尚未 ✅**（M6 在做）：两处副本同时翻 ✅ + 删留档。
+      单翻状态而不删留档是**合法终态**（M6 实测首版因此 MISSED —— 门正确地绿了）。
+    * **发布里程碑已 ✅**（末棒打完）：翻状态已无变化，靶子改为"删留档 + 保留 ✅" ——
+      这正是 `LAYOUT.RELEASE` 要抓的分支：**已 ✅ 却没有收尾记录**。
     """
+    import check_sprint_layout as layout  # noqa: PLC0415 - 与门的配置同源，不写死编号
 
     def apply() -> None:
-        edit_status("plan/00-README总览.md", 6, "✅")()
-        edit_status("plan/05-里程碑与发布.md", 6, "✅")()
-        release = ROOT / "plan/RELEASE-M6.md"
+        release = ROOT / "plan" / f"RELEASE-M{layout.RELEASE_MILESTONE}.md"
         assert release.is_file(), "留档不存在 —— 抓不到「已 ✅ 但无记录」这个分支"
         release.unlink()
+        states = _milestone_states()
+        target = layout.RELEASE_MILESTONE
+        if not _is_done(states.get(target, "")):
+            edit_status("plan/00-README总览.md", target, "✅")()
+            edit_status("plan/05-里程碑与发布.md", target, "✅")()
 
     return apply
 

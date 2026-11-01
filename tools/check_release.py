@@ -377,29 +377,44 @@ def check_local_assets(tag: str, version: str) -> None:
 
 
 def check_digest(version: str) -> None:
-    """``SHA256SUMS`` 必须真的描述本地附件（不是"有这么一个文件"就算数）。"""
+    """``SHA256SUMS`` 必须真的描述本地附件，且**能被 ``sha256sum -c`` 直接吃**。
+
+    两条判据，第二条是首次发布实测抓到的：
+
+    1. 记录值与实算值相等（不是"有这么一个文件"就算数）；
+    2. 文件是 **LF 换行 + ``<hex>  <name>`` 两段形态**。写成 CRLF 时，
+       ``sha256sum -c`` 会把文件名读成 ``errcode-atlas-0.1.0.zip\\r`` →
+       ``No such file or directory`` → **下载者的第一条校验命令就失败**。
+       本机（Windows）写文件默认 CRLF，所以这在本仓是**默认会踩**的坑，不是偶发。
+    """
     asset = LOCAL_DIR / attachment_name(version)
     sums = LOCAL_DIR / SHA_NAME
     if not (asset.is_file() and sums.is_file()):
         add("RELEASE.DIGEST", True, "不适用：本地附件或 SHA256SUMS 不在位", skipped=True)
         return
+    raw = sums.read_bytes()
+    problems: list[str] = []
+    if b"\r" in raw:
+        problems.append("SHA256SUMS 含 CR（CRLF 换行会让 `sha256sum -c` 找不到文件）")
     wanted: dict[str, str] = {}
-    for raw in sums.read_text(encoding="utf-8").split("\n"):
-        line = raw.strip()
-        if not line:
+    for line in raw.decode("utf-8", "replace").split("\n"):
+        entry = line.strip()
+        if not entry:
             continue
-        parts = line.split(None, 1)
-        if len(parts) == 2:
-            wanted[parts[1].strip().lstrip("*")] = parts[0].strip().lower()
+        parts = entry.split(None, 1)
+        if len(parts) != 2:
+            problems.append(f"SHA256SUMS 有一行不是 `<hex>  <name>` 形态: {entry[:60]}")
+            continue
+        wanted[parts[1].strip().lstrip("*")] = parts[0].strip().lower()
     actual = sha256_file(asset)
     recorded = wanted.get(asset.name)
-    ok = recorded == actual
+    if recorded != actual:
+        problems.append(f"{asset.name}: 记录 {recorded} vs 实算 {actual}")
     add(
         "RELEASE.DIGEST",
-        ok,
-        f"{asset.name}: 记录 {recorded} vs 实算 {actual}"
-        if not ok
-        else f"{asset.name} sha256 与 {SHA_NAME} 一致（{actual[:16]}…）",
+        not problems,
+        "；".join(problems) if problems
+        else f"{asset.name} sha256 与 {SHA_NAME} 一致且为 LF 形态（{actual[:16]}…）",
     )
 
 
@@ -410,14 +425,80 @@ def _tag_tree_files(tag: str) -> set[str] | None:
     return {line for line in proc.stdout.split("\n") if line}
 
 
+def _strip_single_root(names: set[str], tree: set[str]) -> tuple[set[str], str]:
+    """去掉附件里那层**单一顶层目录**，返回 ``(相对路径集合, 被剥掉的前缀)``。
+
+    ``git archive --prefix=<dir>/`` 会让解压后落在一个目录里（分发惯例），于是 zip 里的
+    条目名是 ``<dir>/a/b`` 而 tag 树里是 ``a/b``。这层前缀**不是内容差异**，必须剥掉再比，
+    否则判据会"比名字"而不是"比内容"。
+
+    剥的条件三条同时成立（少一条就退回原样，让差异照实报出来）：
+
+    * 所有条目都挂在同一个第一段下；
+    * 那个第一段**不存在于** tag 树里（否则它就是真目录，不是包装层）；
+    * 剥完之后条目名确实对得上 tag 树的一部分（防止把真内容误剥）。
+    """
+    if not names:
+        return names, ""
+    roots = {name.split("/", 1)[0] for name in names}
+    if len(roots) != 1:
+        return names, ""
+    root = roots.pop()
+    if root in tree:
+        return names, ""
+    if any("/" not in name for name in names):
+        return names, ""  # 顶层有裸文件（如 <dir>/README.md 之外还有 <dir> 本身）→ 不是纯包装层
+    stripped = {name.split("/", 1)[1] for name in names}
+    if not (stripped & tree):
+        return names, ""
+    return stripped, root
+
+
+def read_tag_blobs(tag: str, names: list[str]) -> dict[str, bytes] | None:
+    """一次 ``git cat-file --batch`` 读回多个 blob —— 比逐文件起进程快一个量级。
+
+    本仓实测：附件 1566 个文件，逐条 ``git cat-file`` 要两分钟以上（每个都起一次进程）；
+    批量通道把同一件事压到亚秒级。**判据不变**（仍是"每个文件字节相等"），只换取数方式。
+
+    返回 ``{path: bytes}``；读不出的条目不出现在结果里（调用方按"读不出来"报红）。
+    """
+    if not names:
+        return {}
+    payload = "".join(f"{tag}:{name}\n" for name in names).encode("utf-8")
+    proc = subprocess.run(
+        ["git", "cat-file", "--batch"],
+        cwd=ROOT,
+        input=payload,
+        capture_output=True,
+    )
+    if proc.returncode != 0:
+        return None
+    out = proc.stdout
+    result: dict[str, bytes] = {}
+    pos = 0
+    for name in names:
+        nl = out.find(b"\n", pos)
+        if nl < 0:
+            break
+        header = out[pos:nl].split()
+        pos = nl + 1
+        if len(header) < 3 or header[1] != b"blob":
+            continue  # `<sha> missing` 之类
+        size = int(header[2])
+        result[name] = out[pos : pos + size]
+        pos += size + 1  # 内容后面跟一个换行
+    return result
+
+
 def compare_zip_to_tag(tag: str, asset: Path) -> list[str]:
     """附件内容与 tag 树**逐字节同源**（K35）。返回差异描述，空 = 一致。
 
     判据是**文件集合相等 + 每个文件字节相等**，不是"能打开就行"：
 
     * 集合相等挡住"少打了一个文件"与"多打了未跟踪文件"（后者会让附件带上本地残留）；
-    * 逐字节相等用 ``git cat-file blob <tag>:<path>`` 比，比的是**树的真实内容**，
+    * 逐字节相等用 ``git cat-file``（批量）比，比的是**树的真实内容**，
       而不是"我重新导出一次再和自己比"（那等于没比）。
+    * 名字里那层单一顶层前缀按 ``_strip_single_root`` 剥掉后才比（包装层不是内容）。
     """
     tree = _tag_tree_files(tag)
     if tree is None:
@@ -425,20 +506,26 @@ def compare_zip_to_tag(tag: str, asset: Path) -> list[str]:
     problems: list[str] = []
     try:
         with zipfile.ZipFile(asset) as archive:
-            names = {info.filename for info in archive.infolist() if not info.is_dir()}
+            raw_names = {info.filename for info in archive.infolist() if not info.is_dir()}
+            names, prefix = _strip_single_root(raw_names, tree)
             missing = sorted(tree - names)
             extra = sorted(names - tree)
             if missing:
                 problems.append(f"附件缺 {len(missing)} 个 tag 树里的文件: {missing[:5]}")
             if extra:
                 problems.append(f"附件多 {len(extra)} 个不在 tag 树里的文件: {extra[:5]}")
+            shared = sorted(tree & names)
+            blobs = read_tag_blobs(tag, shared)
+            if blobs is None:
+                return problems + [f"git cat-file --batch 读 {tag} 失败"]
             differing = 0
-            for name in sorted(tree & names):
-                proc = run_cmd(["git", "cat-file", "blob", f"{tag}:{name}"], text=False)
-                if proc.returncode != 0:
+            for name in shared:
+                expected = blobs.get(name)
+                if expected is None:
                     problems.append(f"{name}: tag 树里读不出来")
                     continue
-                if archive.read(name) != proc.stdout:
+                packed = archive.read(f"{prefix}/{name}" if prefix else name)
+                if packed != expected:
                     differing += 1
                     if differing <= 3:
                         problems.append(f"{name}: 字节与 tag 树不同")
@@ -541,11 +628,28 @@ def check_online(tag: str, version: str) -> None:
     )
 
 
+def recorded_run_ids(text: str) -> list[str]:
+    """从 §二 里抽出"被记为 CI run id"的数字。
+
+    **判据落在"同一行"上，而不是"某个固定间距的正则"**：留档是 Markdown 表格，
+    真实写法是 ``| **成功的 run id** | **`41320856857`** |`` —— 一种死死咬"run id 后面
+    紧跟数字"的正则会漏掉它（中间隔着 ``**`` 与 ``|``），于是留档明明记了却判成"没记"。
+    改法 = 先按下标定位"哪几行在说 run id"，再在该行取 ≥6 位的数字。
+    副作用可控：一张表里 run id 只会写在该表的 run id 那一格。
+    """
+    ids: list[str] = []
+    for line in text.split("\n"):
+        if not re.search(r"run[ _-]?id", line, re.IGNORECASE):
+            continue
+        ids.extend(re.findall(r"\b(\d{6,})\b", line))
+    return ids
+
+
 def check_ci(tag: str) -> None:
     """留档 §二 记的 run id 必须真跑过且绿（``plan/05`` §4 U1 的关闭条件）。"""
     text = read(DOC_REL) or ""
     after = text.split("## 二、", 1)[1] if "## 二、" in text else ""
-    ids = re.findall(r"run[ _-]?id\s*[:：=]?\s*(\d{6,})", after, re.IGNORECASE)
+    ids = recorded_run_ids(after)
     if not ids:
         add("RELEASE.CI", False, "§二 还没记首推 CI 的 run id（U1 的关闭条件是真实 run id）")
         return

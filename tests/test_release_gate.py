@@ -225,27 +225,110 @@ def test_zip_comparison_detects_a_differing_byte(tmp_path: Path) -> None:
     asset = tmp_path / "x.zip"
     with zipfile.ZipFile(asset, "w") as archive:
         archive.writestr("a.txt", "content-A\n")
-    # 造一份与 tag 树"名字相同、字节不同"的清单，直接喂给比较函数的下半段
-    original = module._tag_tree_files
-    original_run = module.run_cmd
+    # 造一份与 tag 树"名字相同、字节不同"的清单，直接喂给比较函数的下半段。
+    # 注入点是 `read_tag_blobs`（批量通道）—— **不是**逐文件的 `run_cmd`：
+    # 换成批量读之后，后者已经不是这条判据的取数路径，继续拿它当靶子会是"注入了但没生效"。
+    original_tree = module._tag_tree_files
+    original_blobs = module.read_tag_blobs
     try:
         module._tag_tree_files = lambda tag: {"a.txt"}
-        # `git cat-file blob v0.1.0:a.txt` 在真仓里读不到 —— 那一支会报"读不出来"，
-        # 同样是红。为精确测"字节不同"这一支，这里让 cat-file 返回别的内容。
-        def fake_run(cmd, *, text=True):
-            class _R:
-                returncode = 0
-                stdout = b"content-B\n"
-
-            return _R()
-
-        module.run_cmd = fake_run
+        module.read_tag_blobs = lambda tag, names: {name: b"content-B\n" for name in names}
         problems = module.compare_zip_to_tag("v0.1.0", asset)
         assert problems, "大小相同但字节不同，比较函数却说一致"
         assert any("字节" in p for p in problems), problems
     finally:
-        module._tag_tree_files = original
-        module.run_cmd = original_run
+        module._tag_tree_files = original_tree
+        module.read_tag_blobs = original_blobs
+
+
+def test_zip_comparison_passes_when_bytes_match(tmp_path: Path) -> None:
+    """阳性对照：字节真的相同就必须绿 —— 否则上面的"抓得到"可能只是恒红。"""
+    import zipfile
+
+    module = _load()
+    asset = tmp_path / "x.zip"
+    with zipfile.ZipFile(asset, "w") as archive:
+        archive.writestr("a.txt", "same\n")
+    original_tree = module._tag_tree_files
+    original_blobs = module.read_tag_blobs
+    try:
+        module._tag_tree_files = lambda tag: {"a.txt"}
+        module.read_tag_blobs = lambda tag, names: {name: b"same\n" for name in names}
+        assert module.compare_zip_to_tag("v0.1.0", asset) == []
+    finally:
+        module._tag_tree_files = original_tree
+        module.read_tag_blobs = original_blobs
+
+
+def test_single_root_prefix_is_stripped_before_comparing() -> None:
+    """``git archive --prefix=<dir>/`` 那层包装**不是内容差异**，必须剥掉再比。
+
+    本仓实测：加 ``--prefix`` 后 zip 条目是 ``<dir>/a.txt`` 而 tag 树里是 ``a.txt`` ——
+    不剥就会报"附件多 N 个 / 缺 N 个"，把一份完全同源的附件判成红的。
+    """
+    module = _load()
+    tree = {"a.txt", "sub/b.txt"}
+    names = {"pkg/a.txt", "pkg/sub/b.txt"}
+    stripped, prefix = module._strip_single_root(names, tree)
+    assert stripped == tree, stripped
+    assert prefix == "pkg"
+
+
+def test_single_root_prefix_is_not_stripped_when_it_is_real_content() -> None:
+    """阴性对照：那个第一段**真在 tag 树里**时不许剥 —— 否则会把真目录当包装层吃掉。"""
+    module = _load()
+    tree = {"pkg", "pkg/a.txt"}  # `pkg` 本身是个真条目
+    names = {"pkg/a.txt"}
+    stripped, prefix = module._strip_single_root(names, tree)
+    assert stripped == names and prefix == ""
+
+
+def test_single_root_prefix_left_alone_when_not_a_pure_wrapper() -> None:
+    """顶层混了裸文件（``pkg`` 自己）时也不剥 —— 那不是纯包装层。"""
+    module = _load()
+    tree = {"a.txt", "sub/b.txt"}
+    names = {"pkg", "pkg/a.txt", "pkg/sub/b.txt"}
+    stripped, prefix = module._strip_single_root(names, tree)
+    assert stripped == names and prefix == ""
+
+
+def test_digest_check_rejects_crlf_sums_file(tmp_path: Path) -> None:
+    """``SHA256SUMS`` 写成 CRLF 必须红 —— 下载者的第一条命令（``sha256sum -c``）会当场失败。
+
+    本仓**实测踩到的真缺陷**：Windows 上写文件默认 CRLF，``sha256sum -c`` 把文件名读成
+    ``errcode-atlas-0.1.0.zip\\r`` → ``No such file or directory``。第一次发布就是这样出去的
+    （附件本身没问题，坏的是那个校验清单）。判据落到"字节里有没有 CR"，而不是"读出来的
+    行内容对不对" —— 后者会把 ``\\r`` 当空白吃掉，于是这个缺陷静默通过。
+    """
+    module = _load()
+    digest = "a" * 64
+    original_local = module.LOCAL_DIR
+    original_attachment = module.attachment_name
+    original_sha = module.sha256_file
+    try:
+        bad = tmp_path / "SHA256SUMS"
+        asset = tmp_path / "errcode-atlas-0.1.0.zip"
+        asset.write_bytes(b"payload")
+        bad.write_bytes(f"{digest}  {asset.name}\r\n".encode("utf-8"))
+        module.LOCAL_DIR = tmp_path
+        module.attachment_name = lambda version: asset.name
+        module.sha256_file = lambda path: digest
+        module.CHECKS.clear()
+        module.check_digest("0.1.0")
+        verdicts = [c for c in module.CHECKS if c[0] == "RELEASE.DIGEST"]
+        assert verdicts and not verdicts[-1][1], verdicts
+        assert "CR" in verdicts[-1][2], verdicts[-1][2]
+        # 阳性对照：换成 LF 之后必须绿（证明上面的红是 CR 造成的，不是别的原因）
+        bad.write_bytes(f"{digest}  {asset.name}\n".encode("utf-8"))
+        module.CHECKS.clear()
+        module.check_digest("0.1.0")
+        verdicts = [c for c in module.CHECKS if c[0] == "RELEASE.DIGEST"]
+        assert verdicts and verdicts[-1][1], verdicts[-1][2]
+    finally:
+        module.LOCAL_DIR = original_local
+        module.attachment_name = original_attachment
+        module.sha256_file = original_sha
+        module.CHECKS.clear()
 
 
 def test_gate_refuses_cleanly_when_git_is_absent() -> None:
