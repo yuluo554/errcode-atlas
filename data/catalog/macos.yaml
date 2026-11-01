@@ -1,0 +1,10 @@
+# 三平台编目源 · 平台 `macos`
+#
+# 纪律同 data/catalog/linux.yaml 头注释（plan/04 §2.1）。
+#
+# 底座：apple-oss-distributions/xnu
+#   bsd/sys/errno.h（119 条 #define E*）
+#   bsd/sys/signal.h（信号编号；从 7 号起与 Linux 分叉，见 data/README.md §1.2）
+#
+# 状态：M0 只有表头。逐条抽取在 M1 完成。
+[]

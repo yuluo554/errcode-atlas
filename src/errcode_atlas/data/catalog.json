@@ -1,0 +1,15 @@
+{
+  "entry_count": {
+    "errno": 0,
+    "exit": 0,
+    "signal": 0
+  },
+  "generator_version": "0.1.0",
+  "platforms": {
+    "linux": [],
+    "macos": [],
+    "win32-node": [],
+    "win32-python": []
+  },
+  "schema_version": 1
+}

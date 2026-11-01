@@ -1,0 +1,10 @@
+# 三平台编目源 · 平台 `win32-python`
+#
+# **Windows 有两个视角**（data/README.md §1.1）：本文件收 **Python 运行时** 的取值。
+# 与 win32-node.yaml 的数值**不同**，这是本题最硬的事实之一。
+#
+# 底座：本机 `import errno` 实读（88 项）
+# 出处形态：kind: runtime（program_version + verified_at）
+#
+# 状态：M0 只有表头。逐条抽取在 M1 完成。
+[]

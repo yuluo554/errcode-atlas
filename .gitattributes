@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+# 编目摘要按行尾归一后计算（src/errcode_atlas/catalog.py::sha256_of_text）。
+# 但**冻结产物本身**要保持确定性：这一行保证任何平台检出后字节一致。
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# 字节被断言的对象：git 不许碰。
+*.gif binary
+*.png binary

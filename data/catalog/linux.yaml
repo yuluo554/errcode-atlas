@@ -1,0 +1,14 @@
+# 三平台编目源 · 平台 `linux`
+#
+# 纪律（plan/04 §2.1，装载期 fail-closed）：
+#   · 每条必须有 `source`；`kind: file` 需要 file/line/repo/ref 四项齐备
+#   · `source.file` 必须是仓库内相对路径；`source.line` 必须是正整数
+#   · 无出处者不得入本文件 —— 记 data/gaps.md
+#
+# 底座：torvalds/linux
+#   include/uapi/asm-generic/errno-base.h（errno 基础段 1–34）
+#   include/uapi/asm-generic/errno.h（errno 扩展段 35+）
+#   include/uapi/asm-generic/signal.h（信号编号）
+#
+# 状态：M0 只有表头（合法初始态，entry_count 全 0）。逐条抽取在 M1 完成。
+[]

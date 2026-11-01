@@ -1,0 +1,11 @@
+# 三平台编目源 · 平台 `win32-node`
+#
+# **Windows 有两个视角**（data/README.md §1.1，实测同机 EADDRINUSE: Node 100 / Python 10048）。
+# 本文件只收 **Node 运行时** 的取值；Python 视角见 win32-python.yaml。
+# 合并成一个 "windows" 在结构上就无法表达这个事实 —— 见 plan/02 D3。
+#
+# 底座：本机 `require('os').constants.errno` 实读（Node v24.15.0 / win32）
+# 出处形态：kind: runtime（无头文件行号，改用 program_version + verified_at）
+#
+# 状态：M0 只有表头。逐条抽取在 M1 完成。
+[]
