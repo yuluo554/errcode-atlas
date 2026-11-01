@@ -140,15 +140,30 @@ def edit_status(rel: str, milestone: int, new_cell: str) -> Callable[[], None]:
 
 
 def edit_ledger_stale() -> None:
-    """把台账里一条已 ✅ 的行改成 `⬜ 待 M0 复核`（M0 已 ✅ → 必红）。"""
+    """把台账里**最后一根棒**（裸 clone 可复现，属 M6）那一行改成 `⬜ 待 M0 复核`。
+
+    为什么锚这一行、而不是锚某个"还没做完的里程碑"（K11）：
+
+    首版锚的是字面量 ``⬜ 待 M1``，M1 翻 ✅ 时台账按纪律一起翻转，靶子当场消失 → 本组 ERROR。
+    这是 K11 的同一类坑在台账上复发：**靶子不能锚"某个里程碑还没完成"**。
+    现在的做法 = 按**行内容**（`裸 clone 可复现`，它属于最后一棒，最先落位、最后翻转）
+    定位那一行，再把它的状态格写成"待 M0" —— M0 是**永远 ✅** 的里程碑，
+    所以无论进度走到哪一棒，"待 M0" 都必然落在已 ✅ 里程碑名下，判据恒可触发。
+    """
+
     path = ROOT / "plan/00-README总览.md"
-    text = path.read_text(encoding="utf-8")
-    marker = "| ⬜ 待 M1 |"
-    if text.count(marker) < 1:
-        raise RuntimeError("台账靶子不见了（`⬜ 待 M1` 找不到，先修靶子）")
-    updated = text.replace(marker, "| ⬜ 待 M0 复核 |", 1)
-    assert updated != text
-    path.write_text(updated, encoding="utf-8")
+    lines = path.read_text(encoding="utf-8").split("\n")
+    needle = "裸 clone 可复现"
+    hits = [i for i, line in enumerate(lines) if line.startswith("|") and needle in line]
+    if len(hits) != 1:
+        raise RuntimeError(f"台账靶子不见了（`{needle}` 命中 {len(hits)} 行，期望 1 行，先修靶子）")
+    idx = hits[0]
+    cells = lines[idx].split("|")
+    cells[-2] = " ⬜ 待 M0 复核 "
+    updated = "|".join(cells)
+    assert updated != lines[idx], "台账状态格没变（靶子已过期？）"
+    lines[idx] = updated
+    path.write_text("\n".join(lines), encoding="utf-8")
 
 
 # ── 变异清单：布局门 10 组 + 脱敏门 5 组 ─────────────────────────────────────
@@ -172,7 +187,7 @@ def build_mutations() -> list[Mutation]:
         Mutation("L4b-doc-tools-stale", "layout", "LAYOUT.DOC_TOOLS",
                  _register_stale_tool()),
         Mutation("L5-status", "layout", "LAYOUT.STATUS",
-                 edit_status("plan/05-里程碑与发布.md", 1, "✅")),
+                 edit_status("plan/05-里程碑与发布.md", 0, "⬜")),
         Mutation("L6-handoffs-missing", "layout", "LAYOUT.HANDOFFS",
                  delete_file("plan/HANDOFF-M0.md")),
         Mutation("L6b-handoffs-section", "layout", "LAYOUT.HANDOFFS",
@@ -233,7 +248,11 @@ def _register_stale_tool() -> Callable[[], None]:
     def apply() -> None:
         path = ROOT / "tools/check_sprint_layout.py"
         text = path.read_text(encoding="utf-8")
-        anchor = '    "tools/fetch_sources.py": 1,'
+        # 靶子锚 `check_release.py`（M6，尚未 ✅）那一行 —— 它是本表里唯一**还在待**的登记项，
+        # 随 M1 落位后也不会消失。首版锚的是 `fetch_sources.py`（M1），M1 翻 ✅ 时该行按纪律
+        # 被删掉，靶子随即漂移 → 本组 ERROR。这正是 K11「靶子锚既有事实、不锚某个里程碑
+        # 还没完成」的同一类坑，只是换了个位置复发。
+        anchor = '    "tools/check_release.py": 6,'
         assert text.count(anchor) == 1, "PENDING_TOOLS 靶子漂了"
         updated = text.replace(
             anchor, anchor + '\n    "tools/not_yet.py": 0,', 1

@@ -48,11 +48,11 @@
 
 | 承诺项 | 素材来源 | 交付物内可达性 | 核验方式 | 状态 |
 |---|---|---|---|---|
-| Linux errno 数值 | `errno-base.h` / `errno.h` 原文 | ✅ 编目入包 | `bench` 逐值对照 | ⬜ 待 M1 |
-| macOS errno 数值 | xnu `errno.h` 原文（119 条） | ✅ 编目入包 | 同上 | ⬜ 待 M1 |
-| Windows errno 数值（Node 视角） | 本机 `os.constants.errno`（134 项） | ✅ 编目入包 | 同上 | ⬜ 待 M1 |
-| Windows errno 数值（Python 视角） | 本机 `errno`（88 项） | ✅ 编目入包 | 同上 | ⬜ 待 M1 |
-| Linux / macOS 信号编号 | 两份 `signal.h` 原文 | ✅ 编目入包 | `bench` 分叉点断言 | ⬜ 待 M1 |
+| Linux errno 数值 | `errno-base.h` / `errno.h` 原文 | ✅ 编目入包 | `bench` 逐值对照 | ✅ M1（136 条，逐条带行号） |
+| macOS errno 数值 | xnu `errno.h` 原文（119 条） | ✅ 编目入包 | 同上 | ✅ M1（用户态 109 条） |
+| Windows errno 数值（Node 视角） | 本机 `os.constants.errno`（134 项） | ✅ 编目入包 | 同上 | ✅ M1（`kind: runtime`） |
+| Windows errno 数值（Python 视角） | 本机 `errno`（136 项） | ✅ 编目入包 | 同上 | ✅ M1（`kind: runtime`） |
+| Linux / macOS 信号编号 | 两份 `signal.h` 原文 | ✅ 编目入包 | `bench` 分叉点断言 | ✅ M1（34 + 32 条，五叉点已钉） |
 | Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 编目入包 | `bench` 抽样 | ⬜ 待 M2 |
 | `sysexits` 64–78 | `man.openbsd.org/sysexits` | ✅ 编目入包 | `bench` | ⬜ 待 M2 |
 | `128+n` 归因 | POSIX 惯例（**非标准**，须标注） | ✅ 内置规则 | `selftest` 断言含 `n` 有效性检查 | ⬜ 待 M3 |
@@ -70,7 +70,7 @@
 | 里程碑 | 内容 | DoD | 状态 |
 |---|---|---|---|
 | M0 | 计划套件 + 方法论装订（`AGENTS.md` + 两道门）+ 骨架（契约表 / 空壳 CLI / 冻结面校验） | 两道门可跑且逐组变异变红；`--version`/`--help` 可用；未知子命令 exit 4 | ✅ |
-| M1 | 数据先行 | 三平台头文件逐条抽取入编目、出处行号登记、`data/gaps.md` 建表 | 编目每条**带出处**；`build --check` 可复现；`data/README.md` §5 口径定稿 | ⬜ |
+| M1 | 数据先行 | 三平台头文件逐条抽取入编目、出处行号登记、`data/gaps.md` 建表 | 编目每条**带出处**；`build --check` 可复现；`data/README.md` §5 口径定稿 | ✅ |
 | M2 | 解析 | Node 错误码抽取、sysexits 入编目、编目→查询索引 | 抽样对账一致；`UNKNOWN` 路径可复现 | ⬜ |
 | M3 | 判定 | 五判定态 + 退出码归因 | `bench` 全绿，含 `exit 1`→`UNATTRIBUTABLE` 断言 | ⬜ |
 | M4 | 基准 | 植入真值语料（含跨平台分叉点全覆盖）+ 不可归因集 | `selftest`/`bench` 可跑，退出码语义断言通过 | ⬜ |

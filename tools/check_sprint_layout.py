@@ -99,8 +99,11 @@ PENDING_MARKERS = ("⬜", "🟡", "未开始", "未执行", "待执行", "待确
 RELEASE_MILESTONE = 6
 
 #: 文档已点名、但**还没到该里程碑**的脚本。该里程碑翻 ✅ 后必须删掉本条，否则 stale 分支变红。
+#:
+#: M1 落位时 `tools/fetch_sources.py` 的登记项与本笔**同笔删掉** —— 只落脚本不删登记，
+#: stale 分支会报"已 ✅ 的里程碑名下还挂着待办"（HANDOFF-M0 §二 第 7 条）。
+#: 本表的靶子在 `tools/verify_gates.py` 的 L4b 组里锚 `check_release.py` 那一行。
 PENDING_TOOLS: dict[str, int] = {
-    "tools/fetch_sources.py": 1,  # plan/04 §1.2：M1 的取数脚本
     "tools/check_release.py": 6,  # plan/00 M6 DoD / plan/05 §2：发布门
 }
 #: 确实不打算实现的脚本（理由必须写在注释里）。本项目为空。

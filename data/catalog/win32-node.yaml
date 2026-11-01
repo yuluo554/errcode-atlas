@@ -1,11 +1,1463 @@
-# 三平台编目源 · 平台 `win32-node`
+# 编目源 · 平台 `win32-node` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # **Windows 有两个视角**（data/README.md §1.1，实测同机 EADDRINUSE: Node 100 / Python 10048）。
 # 本文件只收 **Node 运行时** 的取值；Python 视角见 win32-python.yaml。
 # 合并成一个 "windows" 在结构上就无法表达这个事实 —— 见 plan/02 D3。
 #
-# 底座：本机 `require('os').constants.errno` 实读（Node v24.15.0 / win32）
-# 出处形态：kind: runtime（无头文件行号，改用 program_version + verified_at）
+# 底座：本机 `require('os').constants.errno` + `require('os').constants.signals` 实读
+# 出处形态：kind: runtime（无头文件行号，改用 runtime + program_version + verified_at）
 #
-# 状态：M0 只有表头。逐条抽取在 M1 完成。
-[]
+# 值域含两类名字：POSIX 风格 `E*` 与 Winsock 风格 `WSA*`。两者是**不同的常量**，
+# 同一数值上并存时判定为 AMBIGUOUS-SAME-PLATFORM —— 这是结果，不是缺陷。
+#
+# 信号只有 11 项（Windows 平台不完整），缺口记 data/gaps.md。
+- name: "EPERM"
+  domain: "errno"
+  value: 1
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "操作不被允许"
+  posix_ref: "<none>"
+- name: "ENOENT"
+  domain: "errno"
+  value: 2
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有这个文件或目录"
+  posix_ref: "<none>"
+- name: "ESRCH"
+  domain: "errno"
+  value: 3
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有这个进程"
+  posix_ref: "<none>"
+- name: "EINTR"
+  domain: "errno"
+  value: 4
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "系统调用被中断"
+  posix_ref: "<none>"
+- name: "EIO"
+  domain: "errno"
+  value: 5
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "输入/输出错误"
+  posix_ref: "<none>"
+- name: "ENXIO"
+  domain: "errno"
+  value: 6
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有这个设备或地址"
+  posix_ref: "<none>"
+- name: "E2BIG"
+  domain: "errno"
+  value: 7
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "参数列表过长"
+  posix_ref: "<none>"
+- name: "ENOEXEC"
+  domain: "errno"
+  value: 8
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "可执行格式错误"
+  posix_ref: "<none>"
+- name: "EBADF"
+  domain: "errno"
+  value: 9
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "文件描述符错误"
+  posix_ref: "<none>"
+- name: "ECHILD"
+  domain: "errno"
+  value: 10
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有子进程"
+  posix_ref: "<none>"
+- name: "EAGAIN"
+  domain: "errno"
+  value: 11
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "资源暂时不可用，请重试"
+  posix_ref: "<none>"
+- name: "ENOMEM"
+  domain: "errno"
+  value: 12
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "内存不足"
+  posix_ref: "<none>"
+- name: "EACCES"
+  domain: "errno"
+  value: 13
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "权限不足"
+  posix_ref: "<none>"
+- name: "EFAULT"
+  domain: "errno"
+  value: 14
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "地址错误"
+  posix_ref: "<none>"
+- name: "EBUSY"
+  domain: "errno"
+  value: 16
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "设备或资源忙"
+  posix_ref: "<none>"
+- name: "EEXIST"
+  domain: "errno"
+  value: 17
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "文件已存在"
+  posix_ref: "<none>"
+- name: "EXDEV"
+  domain: "errno"
+  value: 18
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "跨设备链接"
+  posix_ref: "<none>"
+- name: "ENODEV"
+  domain: "errno"
+  value: 19
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有这个设备"
+  posix_ref: "<none>"
+- name: "ENOTDIR"
+  domain: "errno"
+  value: 20
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "不是目录"
+  posix_ref: "<none>"
+- name: "EISDIR"
+  domain: "errno"
+  value: 21
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "是目录"
+  posix_ref: "<none>"
+- name: "EINVAL"
+  domain: "errno"
+  value: 22
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "参数无效"
+  posix_ref: "<none>"
+- name: "ENFILE"
+  domain: "errno"
+  value: 23
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "系统打开文件数已达上限"
+  posix_ref: "<none>"
+- name: "EMFILE"
+  domain: "errno"
+  value: 24
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "进程打开文件数已达上限"
+  posix_ref: "<none>"
+- name: "ENOTTY"
+  domain: "errno"
+  value: 25
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "不是终端设备（ioctl 不适用）"
+  posix_ref: "<none>"
+- name: "EFBIG"
+  domain: "errno"
+  value: 27
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "文件过大"
+  posix_ref: "<none>"
+- name: "ENOSPC"
+  domain: "errno"
+  value: 28
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "设备上没有剩余空间"
+  posix_ref: "<none>"
+- name: "ESPIPE"
+  domain: "errno"
+  value: 29
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "非法的定位操作"
+  posix_ref: "<none>"
+- name: "EROFS"
+  domain: "errno"
+  value: 30
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "只读文件系统"
+  posix_ref: "<none>"
+- name: "EMLINK"
+  domain: "errno"
+  value: 31
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "链接数过多"
+  posix_ref: "<none>"
+- name: "EPIPE"
+  domain: "errno"
+  value: 32
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "管道破裂"
+  posix_ref: "<none>"
+- name: "EDOM"
+  domain: "errno"
+  value: 33
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "数学参数超出定义域"
+  posix_ref: "<none>"
+- name: "ERANGE"
+  domain: "errno"
+  value: 34
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "数学结果不可表示"
+  posix_ref: "<none>"
+- name: "EDEADLK"
+  domain: "errno"
+  value: 36
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "资源死锁会发生（macOS 语义为「已避免」）"
+  posix_ref: "<none>"
+- name: "ENAMETOOLONG"
+  domain: "errno"
+  value: 38
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "文件名过长"
+  posix_ref: "<none>"
+- name: "ENOLCK"
+  domain: "errno"
+  value: 39
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有可用的记录锁"
+  posix_ref: "<none>"
+- name: "ENOSYS"
+  domain: "errno"
+  value: 40
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "系统调用不支持/未实现"
+  posix_ref: "<none>"
+- name: "ENOTEMPTY"
+  domain: "errno"
+  value: 41
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "目录非空"
+  posix_ref: "<none>"
+- name: "EILSEQ"
+  domain: "errno"
+  value: 42
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "非法字节序列"
+  posix_ref: "<none>"
+- name: "EADDRINUSE"
+  domain: "errno"
+  value: 100
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "地址已被占用"
+  posix_ref: "<none>"
+- name: "EADDRNOTAVAIL"
+  domain: "errno"
+  value: 101
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "无法分配请求的地址"
+  posix_ref: "<none>"
+- name: "EAFNOSUPPORT"
+  domain: "errno"
+  value: 102
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "协议不支持该地址族"
+  posix_ref: "<none>"
+- name: "EALREADY"
+  domain: "errno"
+  value: 103
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "操作已在进行中"
+  posix_ref: "<none>"
+- name: "EBADMSG"
+  domain: "errno"
+  value: 104
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "不是数据消息"
+  posix_ref: "<none>"
+- name: "ECANCELED"
+  domain: "errno"
+  value: 105
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "操作已取消"
+  posix_ref: "<none>"
+- name: "ECONNABORTED"
+  domain: "errno"
+  value: 106
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "软件导致连接中止"
+  posix_ref: "<none>"
+- name: "ECONNREFUSED"
+  domain: "errno"
+  value: 107
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "连接被拒绝"
+  posix_ref: "<none>"
+- name: "ECONNRESET"
+  domain: "errno"
+  value: 108
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "对端重置了连接"
+  posix_ref: "<none>"
+- name: "EDESTADDRREQ"
+  domain: "errno"
+  value: 109
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "需要目的地址"
+  posix_ref: "<none>"
+- name: "EHOSTUNREACH"
+  domain: "errno"
+  value: 110
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "主机不可达"
+  posix_ref: "<none>"
+- name: "EIDRM"
+  domain: "errno"
+  value: 111
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "标识符已被移除"
+  posix_ref: "<none>"
+- name: "EINPROGRESS"
+  domain: "errno"
+  value: 112
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "操作正在进行中"
+  posix_ref: "<none>"
+- name: "EISCONN"
+  domain: "errno"
+  value: 113
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "端点已连接"
+  posix_ref: "<none>"
+- name: "ELOOP"
+  domain: "errno"
+  value: 114
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "符号链接层数过多"
+  posix_ref: "<none>"
+- name: "EMSGSIZE"
+  domain: "errno"
+  value: 115
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "消息过长"
+  posix_ref: "<none>"
+- name: "ENETDOWN"
+  domain: "errno"
+  value: 116
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "网络已关闭"
+  posix_ref: "<none>"
+- name: "ENETRESET"
+  domain: "errno"
+  value: 117
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "连接因重置被断开"
+  posix_ref: "<none>"
+- name: "ENETUNREACH"
+  domain: "errno"
+  value: 118
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "网络不可达"
+  posix_ref: "<none>"
+- name: "ENOBUFS"
+  domain: "errno"
+  value: 119
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有可用的缓冲区空间"
+  posix_ref: "<none>"
+- name: "ENODATA"
+  domain: "errno"
+  value: 120
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有可用数据"
+  posix_ref: "<none>"
+- name: "ENOLINK"
+  domain: "errno"
+  value: 121
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "链路已断开"
+  posix_ref: "<none>"
+- name: "ENOMSG"
+  domain: "errno"
+  value: 122
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "没有所需类型的消息"
+  posix_ref: "<none>"
+- name: "ENOPROTOOPT"
+  domain: "errno"
+  value: 123
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "协议不可用"
+  posix_ref: "<none>"
+- name: "ENOSR"
+  domain: "errno"
+  value: 124
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "流资源不足"
+  posix_ref: "<none>"
+- name: "ENOSTR"
+  domain: "errno"
+  value: 125
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "设备不是流"
+  posix_ref: "<none>"
+- name: "ENOTCONN"
+  domain: "errno"
+  value: 126
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "端点未连接"
+  posix_ref: "<none>"
+- name: "ENOTSOCK"
+  domain: "errno"
+  value: 128
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "在非套接字上做套接字操作"
+  posix_ref: "<none>"
+- name: "ENOTSUP"
+  domain: "errno"
+  value: 129
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "不支持该操作"
+  posix_ref: "<none>"
+- name: "EOPNOTSUPP"
+  domain: "errno"
+  value: 130
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "该端点不支持此操作"
+  posix_ref: "<none>"
+- name: "EOVERFLOW"
+  domain: "errno"
+  value: 132
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "值对给定数据类型过大"
+  posix_ref: "<none>"
+- name: "EPROTO"
+  domain: "errno"
+  value: 134
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "协议错误"
+  posix_ref: "<none>"
+- name: "EPROTONOSUPPORT"
+  domain: "errno"
+  value: 135
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "不支持的协议"
+  posix_ref: "<none>"
+- name: "EPROTOTYPE"
+  domain: "errno"
+  value: 136
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "套接字的协议类型错误"
+  posix_ref: "<none>"
+- name: "ETIME"
+  domain: "errno"
+  value: 137
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "定时器超时"
+  posix_ref: "<none>"
+- name: "ETIMEDOUT"
+  domain: "errno"
+  value: 138
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "连接超时"
+  posix_ref: "<none>"
+- name: "ETXTBSY"
+  domain: "errno"
+  value: 139
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "文本文件忙"
+  posix_ref: "<none>"
+- name: "EWOULDBLOCK"
+  domain: "errno"
+  value: 140
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "操作会阻塞（EAGAIN 的别名）"
+  posix_ref: "<none>"
+- name: "WSAEINTR"
+  domain: "errno"
+  value: 10004
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEBADF"
+  domain: "errno"
+  value: 10009
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEACCES"
+  domain: "errno"
+  value: 10013
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEFAULT"
+  domain: "errno"
+  value: 10014
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEINVAL"
+  domain: "errno"
+  value: 10022
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEMFILE"
+  domain: "errno"
+  value: 10024
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEWOULDBLOCK"
+  domain: "errno"
+  value: 10035
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEINPROGRESS"
+  domain: "errno"
+  value: 10036
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEALREADY"
+  domain: "errno"
+  value: 10037
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOTSOCK"
+  domain: "errno"
+  value: 10038
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEDESTADDRREQ"
+  domain: "errno"
+  value: 10039
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEMSGSIZE"
+  domain: "errno"
+  value: 10040
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEPROTOTYPE"
+  domain: "errno"
+  value: 10041
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOPROTOOPT"
+  domain: "errno"
+  value: 10042
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEPROTONOSUPPORT"
+  domain: "errno"
+  value: 10043
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAESOCKTNOSUPPORT"
+  domain: "errno"
+  value: 10044
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEOPNOTSUPP"
+  domain: "errno"
+  value: 10045
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEPFNOSUPPORT"
+  domain: "errno"
+  value: 10046
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEAFNOSUPPORT"
+  domain: "errno"
+  value: 10047
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEADDRINUSE"
+  domain: "errno"
+  value: 10048
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEADDRNOTAVAIL"
+  domain: "errno"
+  value: 10049
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENETDOWN"
+  domain: "errno"
+  value: 10050
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENETUNREACH"
+  domain: "errno"
+  value: 10051
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENETRESET"
+  domain: "errno"
+  value: 10052
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAECONNABORTED"
+  domain: "errno"
+  value: 10053
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAECONNRESET"
+  domain: "errno"
+  value: 10054
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOBUFS"
+  domain: "errno"
+  value: 10055
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEISCONN"
+  domain: "errno"
+  value: 10056
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOTCONN"
+  domain: "errno"
+  value: 10057
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAESHUTDOWN"
+  domain: "errno"
+  value: 10058
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAETOOMANYREFS"
+  domain: "errno"
+  value: 10059
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAETIMEDOUT"
+  domain: "errno"
+  value: 10060
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAECONNREFUSED"
+  domain: "errno"
+  value: 10061
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAELOOP"
+  domain: "errno"
+  value: 10062
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENAMETOOLONG"
+  domain: "errno"
+  value: 10063
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEHOSTDOWN"
+  domain: "errno"
+  value: 10064
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEHOSTUNREACH"
+  domain: "errno"
+  value: 10065
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOTEMPTY"
+  domain: "errno"
+  value: 10066
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEPROCLIM"
+  domain: "errno"
+  value: 10067
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEUSERS"
+  domain: "errno"
+  value: 10068
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEDQUOT"
+  domain: "errno"
+  value: 10069
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAESTALE"
+  domain: "errno"
+  value: 10070
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEREMOTE"
+  domain: "errno"
+  value: 10071
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSASYSNOTREADY"
+  domain: "errno"
+  value: 10091
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAVERNOTSUPPORTED"
+  domain: "errno"
+  value: 10092
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSANOTINITIALISED"
+  domain: "errno"
+  value: 10093
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEDISCON"
+  domain: "errno"
+  value: 10101
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAENOMORE"
+  domain: "errno"
+  value: 10102
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAECANCELLED"
+  domain: "errno"
+  value: 10103
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEINVALIDPROCTABLE"
+  domain: "errno"
+  value: 10104
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEINVALIDPROVIDER"
+  domain: "errno"
+  value: 10105
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEPROVIDERFAILEDINIT"
+  domain: "errno"
+  value: 10106
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSASYSCALLFAILURE"
+  domain: "errno"
+  value: 10107
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSASERVICE_NOT_FOUND"
+  domain: "errno"
+  value: 10108
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSATYPE_NOT_FOUND"
+  domain: "errno"
+  value: 10109
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSA_E_NO_MORE"
+  domain: "errno"
+  value: 10110
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSA_E_CANCELLED"
+  domain: "errno"
+  value: 10111
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "WSAEREFUSED"
+  domain: "errno"
+  value: 10112
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "（原文注释为空；释义见出处行）"
+  posix_ref: "<none>"
+- name: "SIGHUP"
+  domain: "signal"
+  value: 1
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "挂起"
+  posix_ref: "<none>"
+- name: "SIGINT"
+  domain: "signal"
+  value: 2
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "中断"
+  posix_ref: "<none>"
+- name: "SIGQUIT"
+  domain: "signal"
+  value: 3
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "退出"
+  posix_ref: "<none>"
+- name: "SIGILL"
+  domain: "signal"
+  value: 4
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "非法指令"
+  posix_ref: "<none>"
+- name: "SIGFPE"
+  domain: "signal"
+  value: 8
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "浮点异常"
+  posix_ref: "<none>"
+- name: "SIGKILL"
+  domain: "signal"
+  value: 9
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "强制杀死（不可捕获、不可忽略）"
+  posix_ref: "<none>"
+- name: "SIGSEGV"
+  domain: "signal"
+  value: 11
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "段错误"
+  posix_ref: "<none>"
+- name: "SIGTERM"
+  domain: "signal"
+  value: 15
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "终止请求"
+  posix_ref: "<none>"
+- name: "SIGBREAK"
+  domain: "signal"
+  value: 21
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "Ctrl+Break（Windows 控制台事件）"
+  posix_ref: "<none>"
+- name: "SIGABRT"
+  domain: "signal"
+  value: 22
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "abort 中止"
+  posix_ref: "<none>"
+- name: "SIGWINCH"
+  domain: "signal"
+  value: 28
+  source:
+    kind: "runtime"
+    runtime: "node"
+    program_version: "v24.15.0"
+    verified_at: "2026-11-01"
+  description_zh: "窗口大小变化"
+  posix_ref: "<none>"

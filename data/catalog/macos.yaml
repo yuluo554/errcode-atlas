@@ -1,10 +1,1566 @@
-# 三平台编目源 · 平台 `macos`
+# 编目源 · 平台 `macos` · 由 tools/extract_catalog.py 生成，**不要手改**
 #
 # 纪律同 data/catalog/linux.yaml 头注释（plan/04 §2.1）。
 #
 # 底座：apple-oss-distributions/xnu
-#   bsd/sys/errno.h（119 条 #define E*）
+#   bsd/sys/errno.h（用户态 errno；含别名与 ELAST 哨兵）
 #   bsd/sys/signal.h（信号编号；从 7 号起与 Linux 分叉，见 data/README.md §1.2）
 #
-# 状态：M0 只有表头。逐条抽取在 M1 完成。
-[]
+# 预处理器口径（这是"逐条"的关键）：__DARWIN_C_LEVEL = __DARWIN_C_FULL、
+# __DARWIN_UNIX03 = 1、KERNEL/KERNEL_PRIVATE/_POSIX_C_SOURCE 均未定义 ——
+# 用户态默认编译环境。该环境下不可见的分支（内核伪错误、非 UNIX03 的 EOPNOTSUPP=45、
+# 只对 _POSIX_C_SOURCE 可见的 SIGPOLL）不入编目，逐条记 data/gaps.md。
+#
+# **`SIGSTKFLT` 不在本文件里**，这不是遗漏：macOS 没有这个信号。
+# 查它时由 `PLATFORM-ABSENT` 承载（data/README.md §5.2），`data/gaps.md` 有专门一行。
+- name: "EPERM"
+  domain: "errno"
+  value: 1
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 90
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "操作不被允许"
+  posix_ref: "<none>"
+- name: "ENOENT"
+  domain: "errno"
+  value: 2
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 91
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有这个文件或目录"
+  posix_ref: "<none>"
+- name: "ESRCH"
+  domain: "errno"
+  value: 3
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 92
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有这个进程"
+  posix_ref: "<none>"
+- name: "EINTR"
+  domain: "errno"
+  value: 4
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 93
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "系统调用被中断"
+  posix_ref: "<none>"
+- name: "EIO"
+  domain: "errno"
+  value: 5
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 94
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "输入/输出错误"
+  posix_ref: "<none>"
+- name: "ENXIO"
+  domain: "errno"
+  value: 6
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 95
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有这个设备或地址"
+  posix_ref: "<none>"
+- name: "E2BIG"
+  domain: "errno"
+  value: 7
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 96
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "参数列表过长"
+  posix_ref: "<none>"
+- name: "ENOEXEC"
+  domain: "errno"
+  value: 8
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 97
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "可执行格式错误"
+  posix_ref: "<none>"
+- name: "EBADF"
+  domain: "errno"
+  value: 9
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 98
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文件描述符错误"
+  posix_ref: "<none>"
+- name: "ECHILD"
+  domain: "errno"
+  value: 10
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 99
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有子进程"
+  posix_ref: "<none>"
+- name: "EDEADLK"
+  domain: "errno"
+  value: 11
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 100
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "资源死锁会发生（macOS 语义为「已避免」）"
+  posix_ref: "<none>"
+- name: "ENOMEM"
+  domain: "errno"
+  value: 12
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 102
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "内存不足"
+  posix_ref: "<none>"
+- name: "EACCES"
+  domain: "errno"
+  value: 13
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 103
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "权限不足"
+  posix_ref: "<none>"
+- name: "EFAULT"
+  domain: "errno"
+  value: 14
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 104
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "地址错误"
+  posix_ref: "<none>"
+- name: "ENOTBLK"
+  domain: "errno"
+  value: 15
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 106
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "需要块设备"
+  posix_ref: "<none>"
+- name: "EBUSY"
+  domain: "errno"
+  value: 16
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 108
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "设备或资源忙"
+  posix_ref: "<none>"
+- name: "EEXIST"
+  domain: "errno"
+  value: 17
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 109
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文件已存在"
+  posix_ref: "<none>"
+- name: "EXDEV"
+  domain: "errno"
+  value: 18
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 110
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "跨设备链接"
+  posix_ref: "<none>"
+- name: "ENODEV"
+  domain: "errno"
+  value: 19
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 111
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有这个设备"
+  posix_ref: "<none>"
+- name: "ENOTDIR"
+  domain: "errno"
+  value: 20
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 112
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不是目录"
+  posix_ref: "<none>"
+- name: "EISDIR"
+  domain: "errno"
+  value: 21
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 113
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "是目录"
+  posix_ref: "<none>"
+- name: "EINVAL"
+  domain: "errno"
+  value: 22
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 114
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "参数无效"
+  posix_ref: "<none>"
+- name: "ENFILE"
+  domain: "errno"
+  value: 23
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 115
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "系统打开文件数已达上限"
+  posix_ref: "<none>"
+- name: "EMFILE"
+  domain: "errno"
+  value: 24
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 116
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "进程打开文件数已达上限"
+  posix_ref: "<none>"
+- name: "ENOTTY"
+  domain: "errno"
+  value: 25
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 117
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不是终端设备（ioctl 不适用）"
+  posix_ref: "<none>"
+- name: "ETXTBSY"
+  domain: "errno"
+  value: 26
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 118
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文本文件忙"
+  posix_ref: "<none>"
+- name: "EFBIG"
+  domain: "errno"
+  value: 27
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 119
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文件过大"
+  posix_ref: "<none>"
+- name: "ENOSPC"
+  domain: "errno"
+  value: 28
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 120
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "设备上没有剩余空间"
+  posix_ref: "<none>"
+- name: "ESPIPE"
+  domain: "errno"
+  value: 29
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 121
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "非法的定位操作"
+  posix_ref: "<none>"
+- name: "EROFS"
+  domain: "errno"
+  value: 30
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 122
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "只读文件系统"
+  posix_ref: "<none>"
+- name: "EMLINK"
+  domain: "errno"
+  value: 31
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 123
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "链接数过多"
+  posix_ref: "<none>"
+- name: "EPIPE"
+  domain: "errno"
+  value: 32
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 124
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "管道破裂"
+  posix_ref: "<none>"
+- name: "EDOM"
+  domain: "errno"
+  value: 33
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 127
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "数学参数超出定义域"
+  posix_ref: "<none>"
+- name: "ERANGE"
+  domain: "errno"
+  value: 34
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 128
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "数学结果不可表示"
+  posix_ref: "<none>"
+- name: "EAGAIN"
+  domain: "errno"
+  value: 35
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 131
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "资源暂时不可用，请重试"
+  posix_ref: "<none>"
+- name: "EWOULDBLOCK"
+  domain: "errno"
+  value: 35
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 132
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "操作会阻塞（EAGAIN 的别名）"
+  posix_ref: "<none>"
+- name: "EINPROGRESS"
+  domain: "errno"
+  value: 36
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 133
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "操作正在进行中"
+  posix_ref: "<none>"
+- name: "EALREADY"
+  domain: "errno"
+  value: 37
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 134
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "操作已在进行中"
+  posix_ref: "<none>"
+- name: "ENOTSOCK"
+  domain: "errno"
+  value: 38
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 137
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "在非套接字上做套接字操作"
+  posix_ref: "<none>"
+- name: "EDESTADDRREQ"
+  domain: "errno"
+  value: 39
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 138
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "需要目的地址"
+  posix_ref: "<none>"
+- name: "EMSGSIZE"
+  domain: "errno"
+  value: 40
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 139
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "消息过长"
+  posix_ref: "<none>"
+- name: "EPROTOTYPE"
+  domain: "errno"
+  value: 41
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 140
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "套接字的协议类型错误"
+  posix_ref: "<none>"
+- name: "ENOPROTOOPT"
+  domain: "errno"
+  value: 42
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 141
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "协议不可用"
+  posix_ref: "<none>"
+- name: "EPROTONOSUPPORT"
+  domain: "errno"
+  value: 43
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 142
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不支持的协议"
+  posix_ref: "<none>"
+- name: "ESOCKTNOSUPPORT"
+  domain: "errno"
+  value: 44
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 144
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不支持的套接字类型"
+  posix_ref: "<none>"
+- name: "ENOTSUP"
+  domain: "errno"
+  value: 45
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 146
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不支持该操作"
+  posix_ref: "<none>"
+- name: "EPFNOSUPPORT"
+  domain: "errno"
+  value: 46
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 160
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不支持的协议族"
+  posix_ref: "<none>"
+- name: "EAFNOSUPPORT"
+  domain: "errno"
+  value: 47
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 162
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "协议不支持该地址族"
+  posix_ref: "<none>"
+- name: "EADDRINUSE"
+  domain: "errno"
+  value: 48
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 163
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "地址已被占用"
+  posix_ref: "<none>"
+- name: "EADDRNOTAVAIL"
+  domain: "errno"
+  value: 49
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 164
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "无法分配请求的地址"
+  posix_ref: "<none>"
+- name: "ENETDOWN"
+  domain: "errno"
+  value: 50
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 167
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "网络已关闭"
+  posix_ref: "<none>"
+- name: "ENETUNREACH"
+  domain: "errno"
+  value: 51
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 168
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "网络不可达"
+  posix_ref: "<none>"
+- name: "ENETRESET"
+  domain: "errno"
+  value: 52
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 169
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "连接因重置被断开"
+  posix_ref: "<none>"
+- name: "ECONNABORTED"
+  domain: "errno"
+  value: 53
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 170
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "软件导致连接中止"
+  posix_ref: "<none>"
+- name: "ECONNRESET"
+  domain: "errno"
+  value: 54
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 171
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "对端重置了连接"
+  posix_ref: "<none>"
+- name: "ENOBUFS"
+  domain: "errno"
+  value: 55
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 172
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有可用的缓冲区空间"
+  posix_ref: "<none>"
+- name: "EISCONN"
+  domain: "errno"
+  value: 56
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 173
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "端点已连接"
+  posix_ref: "<none>"
+- name: "ENOTCONN"
+  domain: "errno"
+  value: 57
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 174
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "端点未连接"
+  posix_ref: "<none>"
+- name: "ESHUTDOWN"
+  domain: "errno"
+  value: 58
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 176
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "传输端点已关闭，不能再发送"
+  posix_ref: "<none>"
+- name: "ETOOMANYREFS"
+  domain: "errno"
+  value: 59
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 177
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "引用过多，无法拼接"
+  posix_ref: "<none>"
+- name: "ETIMEDOUT"
+  domain: "errno"
+  value: 60
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 179
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "连接超时"
+  posix_ref: "<none>"
+- name: "ECONNREFUSED"
+  domain: "errno"
+  value: 61
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 180
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "连接被拒绝"
+  posix_ref: "<none>"
+- name: "ELOOP"
+  domain: "errno"
+  value: 62
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 182
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "符号链接层数过多"
+  posix_ref: "<none>"
+- name: "ENAMETOOLONG"
+  domain: "errno"
+  value: 63
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 183
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文件名过长"
+  posix_ref: "<none>"
+- name: "EHOSTDOWN"
+  domain: "errno"
+  value: 64
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 187
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "主机已关闭"
+  posix_ref: "<none>"
+- name: "EHOSTUNREACH"
+  domain: "errno"
+  value: 65
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 189
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "主机不可达"
+  posix_ref: "<none>"
+- name: "ENOTEMPTY"
+  domain: "errno"
+  value: 66
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 190
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "目录非空"
+  posix_ref: "<none>"
+- name: "EPROCLIM"
+  domain: "errno"
+  value: 67
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 194
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "进程过多"
+  posix_ref: "<none>"
+- name: "EUSERS"
+  domain: "errno"
+  value: 68
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 195
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "用户过多"
+  posix_ref: "<none>"
+- name: "EDQUOT"
+  domain: "errno"
+  value: 69
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 197
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "配额超限"
+  posix_ref: "<none>"
+- name: "ESTALE"
+  domain: "errno"
+  value: 70
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 200
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "过期的文件句柄"
+  posix_ref: "<none>"
+- name: "EREMOTE"
+  domain: "errno"
+  value: 71
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 202
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "对象是远程的"
+  posix_ref: "<none>"
+- name: "EBADRPC"
+  domain: "errno"
+  value: 72
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 203
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "RPC 结构错误"
+  posix_ref: "<none>"
+- name: "ERPCMISMATCH"
+  domain: "errno"
+  value: 73
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 204
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "RPC 版本不匹配"
+  posix_ref: "<none>"
+- name: "EPROGUNAVAIL"
+  domain: "errno"
+  value: 74
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 205
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "RPC 程序不可用"
+  posix_ref: "<none>"
+- name: "EPROGMISMATCH"
+  domain: "errno"
+  value: 75
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 206
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "程序版本不匹配"
+  posix_ref: "<none>"
+- name: "EPROCUNAVAIL"
+  domain: "errno"
+  value: 76
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 207
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "程序中过程错误"
+  posix_ref: "<none>"
+- name: "ENOLCK"
+  domain: "errno"
+  value: 77
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 210
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有可用的记录锁"
+  posix_ref: "<none>"
+- name: "ENOSYS"
+  domain: "errno"
+  value: 78
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 211
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "系统调用不支持/未实现"
+  posix_ref: "<none>"
+- name: "EFTYPE"
+  domain: "errno"
+  value: 79
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 214
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "文件类型与预期操作不符"
+  posix_ref: "<none>"
+- name: "EAUTH"
+  domain: "errno"
+  value: 80
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 215
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "认证错误"
+  posix_ref: "<none>"
+- name: "ENEEDAUTH"
+  domain: "errno"
+  value: 81
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 216
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "需要认证器"
+  posix_ref: "<none>"
+- name: "EPWROFF"
+  domain: "errno"
+  value: 82
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 219
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "设备已断电"
+  posix_ref: "<none>"
+- name: "EDEVERR"
+  domain: "errno"
+  value: 83
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 220
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "设备错误（如缺纸）"
+  posix_ref: "<none>"
+- name: "EOVERFLOW"
+  domain: "errno"
+  value: 84
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 223
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "值对给定数据类型过大"
+  posix_ref: "<none>"
+- name: "EBADEXEC"
+  domain: "errno"
+  value: 85
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 227
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "可执行文件损坏"
+  posix_ref: "<none>"
+- name: "EBADARCH"
+  domain: "errno"
+  value: 86
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 228
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "可执行文件中的 CPU 类型错误"
+  posix_ref: "<none>"
+- name: "ESHLIBVERS"
+  domain: "errno"
+  value: 87
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 229
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "共享库版本不匹配"
+  posix_ref: "<none>"
+- name: "EBADMACHO"
+  domain: "errno"
+  value: 88
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 230
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "Mach-O 文件格式错误"
+  posix_ref: "<none>"
+- name: "ECANCELED"
+  domain: "errno"
+  value: 89
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 233
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "操作已取消"
+  posix_ref: "<none>"
+- name: "EIDRM"
+  domain: "errno"
+  value: 90
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 235
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "标识符已被移除"
+  posix_ref: "<none>"
+- name: "ENOMSG"
+  domain: "errno"
+  value: 91
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 236
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有所需类型的消息"
+  posix_ref: "<none>"
+- name: "EILSEQ"
+  domain: "errno"
+  value: 92
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 237
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "非法字节序列"
+  posix_ref: "<none>"
+- name: "ENOATTR"
+  domain: "errno"
+  value: 93
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 239
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "找不到属性"
+  posix_ref: "<none>"
+- name: "EBADMSG"
+  domain: "errno"
+  value: 94
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 242
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "不是数据消息"
+  posix_ref: "<none>"
+- name: "EMULTIHOP"
+  domain: "errno"
+  value: 95
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 243
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "尝试了多跳"
+  posix_ref: "<none>"
+- name: "ENODATA"
+  domain: "errno"
+  value: 96
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 244
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有可用数据"
+  posix_ref: "<none>"
+- name: "ENOLINK"
+  domain: "errno"
+  value: 97
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 245
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "链路已断开"
+  posix_ref: "<none>"
+- name: "ENOSR"
+  domain: "errno"
+  value: 98
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 246
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "流资源不足"
+  posix_ref: "<none>"
+- name: "ENOSTR"
+  domain: "errno"
+  value: 99
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 247
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "设备不是流"
+  posix_ref: "<none>"
+- name: "EPROTO"
+  domain: "errno"
+  value: 100
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 248
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "协议错误"
+  posix_ref: "<none>"
+- name: "ETIME"
+  domain: "errno"
+  value: 101
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 249
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "定时器超时"
+  posix_ref: "<none>"
+- name: "EOPNOTSUPP"
+  domain: "errno"
+  value: 102
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 253
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "该端点不支持此操作"
+  posix_ref: "<none>"
+- name: "ENOPOLICY"
+  domain: "errno"
+  value: 103
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 256
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "没有注册该策略"
+  posix_ref: "<none>"
+- name: "ENOTRECOVERABLE"
+  domain: "errno"
+  value: 104
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 259
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "状态不可恢复"
+  posix_ref: "<none>"
+- name: "EOWNERDEAD"
+  domain: "errno"
+  value: 105
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 260
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "持锁者已死"
+  posix_ref: "<none>"
+- name: "EQFULL"
+  domain: "errno"
+  value: 106
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 264
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "Interface output queue is full"
+  posix_ref: "<none>"
+- name: "ELAST"
+  domain: "errno"
+  value: 107
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 270
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "最大 errno 的哨兵值（须等于最大的 errno）"
+  posix_ref: "<none>"
+- name: "ENOTCAPABLE"
+  domain: "errno"
+  value: 107
+  source:
+    kind: "file"
+    file: "bsd/sys/errno.h"
+    line: 267
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "能力不足"
+  posix_ref: "<none>"
+- name: "SIGHUP"
+  domain: "signal"
+  value: 1
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 84
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "挂起"
+  posix_ref: "<none>"
+- name: "SIGINT"
+  domain: "signal"
+  value: 2
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 85
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "中断"
+  posix_ref: "<none>"
+- name: "SIGQUIT"
+  domain: "signal"
+  value: 3
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 86
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "退出"
+  posix_ref: "<none>"
+- name: "SIGILL"
+  domain: "signal"
+  value: 4
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 87
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "非法指令"
+  posix_ref: "<none>"
+- name: "SIGTRAP"
+  domain: "signal"
+  value: 5
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 88
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "跟踪陷阱"
+  posix_ref: "<none>"
+- name: "SIGABRT"
+  domain: "signal"
+  value: 6
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 89
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "abort 中止"
+  posix_ref: "<none>"
+- name: "SIGIOT"
+  domain: "signal"
+  value: 6
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 93
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "SIGABRT 的历史别名"
+  posix_ref: "<none>"
+- name: "SIGEMT"
+  domain: "signal"
+  value: 7
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 94
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "EMT 指令（macOS 专属，占 7 号）"
+  posix_ref: "<none>"
+- name: "SIGFPE"
+  domain: "signal"
+  value: 8
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 96
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "浮点异常"
+  posix_ref: "<none>"
+- name: "SIGKILL"
+  domain: "signal"
+  value: 9
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 97
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "强制杀死（不可捕获、不可忽略）"
+  posix_ref: "<none>"
+- name: "SIGBUS"
+  domain: "signal"
+  value: 10
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 98
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "总线错误"
+  posix_ref: "<none>"
+- name: "SIGSEGV"
+  domain: "signal"
+  value: 11
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 99
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "段错误"
+  posix_ref: "<none>"
+- name: "SIGSYS"
+  domain: "signal"
+  value: 12
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 100
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "系统调用参数错误"
+  posix_ref: "<none>"
+- name: "SIGPIPE"
+  domain: "signal"
+  value: 13
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 101
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "向无读端的管道写入"
+  posix_ref: "<none>"
+- name: "SIGALRM"
+  domain: "signal"
+  value: 14
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 102
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "闹钟超时"
+  posix_ref: "<none>"
+- name: "SIGTERM"
+  domain: "signal"
+  value: 15
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 103
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "终止请求"
+  posix_ref: "<none>"
+- name: "SIGURG"
+  domain: "signal"
+  value: 16
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 104
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "套接字紧急条件"
+  posix_ref: "<none>"
+- name: "SIGSTOP"
+  domain: "signal"
+  value: 17
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 105
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "停止（不可捕获、不可忽略）"
+  posix_ref: "<none>"
+- name: "SIGTSTP"
+  domain: "signal"
+  value: 18
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 106
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "终端停止"
+  posix_ref: "<none>"
+- name: "SIGCONT"
+  domain: "signal"
+  value: 19
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 107
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "继续被停止的进程"
+  posix_ref: "<none>"
+- name: "SIGCHLD"
+  domain: "signal"
+  value: 20
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 108
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "子进程状态变化"
+  posix_ref: "<none>"
+- name: "SIGTTIN"
+  domain: "signal"
+  value: 21
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 109
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "后台进程读终端"
+  posix_ref: "<none>"
+- name: "SIGTTOU"
+  domain: "signal"
+  value: 22
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 110
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "后台进程写终端"
+  posix_ref: "<none>"
+- name: "SIGIO"
+  domain: "signal"
+  value: 23
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 112
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "异步 I/O 事件"
+  posix_ref: "<none>"
+- name: "SIGXCPU"
+  domain: "signal"
+  value: 24
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 114
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "超出 CPU 时间限制"
+  posix_ref: "<none>"
+- name: "SIGXFSZ"
+  domain: "signal"
+  value: 25
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 115
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "超出文件大小限制"
+  posix_ref: "<none>"
+- name: "SIGVTALRM"
+  domain: "signal"
+  value: 26
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 116
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "虚拟定时器超时"
+  posix_ref: "<none>"
+- name: "SIGPROF"
+  domain: "signal"
+  value: 27
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 117
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "性能分析定时器超时"
+  posix_ref: "<none>"
+- name: "SIGWINCH"
+  domain: "signal"
+  value: 28
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 119
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "窗口大小变化"
+  posix_ref: "<none>"
+- name: "SIGINFO"
+  domain: "signal"
+  value: 29
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 120
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "信息请求（macOS 专属，BSD 传统）"
+  posix_ref: "<none>"
+- name: "SIGUSR1"
+  domain: "signal"
+  value: 30
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 122
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "用户自定义信号 1"
+  posix_ref: "<none>"
+- name: "SIGUSR2"
+  domain: "signal"
+  value: 31
+  source:
+    kind: "file"
+    file: "bsd/sys/signal.h"
+    line: 123
+    repo: "apple-oss-distributions/xnu"
+    ref: "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+  description_zh: "用户自定义信号 2"
+  posix_ref: "<none>"

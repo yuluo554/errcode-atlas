@@ -11,42 +11,70 @@
 
 | # | 依据 | 渠道 | 状态 | 规模 |
 |---|---|---|---|---|
-| E1 | Linux errno 基础段 | `torvalds/linux` `include/uapi/asm-generic/errno-base.h` | ✅ 已获取原文 | 34 条 `#define E*` |
-| E2 | Linux errno 扩展段 | 同仓 `include/uapi/asm-generic/errno.h` | ✅ 已获取原文 | 扩展常量 |
-| E3 | macOS errno | `apple-oss-distributions/xnu` `bsd/sys/errno.h` | ✅ 已获取原文 | 119 条 `#define E*` |
-| E4 | Windows errno（**Node 视角**） | 本机 `os.constants.errno` | ✅ 已获取 | 134 项，Node v24.15.0 / win32 |
-| E5 | Windows errno（**Python 视角**） | 本机 `errno` 模块 | ✅ 已获取 | 88 项 |
+| E1 | Linux errno 基础段 | `torvalds/linux` `include/uapi/asm-generic/errno-base.h` | ✅ 已抽取入编目 | 34 条 `#define E*` |
+| E2 | Linux errno 扩展段 | 同仓 `include/uapi/asm-generic/errno.h` | ✅ 已抽取入编目 | 102 条 `#define E*`（含 4 组别名：`EWOULDBLOCK`→`EAGAIN`、`EDEADLOCK`→`EDEADLK`、`EFSBADCRC`→`EBADMSG`、`EFSCORRUPTED`→`EUCLEAN`） |
+| E3 | macOS errno | `apple-oss-distributions/xnu` `bsd/sys/errno.h` | ✅ 已抽取入编目 | 原文 120 行 `#define E*` / **119 个不同名字**（`EOPNOTSUPP` 定义了两次，分属两个编译环境）；用户态默认口径下入编目 **109** 条 |
+| E4 | Windows errno（**Node 视角**） | 本机 `os.constants.errno` | ✅ 已抽取入编目 | 134 项 = `E*` 76 + `WSA*` 58，Node v24.15.0 / win32 |
+| E5 | Windows errno（**Python 视角**） | 本机 `errno` 模块 | ✅ 已抽取入编目 | 136 项 = `E*` 88 + `WSA*` 48（含 `WSABASEERR`） |
 
 > **⚠️ E4 与 E5 在同一台机器上数值不同**，这是本题最硬的事实之一：
 > `EADDRINUSE` → Node `100`、Python `10048`；`ECONNREFUSED` → Node `107`、Python `10061`；
 > `ETIMEDOUT` → Node `138`、Python `10060`。
 > **因此编目必须区分"运行时视角"，不得只写一个 "windows" 值。**
+>
+> **E5 的"88 项"是 `E*` 前缀那部分**；Python 的 `errno` 模块同时导出 48 个 `WSA*` 名字，
+> 它们与 `E*` 在**同一数值**上并存（如 `EADDRINUSE` 与 `WSAEADDRINUSE` 都是 10048）。
+> 于是同一台机器上：Node 视角的 `100` 只有一个名字，Python 视角的 `10048` 有**两个**名字
+> —— 这正是 `AMBIGUOUS-SAME-PLATFORM` 的真实来源，不是编造出来的用例。
+>
+> 两个视角的规模数字由 `py -3.12 tools/extract_catalog.py --report` 数出来，不是手写常量。
 
 ### 1.2 信号
 
 | # | 依据 | 渠道 | 状态 | 规模 |
 |---|---|---|---|---|
-| S1 | Linux 信号编号 | `include/uapi/asm-generic/signal.h` | ✅ 已获取原文 | 逐条 `#define SIG*` |
-| S2 | macOS 信号编号 | xnu `bsd/sys/signal.h` | ✅ 已获取原文 | 逐条 `#define SIG*` |
+| S1 | Linux 信号编号 | `include/uapi/asm-generic/signal.h` | ✅ 已抽取入编目 | 原文 38 条 `#define SIG*`；入编目 **34** 条（排除见下） |
+| S2 | macOS 信号编号 | xnu `bsd/sys/signal.h` | ✅ 已抽取入编目 | 原文 52 行 / 45 个不同名字；用户态默认口径入编目 **32** 条 |
 
-> **实测分叉点（已核对，可作基准语料）**：
+> **实测分叉点（已核对原文，并由测试逐点钉死）**：
 > `SIGBUS` Linux=7 / macOS=10；`SIGSTKFLT` Linux=16 / macOS **无**；
 > `SIGSTOP` Linux=19 / macOS=17；`SIGCHLD` Linux=17 / macOS=20；
 > `SIGUSR1` Linux=10 / macOS=30。
 > **从 7 号起两平台即开始分叉**，因此任何"统一的信号编号表"都是错的。
+> 这五个点各有一条断言（`tests/test_catalog_data_m1.py::test_documented_signal_fork_points`
+> 与 `::test_sigstkflt_exists_on_linux_and_absent_on_macos`），不是靠人复核。
+>
+> **S1 的"38 → 34"与 S2 的"45 → 32"不是遗漏**，逐类原因见 `data/gaps.md`：
+> 非信号的 `SIG_*`/`SIGEV_*`/`SIGSTKSZ`、只在别的编译环境下可见的分支（macOS `SIGPOLL`）、
+> 原文自述"不应被用户态当作常量"的实时信号界（`SIGRTMIN`/`SIGRTMAX`）、
+> 以及注释块里的 `SIGLOST`。
 
 ### 1.3 其他
 
 | # | 依据 | 渠道 | 状态 | 备注 |
 |---|---|---|---|---|
-| X1 | Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 可直连 | 415,009 bytes；M1 逐条抽取 |
+| X1 | Node 错误码清单 | `nodejs.org/api/errors.html` | ✅ 可直连 | 415,009 bytes；**M2** 逐条抽取（M1 只做 errno/信号三平台与两个 Windows 运行时视角） |
 | X2 | `sysexits` 约定（64–78） | `man.openbsd.org/sysexits` | ✅ 可直连 | **约定非标准**，报告须标注 |
-| X3 | `128+n` 归因惯例 | POSIX shell 惯例 | ⬜ 待核对原典 | **惯例非标准**，报告中必须如此标注 |
-| X4 | Node `os.constants.signals` | 本机实读 | ✅ 已获取 | 11 项（Windows 平台不完整，见 gaps） |
+| X3 | `128+n` 归因惯例 | POSIX.1-2017 `wait()` 手册页（已核对原文） | ✅ 已核对：**标准中确实没有这条** | **惯例非标准**，报告中必须如此标注 |
+| X4 | Node `os.constants.signals` | 本机实读 | ✅ 已抽取入编目 | 11 项（Windows 平台不完整，见 gaps） |
 
-> **⚠️ X3 是本项目的口径风险点。** `128+n` 在实践中通行，但它**不是 POSIX 正文规定的**，
-> 而是 shell 实现惯例。**报告与文档必须写"惯例"，不得写"标准规定"。**
-> M1 需核对 POSIX 相关原文（`wait()` 返回值与 `WEXITSTATUS` 语义），核对后状态才可转 ✅。
+> **⚠️ X3 的核对做完了，结论是"风险落地"而不是"风险消除"。**
+>
+> **核对对象**：POSIX.1-2017 `wait()` 页
+> （`pubs.opengroup.org/onlinepubs/9699919799/functions/wait.html`）。
+> **核对结论（逐条）**：
+> 1. `WEXITSTATUS(status)` 只在 `WIFEXITED` 为真时有意义，取的是传给 `_exit()` / `exit()` /
+>    `main()` 参数的**低 8 位**；
+> 2. 信号终止用 `WIFSIGNALED` + `WTERMSIG`，后者求值为"导致子进程终止的信号编号"；
+> 3. **全文没有任何 `128+n` 或等价公式。**
+>
+> 所以 `128+n` 是 **shell 实现惯例**（shell 在 `$?` 上报 128+信号号），不是 POSIX 正文规定的。
+> **报告与文档必须写"惯例"，不得写"标准规定"。**
+>
+> 状态从 ⬜ 翻 ✅ 的含义是"**核对这个动作**做完了"，**不是**"这条规矩变成了标准"。
+> 强制措辞由三层兜住，不靠人记得写：`gray` 强度（`plan/04` §2.3）→ `notes` 里的
+> "惯例非标准"字样 → `selftest._check_gray_markers` 与 `tests/test_exitcode.py` 的断言。
+> 缺口性质记在 `data/gaps.md`（三态为「部分录」，原因是"POSIX 确实没有"）。
 
 ---
 
@@ -69,7 +97,7 @@
 
 ### 2.2 检索式与基准日（软论据，非硬锚点）
 
-**检索窗口**：2026-11-01T03:10Z–04:45Z，`gh api search/repositories`。
+**检索窗口**：2026-11-01T03:10Z–04:45Z 与 M1 补检索 2026-11-01T09:5xZ，`gh api search/repositories`。
 
 | 检索式 | total | 采用状态 |
 |---|---:|---|
@@ -77,9 +105,14 @@
 | `exit code reference tool` | 16 | ⬜ **全噪声**（头名 321★ 为 FTC 机器人队） |
 | `error message database ai agent` | 1 | ⬜ 0★ 无关 |
 | `stack trace knowledge base agent` | 4 | ⬜ 最高 1★，形态为 RAG 问答 |
-| `errno table multi platform` | — | ⬜ 未单独检索，M1 补 |
+| `errno table multi platform` | 0 | ⬜ **M1 已补检索，空**（`errno cross platform reference` 同为 0） |
+| `exit code reference` | 42 | ⬜ M1 补检索：前四名 0★/0★/0★/7★（末名是 sshd 配置检查，非同类）。与上一行的 16 之差来自检索式措辞，两式合计仍无同类项目 |
 
 > **`total≈0` 一律只是软论据。** 本案的硬锚点是 §1.1–1.3 的**逐条原文与实读**，不是检索空白。
+> M1 补检的两个检索式（`errno table multi platform` / `errno cross platform reference`）
+> 都是 0 命中 —— 它们的价值只在于"没有撞上现成同类项目"这一条弱证据，
+> **不能**被写成"这个方向没人做"的强结论（空白可能是检索式措辞问题，`exit code reference`
+> 两式 total 差 42↔16 就说明了这一点）。
 
 ---
 
